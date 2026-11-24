@@ -71,9 +71,17 @@ def fetch_prices(ticker, years=5):
     if data is None:
         raise RuntimeError(f"Kurse nicht abrufbar ({err})")
     res = data["chart"]["result"][0]
-    closes = res["indicators"]["quote"][0]["close"]
-    rows = [(datetime.fromtimestamp(ts, tz=timezone.utc).date(), float(c))
-            for ts, c in zip(res["timestamp"], closes) if c is not None]
+    q = res["indicators"]["quote"][0]
+    rows = []
+    for i, ts in enumerate(res["timestamp"]):
+        c = q["close"][i]
+        if c is None:
+            continue
+        g = lambda k: (q.get(k) or [None] * (i + 1))[i]
+        o, h, l, v = g("open"), g("high"), g("low"), g("volume")
+        rows.append((datetime.fromtimestamp(ts, tz=timezone.utc).date(), float(c),
+                     float(o if o is not None else c), float(h if h is not None else c),
+                     float(l if l is not None else c), int(v or 0)))
     return rows, res["meta"].get("currency") or "EUR"
 
 
@@ -149,8 +157,11 @@ def demo_prices(seed, days=1260):
             continue
         if rnd.random() < 0.012:
             drift = rnd.uniform(-0.003, 0.004)
+        prev = price
         price *= math.exp(drift + rnd.gauss(0, 0.017))
-        out.append((d, price))
+        hi = max(prev, price) * (1 + abs(rnd.gauss(0, 0.006)))
+        lo = min(prev, price) * (1 - abs(rnd.gauss(0, 0.006)))
+        out.append((d, price, prev, hi, lo, int(rnd.uniform(5e5, 3e6))))
     return out, rnd.choice(["EUR", "EUR", "USD", "CHF", "GBp"])
 
 
@@ -203,6 +214,28 @@ def rsi(v, n=14):
         ag = (ag * (n - 1) + max(d, 0)) / n
         al = (al * (n - 1) + max(-d, 0)) / n
     return 100.0 if al == 0 else 100 - 100 / (1 + ag / al)
+
+
+def rsi_series(v, n=14):
+    out = [None] * len(v)
+    if len(v) <= n:
+        return out
+    ag = sum(max(v[i] - v[i - 1], 0) for i in range(1, n + 1)) / n
+    al = sum(max(v[i - 1] - v[i], 0) for i in range(1, n + 1)) / n
+    for i in range(n + 1, len(v)):
+        d = v[i] - v[i - 1]
+        ag = (ag * (n - 1) + max(d, 0)) / n
+        al = (al * (n - 1) + max(-d, 0)) / n
+        out[i] = 100.0 if al == 0 else 100 - 100 / (1 + ag / al)
+    return out
+
+
+def swing_levels(highs, lows, price, look=130, w=7):
+    """Nächste Unterstützung unter und nächster Widerstand über dem Kurs (lokale Tiefs/Hochs)."""
+    hs, ls = highs[-look:], lows[-look:]
+    sup = [ls[i] for i in range(w, len(ls) - w) if ls[i] == min(ls[i - w:i + w + 1]) and ls[i] < price]
+    res = [hs[i] for i in range(w, len(hs) - w) if hs[i] == max(hs[i - w:i + w + 1]) and hs[i] > price]
+    return (max(sup) if sup else min(ls)), (min(res) if res else None)
 
 
 def ret(v, days):
@@ -274,8 +307,8 @@ def clamp(x, lo=0.0, hi=1.0):
 
 
 def analyse(item, prices, cur, fx, cfg, analyst=None):
-    dates = [d for d, _ in prices]
-    closes = [c for _, c in prices]
+    dates = [p[0] for p in prices]
+    closes = [p[1] for p in prices]
     fast, slow = sma(closes, cfg["fast_sma"]), sma(closes, cfg["slow_sma"])
     s200 = sma(closes, 200)
     trades, events, pos, st = simulate(dates, closes, fast, slow, cfg)
@@ -399,16 +432,32 @@ def analyse(item, prices, cur, fx, cfg, analyst=None):
         rec["text"] = ("Noch nicht kaufen – das Kaufsignal rückt näher. Beobachten." if near
                        else "Nicht kaufen. Kein Aufwärtstrend – auf ein Kaufsignal warten.")
 
-    # ---- Chartdaten (letzte ~260 Tage)
+    # ---- Chartdaten (letzte ~260 Tage täglich + bis 5 Jahre wöchentlich)
     n0 = max(0, len(closes) - 260)
     rnd = lambda x: None if x is None else float(f"{x:.5g}")
+    opens = [p[2] for p in prices]
+    highs = [p[3] for p in prices]
+    lows = [p[4] for p in prices]
+    vols = [p[5] for p in prices]
+    rsis = rsi_series(closes)
+    hist = [a - b for a, b in zip(macd_line, macd_sig)]
+    sup, resi = swing_levels(highs, lows, price)
+    wk = list(range(len(closes) - 1, -1, -5))[::-1]
     chart = {
         "d": [str(d) for d in dates[n0:]],
-        "c": [rnd(x) for x in closes[n0:]],
+        "o": [rnd(x) for x in opens[n0:]], "h": [rnd(x) for x in highs[n0:]],
+        "lo": [rnd(x) for x in lows[n0:]], "c": [rnd(x) for x in closes[n0:]],
+        "v": vols[n0:],
         "f": [rnd(x) for x in fast[n0:]],
         "s": [rnd(x) for x in slow[n0:]],
         "l": [rnd(x) for x in s200[n0:]],
+        "rsi": [None if x is None else round(x, 1) for x in rsis[n0:]],
+        "macd": [rnd(x) for x in hist[n0:]],
         "e": [{"i": e["i"] - n0, "t": e["type"]} for e in events if e["i"] >= n0],
+        "w": {"d": [str(dates[i]) for i in wk], "c": [rnd(closes[i]) for i in wk],
+              "l": [rnd(s200[i]) for i in wk],
+              "e": [{"d": str(e["date"]), "t": e["type"]} for e in events]},
+        "lv": {"sup": rnd(sup), "res": rnd(resi), "hi52": rnd(max(highs[-252:])), "lo52": rnd(min(lows[-252:]))},
     }
     spark = [rnd(x) for x in closes[-90::3]]
 
@@ -416,8 +465,9 @@ def analyse(item, prices, cur, fx, cfg, analyst=None):
         **item, "id": re.sub(r"[^A-Za-z0-9]+", "-", item["ticker"]).strip("-"),
         "cur": cur, "eur_rate": 1 / rate, "price": price, "date": str(today),
         "status": status, "score": score, "parts": parts, "parts_max": maxes, "analyst": an,
-        "ind": ind, "stats": st, "trades": trades[-8:][::-1], "rec": rec, "why": why,
-        "chart": chart, "spark": spark,
+        "ind": {**ind, "sup_pct": (sup / price - 1) * 100, "res_pct": (resi / price - 1) * 100 if resi else None},
+        "stats": st, "rec": rec, "why": why, "spark": spark,
+        "_detail": {"chart": chart, "trades": trades[-10:][::-1]},
     }
 
 
@@ -492,7 +542,10 @@ def main():
                    "counts": counts, "total": len(items), "failed": failed},
         "items": results,
     }
-    os.makedirs(os.path.join(HERE, "site"), exist_ok=True)
+    os.makedirs(os.path.join(HERE, "site", "d"), exist_ok=True)
+    for r in results:
+        with open(os.path.join(HERE, "site", "d", f"{r['id']}.json"), "w", encoding="utf-8") as f:
+            json.dump(r.pop("_detail"), f, ensure_ascii=False, separators=(",", ":"))
     with open(os.path.join(HERE, "site", "data.json"), "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
 

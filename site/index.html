@@ -134,9 +134,13 @@ h2 small{font-size:13px;color:var(--mut);font-weight:500}
 .seg button{border:0;background:none;color:var(--mut);font-weight:700;font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;min-height:32px}
 .seg button.on{background:var(--card2);color:var(--ink)}
 .fig{position:relative;height:280px;margin:4px -6px 0;touch-action:pan-y}
+.fig.sub{height:72px;margin-top:0}
+.sublbl{font-size:11px;color:var(--mut);font-weight:700;margin:8px 0 2px}.sublbl span{font-weight:500;color:var(--dim)}
+.ctl{display:flex;gap:8px;align-items:center;margin:-2px 0 8px;flex-wrap:wrap}.ctl .chips{flex:1}
+.chip{min-height:32px;padding:5px 11px;font-size:12px}
 .fig svg{position:absolute;inset:0;width:100%;height:100%}
-.tip{position:absolute;top:4px;left:8px;font-size:12px;color:var(--mut);pointer-events:none}
-.tip b{color:var(--ink);font-size:14px}
+.tip{position:absolute;top:0;left:4px;font-size:12px;color:var(--mut);pointer-events:none;background:#121821e6;border-radius:8px;padding:2px 6px;line-height:1.35}
+.tip b{color:var(--ink);font-size:14px}.tip span{font-size:11px}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin-top:6px}
 .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:3px}
 .bigscore{display:flex;align-items:center;gap:16px;margin-bottom:12px}
@@ -318,15 +322,24 @@ let depot = store.get("positions", []);
 const saveDepot = () => store.set("positions", depot);
 const eurPrice = r => r.price * r.eur_rate;
 const held = id => depot.find(h => h.id === id);
+function parseCode(code) {
+  const out = [];
+  String(code).trim().replace(/^.*#depot=/, "").split(/[,;\s]+/).forEach(part => {
+    const [id, value, cost] = part.split(":"); const r = byId[(id || "").trim()];
+    if (r && +value > 0) out.push({id: r.id, shares: +value / eurPrice(r), cost: +cost || +value});
+  });
+  return out;
+}
+const depotCode = () => depot.filter(h => byId[h.id]).map(h => `${h.id}:${(h.shares * eurPrice(byId[h.id])).toFixed(2)}:${h.cost.toFixed(2)}`).join(",");
 function importFromHash() {
   const m = location.hash.match(/^#depot=(.+)$/); if (!m) return false;
-  const out = [];
-  decodeURIComponent(m[1]).split(",").forEach(part => {
-    const [id, value, cost] = part.split(":"); const r = byId[id];
-    if (r && +value > 0) out.push({id, shares: +value / eurPrice(r), cost: +cost || +value});
-  });
-  if (out.length) { depot = out; saveDepot(); }
-  history.replaceState(null, "", location.pathname);
+  const code = decodeURIComponent(m[1]);
+  // Nur einmal pro Code übernehmen – so bleiben spätere Änderungen erhalten,
+  // und die Adresse (mit Code) funktioniert auch als Home-Bildschirm-App.
+  if (store.get("lastImport", "") !== code) {
+    const out = parseCode(code);
+    if (out.length) { depot = out; saveDepot(); store.set("lastImport", code); }
+  }
   return true;
 }
 function advice(r) {
@@ -361,7 +374,7 @@ function renderDepot() {
   const hs = depot.filter(h => byId[h.id]);
   if (!hs.length) {
     $("#depSub").textContent = "";
-    $("#depot").innerHTML = `<div class="empty"><b>Noch keine Positionen.</b> Trag deine Aktien ein, dann bekommst du für jede eine eigene Empfehlung.<button class="addb" data-act="edit">Positionen eintragen</button></div>`;
+    $("#depot").innerHTML = `<div class="empty"><b>Noch keine Positionen.</b> Trag deine Aktien ein oder füge deinen Depot-Code ein, dann bekommst du für jede eine eigene Empfehlung.<button class="addb" data-act="edit">Positionen eintragen / Code einfügen</button></div>`;
     return;
   }
   const rows = hs.map((h, i) => { const r = byId[h.id], v = h.shares * eurPrice(r); return {h, r, v, pl: v - h.cost, c: PAL[i % PAL.length]}; })
@@ -403,7 +416,11 @@ function openSheet() {
     <div class="er" style="grid-template-columns:minmax(0,1fr)"><label>Neue Position<select id="newId">${opts}</select></label></div>
     <div class="er" style="grid-template-columns:repeat(2,minmax(0,1fr))"><label>Investiert €<input id="newCost" type="number" inputmode="decimal" step="0.01" placeholder="100"></label>
       <label>Wert jetzt €<input id="newVal" type="number" inputmode="decimal" step="0.01" placeholder="95"></label></div>
-    <button class="addb" data-act="add">Hinzufügen</button>`;
+    <button class="addb" data-act="add">Hinzufügen</button>
+    <div class="er" style="grid-template-columns:minmax(0,1fr);margin-top:14px"><label>Depot-Code (zum Sichern oder auf ein anderes Gerät/die Home-App übertragen)
+      <input id="code" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(depotCode())}"></label></div>
+    <div class="er" style="grid-template-columns:repeat(2,minmax(0,1fr));border:0;padding-top:0"><button class="edit" data-act="copy" style="min-height:44px">Code kopieren</button><button class="edit" data-act="import" style="min-height:44px">Code übernehmen</button></div>
+    <p id="codeMsg" style="margin-top:8px"></p>`;
   $("#sheet").classList.add("open");
 }
 
@@ -481,42 +498,123 @@ function renderList() {
 }
 
 // ---------- Detail
-let chartRange = store.get("range", 130), cur = null;
+let chartRange = store.get("range2", 130), cur = null;
+let ctype = store.get("ctype", "line");
+let ovl = store.get("ovl", {sma:true, l200:true, lv:true, tgt:true, mine:true, vol:true});
+const entryPrice = r => { const h = held(r.id); return h && h.shares > 0 ? h.cost / h.shares / r.eur_rate : null; };
 function drawChart() {
-  const fig = $("#fig"); if (!fig || !cur) return;
+  const fig = $("#fig"); if (!fig || !cur || !cur.detail || !cur.detail.chart) return;
   const svg = fig.querySelector("svg"), W = fig.clientWidth, H = fig.clientHeight;
-  const ch = cur.chart, n = ch.c.length, a = Math.max(0, n - chartRange);
-  const sl = k => ch[k].slice(a);
-  const C = sl("c"), F = sl("f"), S = sl("s"), L = sl("l");
-  const stop = cur.rec.stop;
-  const vals = [...C, ...F, ...S, ...L].filter(v => v != null); if (stop && cur.status !== "SELL") vals.push(stop);
-  let lo = Math.min(...vals), hi = Math.max(...vals); const pad = (hi - lo) * .08 || 1; lo -= pad; hi += pad;
-  const top = 26, bot = 22, X = i => 8 + i / (C.length - 1) * (W - 58), Y = v => top + (1 - (v - lo) / (hi - lo)) * (H - top - bot);
+  const ch = cur.detail.chart, weekly = chartRange === "5y";
+  const src = weekly ? {d: ch.w.d, c: ch.w.c, l: ch.w.l} : ch;
+  const n = src.c.length, a = weekly ? 0 : Math.max(0, n - chartRange);
+  const sl = k => (src[k] || []).slice(a);
+  const D = sl("d"), C = sl("c"), O = weekly ? [] : sl("o"), Hh = weekly ? [] : sl("h"), Lo = weekly ? [] : sl("lo"), V = weekly ? [] : sl("v");
+  const F = weekly ? [] : sl("f"), S = weekly ? [] : sl("s"), L = sl("l");
+  const candles = ctype === "candle" && !weekly;
+  const vals = [...C, ...(candles ? [...Hh, ...Lo] : [])];
+  if (ovl.sma) vals.push(...F, ...S); if (ovl.l200 && (weekly || chartRange > 63)) vals.push(...L);
+  let lo = Math.min(...vals.filter(v => v != null)), hi = Math.max(...vals.filter(v => v != null));
+  const stop = cur.rec.stop != null && cur.status !== "SELL" ? cur.rec.stop : null;
+  const lv = ch.lv || {}, an = cur.analyst, ep = entryPrice(cur);
+  // horizontale Linien: nur einbeziehen, wenn nahe am sichtbaren Bereich, sonst Pfeil am Rand
+  const lines = [];
+  if (stop) lines.push({v: stop, c: "#ff5c7a", t: "Stop", dash: "5 4"});
+  if (ovl.mine && ep) lines.push({v: ep, c: "#5ea8ff", t: "Dein Einstieg", dash: ""});
+  if (ovl.tgt && an) lines.push({v: an.mean, c: "#38d6e0", t: "Ø Kursziel", dash: "2 3"});
+  if (ovl.lv && lv.sup) lines.push({v: lv.sup, c: "#2ee59d", t: "Unterstützung", dash: "6 3"});
+  if (ovl.lv && lv.res) lines.push({v: lv.res, c: "#ffb547", t: "Widerstand", dash: "6 3"});
+  const span0 = hi - lo;
+  lines.forEach(l => { if (l.v >= lo - span0 * .35 && l.v <= hi + span0 * .35) { lo = Math.min(lo, l.v); hi = Math.max(hi, l.v); l.in = true; } });
+  const pad = (hi - lo) * .07 || 1; lo -= pad; hi += pad;
+  const R = 52, top = 24, volH = (!weekly && ovl.vol) ? 0.16 : 0, bot = 20;
+  const plotH = H - top - bot, X = i => 6 + (i + .5) / C.length * (W - R - 6);
+  const Y = v => top + (1 - (v - lo) / (hi - lo)) * plotH * (1 - volH);
   const path = arr => { let d = "", pen = false; arr.forEach((v,i)=>{ if (v == null) { pen = false; return; } d += (pen?"L":"M") + X(i).toFixed(1) + " " + Y(v).toFixed(1); pen = true; }); return d; };
   const up = C[C.length-1] >= C[0], col = up ? "#2ee59d" : "#ff5c7a";
-  let g = `<defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".28"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>`;
-  for (let k = 0; k <= 3; k++) { const v = lo + (hi - lo) * k / 3, y = Y(v); g += `<line x1="8" x2="${W-50}" y1="${y}" y2="${y}" stroke="#1a222e"/><text x="${W-4}" y="${y+4}" fill="#5c6778" font-size="10" text-anchor="end">${esc(nf(v, v>=1000?0:v<1?4:2))}</text>`; }
-  g += `<path d="${path(C)} L${X(C.length-1)} ${H-bot} L${X(0)} ${H-bot}Z" fill="url(#gr)"/>`;
-  g += `<path d="${path(L)}" fill="none" stroke="#a78bfa" stroke-width="1.4" stroke-dasharray="2 4" opacity=".8"/>`;
-  g += `<path d="${path(S)}" fill="none" stroke="#a78bfa" stroke-width="1.8"/>`;
-  g += `<path d="${path(F)}" fill="none" stroke="#5ea8ff" stroke-width="1.8"/>`;
-  g += `<path d="${path(C)}" fill="none" stroke="#eef2f7" stroke-width="2.2" stroke-linejoin="round"/>`;
-  if (stop && cur.status !== "SELL") g += `<line x1="8" x2="${W-50}" y1="${Y(stop)}" y2="${Y(stop)}" stroke="#ff5c7a" stroke-dasharray="5 5" stroke-width="1.4"/><text x="12" y="${Y(stop)-6}" fill="#ff5c7a" font-size="11" font-weight="700">Stop ${esc(money(stop,cur.cur))}</text>`;
-  ch.e.forEach(e => { const i = e.i - a; if (i < 0 || i >= C.length) return; const x = X(i), y = Y(C[i]), b = e.t === "BUY";
-    g += `<path d="${b?`M${x} ${y+8} l7 12 h-14z`:`M${x} ${y-8} l7 -12 h-14z`}" fill="${b?"#2ee59d":"#ff5c7a"}" stroke="#07090d" stroke-width="1.5"/>`; });
-  const d0 = ch.d[a], d1 = ch.d[n-1];
-  g += `<text x="8" y="${H-4}" fill="#5c6778" font-size="11">${esc(fmtDate(d0))}</text><text x="${W-50}" y="${H-4}" fill="#5c6778" font-size="11" text-anchor="end">${esc(fmtDate(d1))}</text>`;
-  g += `<line id="cross" x1="0" x2="0" y1="${top}" y2="${H-bot}" stroke="#8d99ab" stroke-width="1" opacity="0"/><circle id="dot" r="5" fill="#eef2f7" opacity="0"/>`;
+  let g = `<defs><clipPath id="cp"><rect x="6" y="${top}" width="${W-R-6}" height="${H-top-bot}"/></clipPath><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".25"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>`;
+  const dg = v => v >= 1000 ? 0 : v < 1 ? 4 : 2;
+  for (let k = 0; k <= 4; k++) { const v = lo + (hi - lo) * k / 4, y = Y(v); g += `<line x1="6" x2="${W-R}" y1="${y}" y2="${y}" stroke="#1a222e"/><text x="${W-2}" y="${y+4}" fill="#5c6778" font-size="10" text-anchor="end">${esc(nf(v, dg(v)))}</text>`; }
+  // Monats-/Jahres-Raster
+  let last = "";
+  D.forEach((d, i) => { const key = weekly ? d.slice(0,4) : d.slice(0,7); if (key !== last && i > 0) { const x = X(i); g += `<line x1="${x}" x2="${x}" y1="${top}" y2="${H-bot}" stroke="#141b25"/><text x="${x+3}" y="${H-6}" fill="#5c6778" font-size="10">${weekly ? key : ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"][+d.slice(5,7)-1]}</text>`; } last = key; });
+  // Volumen
+  if (volH && V.length) { const vm = Math.max(...V) || 1, base = top + plotH, bw = Math.max(1, (W - R - 6) / C.length * .7);
+    V.forEach((v, i) => { const h = v / vm * plotH * volH * .9; g += `<rect x="${X(i)-bw/2}" y="${base-h}" width="${bw}" height="${h}" fill="${C[i] >= (i ? C[i-1] : O[i]) ? "#2ee59d" : "#ff5c7a"}" opacity=".28"/>`; }); }
+  if (!candles) g += `<path d="${path(C)} L${X(C.length-1)} ${Y(lo)} L${X(0)} ${Y(lo)}Z" fill="url(#gr)"/>`;
+  if (ovl.l200) g += `<path clip-path="url(#cp)" d="${path(L)}" fill="none" stroke="#a78bfa" stroke-width="1.4" stroke-dasharray="2 4" opacity=".85"/>`;
+  if (ovl.sma && !weekly) g += `<path clip-path="url(#cp)" d="${path(S)}" fill="none" stroke="#a78bfa" stroke-width="1.7"/><path clip-path="url(#cp)" d="${path(F)}" fill="none" stroke="#5ea8ff" stroke-width="1.7"/>`;
+  if (candles) { const bw = Math.max(1.5, (W - R - 6) / C.length * .62);
+    C.forEach((c, i) => { const o = O[i], upc = c >= o, cl = upc ? "#2ee59d" : "#ff5c7a", x = X(i);
+      g += `<line x1="${x}" x2="${x}" y1="${Y(Hh[i])}" y2="${Y(Lo[i])}" stroke="${cl}" stroke-width="1"/><rect x="${x-bw/2}" y="${Y(Math.max(o,c))}" width="${bw}" height="${Math.max(1, Math.abs(Y(o)-Y(c)))}" fill="${upc ? cl : cl}" ${upc ? 'fill-opacity=".9"' : ""}/>`; });
+  } else g += `<path d="${path(C)}" fill="none" stroke="#eef2f7" stroke-width="2" stroke-linejoin="round"/>`;
+  // Linien mit Beschriftung (überlappungsfrei)
+  const labs = [];
+  lines.forEach(l => { if (l.in) { const y = Y(l.v); g += `<line x1="6" x2="${W-R}" y1="${y}" y2="${y}" stroke="${l.c}" stroke-width="1.3" ${l.dash ? `stroke-dasharray="${l.dash}"` : ""} opacity=".95"/>`; labs.push({y, l}); }
+    else { const above = l.v > hi, y = above ? top + 2 : top + plotH * (1 - volH) - 2; labs.push({y, l, arrow: above ? "↑" : "↓"}); } });
+  labs.sort((p, q) => p.y - q.y); for (let i = 1; i < labs.length; i++) if (labs[i].y - labs[i-1].y < 15) labs[i].y = labs[i-1].y + 15;
+  labs.forEach(({y, l, arrow}) => { const txt = `${arrow ? arrow + " " : ""}${l.t} ${money(l.v, cur.cur)}`; const w = txt.length * 6.1 + 10;
+    g += `<rect x="8" y="${y-12}" width="${w}" height="16" rx="5" fill="#07090dd9"/><text x="13" y="${y}" fill="${l.c}" font-size="11" font-weight="700">${esc(txt)}</text>`; });
+  // Signale
+  const evs = weekly ? (ch.w.e || []).map(e => ({i: D.findIndex(d => d >= e.d), t: e.t})).filter(e => e.i >= 0) : ch.e.map(e => ({i: e.i - a, t: e.t}));
+  evs.forEach(e => { const i = e.i; if (i < 0 || i >= C.length) return; const x = X(i), b = e.t === "BUY", y = candles ? (b ? Y(Lo[i]) : Y(Hh[i])) : Y(C[i]);
+    g += `<path d="${b?`M${x} ${y+6} l6 10 h-12z`:`M${x} ${y-6} l6 -10 h-12z`}" fill="${b?"#2ee59d":"#ff5c7a"}" stroke="#07090d" stroke-width="1.2"/>`; });
+  g += `<line id="cross" x1="0" x2="0" y1="${top}" y2="${H-bot}" stroke="#8d99ab" stroke-width="1" opacity="0"/><line id="crossH" x1="6" x2="${W-R}" y1="0" y2="0" stroke="#8d99ab" stroke-width="1" stroke-dasharray="3 3" opacity="0"/><circle id="dot" r="4.5" fill="#eef2f7" opacity="0"/>`;
   svg.innerHTML = g;
-  const tip = $("#tip"), setTip = i => { tip.innerHTML = `<b>${esc(money(C[i], cur.cur))}</b> · ${esc(fmtDate(ch.d[a+i]))}`; };
-  setTip(C.length - 1);
-  fig.onpointermove = fig.onpointerdown = ev => {
-    const rect = fig.getBoundingClientRect(), i = Math.max(0, Math.min(C.length-1, Math.round((ev.clientX - rect.left - 8) / (W - 58) * (C.length - 1))));
-    const cx = svg.querySelector("#cross"), dt = svg.querySelector("#dot");
-    cx.setAttribute("x1", X(i)); cx.setAttribute("x2", X(i)); cx.setAttribute("opacity", .6);
-    dt.setAttribute("cx", X(i)); dt.setAttribute("cy", Y(C[i])); dt.setAttribute("opacity", 1); setTip(i);
+
+  // RSI + MACD
+  const subs = [["#rsiFig", "rsi"], ["#macdFig", "macd"]];
+  document.querySelectorAll(".sublbl").forEach(x => x.style.display = weekly ? "none" : "");
+  subs.forEach(([sel, key]) => { const box = $(sel); if (!box) return; box.style.display = weekly ? "none" : ""; if (weekly) return;
+    const s2 = box.querySelector("svg"), w = box.clientWidth, h = box.clientHeight, arr = sl(key);
+    let q = "";
+    if (key === "rsi") { const y = v => 4 + (1 - v / 100) * (h - 8);
+      q += `<rect x="6" y="${y(70)}" width="${w-R-6}" height="${y(30)-y(70)}" fill="#ffffff08"/><line x1="6" x2="${w-R}" y1="${y(70)}" y2="${y(70)}" stroke="#ffb54766" stroke-dasharray="3 3"/><line x1="6" x2="${w-R}" y1="${y(30)}" y2="${y(30)}" stroke="#2ee59d66" stroke-dasharray="3 3"/>
+        <text x="${w-2}" y="${y(70)+4}" fill="#5c6778" font-size="10" text-anchor="end">70</text><text x="${w-2}" y="${y(30)+4}" fill="#5c6778" font-size="10" text-anchor="end">30</text>`;
+      let d = "", pen = false; arr.forEach((v, i) => { if (v == null) { pen = false; return; } d += (pen ? "L" : "M") + X(i).toFixed(1) + " " + y(v).toFixed(1); pen = true; });
+      q += `<path d="${d}" fill="none" stroke="#c4b5fd" stroke-width="1.6"/>`;
+    } else { const m = Math.max(...arr.filter(v => v != null).map(Math.abs)) || 1, y0 = h / 2, bw = Math.max(1, (w - R - 6) / arr.length * .7);
+      q += `<line x1="6" x2="${w-R}" y1="${y0}" y2="${y0}" stroke="#2a3443"/>`;
+      arr.forEach((v, i) => { if (v == null) return; const hh = Math.abs(v) / m * (h / 2 - 4); q += `<rect x="${X(i)-bw/2}" y="${v >= 0 ? y0 - hh : y0}" width="${bw}" height="${Math.max(.5, hh)}" fill="${v >= 0 ? "#2ee59d" : "#ff5c7a"}" opacity=".75"/>`; });
+    }
+    q += `<line class="cx" x1="0" x2="0" y1="0" y2="${h}" stroke="#8d99ab" opacity="0"/>`;
+    s2.innerHTML = q; });
+
+  const RS = weekly ? [] : sl("rsi");
+  const tip = $("#tip"), setTip = i => {
+    const ch1 = i > 0 ? (C[i] / C[i-1] - 1) * 100 : null;
+    tip.innerHTML = `<b>${esc(money(C[i], cur.cur))}</b> <span class="${cls(ch1)}">${ch1 == null ? "" : pct(ch1)}</span> · ${esc(fmtDate(D[i]))}` +
+      (candles || (!weekly && O.length) ? `<br><span>O ${esc(nf(O[i], dg(O[i])))} · H ${esc(nf(Hh[i], dg(Hh[i])))} · T ${esc(nf(Lo[i], dg(Lo[i])))}${RS[i] != null ? ` · RSI ${nf(RS[i], 0)}` : ""}</span>` : "");
   };
-  fig.onpointerleave = () => { svg.querySelector("#cross").setAttribute("opacity",0); svg.querySelector("#dot").setAttribute("opacity",0); setTip(C.length-1); };
+  setTip(C.length - 1);
+  const move = ev => {
+    const rect = fig.getBoundingClientRect(), i = Math.max(0, Math.min(C.length-1, Math.floor((ev.clientX - rect.left - 6) / (W - R - 6) * C.length)));
+    const x = X(i), y = Y(C[i]);
+    const cx = svg.querySelector("#cross"), chh = svg.querySelector("#crossH"), dt = svg.querySelector("#dot");
+    cx.setAttribute("x1", x); cx.setAttribute("x2", x); cx.setAttribute("opacity", .6);
+    chh.setAttribute("y1", y); chh.setAttribute("y2", y); chh.setAttribute("opacity", .5);
+    dt.setAttribute("cx", x); dt.setAttribute("cy", y); dt.setAttribute("opacity", 1);
+    document.querySelectorAll("#rsiFig .cx,#macdFig .cx").forEach(l => { l.setAttribute("x1", x); l.setAttribute("x2", x); l.setAttribute("opacity", .5); });
+    setTip(i);
+  };
+  const leave = () => { ["#cross","#crossH","#dot"].forEach(s => svg.querySelector(s).setAttribute("opacity", 0)); document.querySelectorAll("#rsiFig .cx,#macdFig .cx").forEach(l => l.setAttribute("opacity", 0)); setTip(C.length - 1); };
+  [fig, $("#rsiFig"), $("#macdFig")].forEach(el => { if (el) { el.onpointermove = el.onpointerdown = move; el.onpointerleave = leave; } });
+}
+function levelsHtml(r) {
+  const ch = r.detail && r.detail.chart; if (!ch) return "";
+  const lv = ch.lv, ep = entryPrice(r), rows = [];
+  const add = (name, v, color, note) => { if (v == null) return; rows.push({name, v, color, note, d: (v / r.price - 1) * 100}); };
+  add("Ø Analysten-Ziel", r.analyst && r.analyst.mean, "#38d6e0", "Prognose 12 Monate");
+  add("52-Wochen-Hoch", lv.hi52, "#8d99ab", "");
+  add("Widerstand", lv.res, "#ffb547", "hier drehte der Kurs zuletzt nach unten");
+  add("Dein Einstieg", ep, "#5ea8ff", "Ø Kaufkurs inkl. Gebühren");
+  add("Unterstützung", lv.sup, "#2ee59d", "hier drehte der Kurs zuletzt nach oben");
+  if (r.rec.stop != null && r.status !== "SELL") add("Stop-Loss (Regel)", r.rec.stop, "#ff5c7a", "darunter verkaufen");
+  add("52-Wochen-Tief", lv.lo52, "#8d99ab", "");
+  rows.sort((p, q) => q.v - p.v);
+  let html = rows.map(x => `<tr><td><b style="color:${x.color}">●</b> ${esc(x.name)}${x.note ? `<br><span class="wait" style="font-size:12px">${esc(x.note)}</span>` : ""}</td><td class="num">${esc(money(x.v, r.cur))}<br><span class="${cls(x.d)}" style="font-size:12px">${pct(x.d)}</span></td></tr>`);
+  const i = rows.findIndex(x => x.v < r.price); html.splice(i < 0 ? html.length : i, 0, `<tr style="background:#ffffff0a"><td><b>▶ Aktueller Kurs</b></td><td class="num"><b>${esc(money(r.price, r.cur))}</b></td></tr>`);
+  return `<table class="trades">${html.join("")}</table>`;
 }
 const fmtDate = s => { const [y,m,d] = s.split("-"); return `${d}.${m}.${y.slice(2)}`; };
 
@@ -535,6 +633,12 @@ function calcHtml(r) {
 
 function openDetail(id, push=true) {
   const r = byId[id]; if (!r) return;
+  if (!r.detail && !r.loading) {
+    r.loading = true;
+    fetch(`d/${encodeURIComponent(id)}.json?v=${encodeURIComponent(DATA.generated)}`).then(x => x.json())
+      .then(d => { r.detail = d; }).catch(() => { r.detail = {chart: null, trades: []}; })
+      .then(() => { r.loading = false; if (cur === r) openDetail(id, false); });
+  }
   cur = r;
   const st = r.stats, ind = r.ind, rec = r.rec, vw = view(r), k = vw.color;
   const posCells = rec.stop != null && r.status !== "SELL" && (held(r.id) || r.status === "BUY") ? [
@@ -570,7 +674,8 @@ function openDetail(id, push=true) {
       <div style="width:${w(a)}%;background:${better?"#2ee59d33":"#ffffff14"};color:${better?"var(--buy)":"var(--ink)"}">Regel ${pct(a,0)}</div>
       <div style="width:${w(b)}%;background:${!better?"#2ee59d33":"#ffffff14"};color:${!better?"var(--buy)":"var(--ink)"}">Halten ${pct(b,0)}</div></div></div>`;
   };
-  const trades = r.trades.length ? `<table class="trades">${r.trades.map(t => `<tr><td>${fmtDate(t.in)} → ${fmtDate(t.out)}<br><span class="wait">${t.days} Tage · ${esc(t.reason)}</span></td><td class="num ${cls(t.pct)}"><b>${pct(t.pct)}</b></td></tr>`).join("")}</table>` : `<p class="wait">Noch keine abgeschlossenen Trades.</p>`;
+  const TR = (r.detail && r.detail.trades) || [];
+  const trades = TR.length ? `<table class="trades">${TR.map(t => `<tr><td>${fmtDate(t.in)} → ${fmtDate(t.out)}<br><span class="wait">${t.days} Tage · ${esc(t.reason)}</span></td><td class="num ${cls(t.pct)}"><b>${pct(t.pct)}</b></td></tr>`).join("")}</table>` : `<p class="wait">Noch keine abgeschlossenen Trades.</p>`;
 
   $("#detail").innerHTML = `
     <div class="dbar"><button class="back" id="back" aria-label="Zurück">‹</button><div><b>${esc(r.name)}</b><span>${esc(r.ticker)} · ${esc(r.region)} · ${esc(r.sector)}</span></div></div>
@@ -591,10 +696,15 @@ function openDetail(id, push=true) {
         <div class="grid2" style="margin-top:0"><div><span>Wert</span><b class="num">${nf(v, 2)}\u202f€</b></div><div><span>Seit Kauf</span><b class="num ${cls(pl)}">${pl >= 0 ? "+" : "−"}${nf(Math.abs(pl), 2)}\u202f€</b><em class="${cls(pl)}" style="display:block;font-style:normal;font-size:13px;font-weight:700">${pct(pl / h.cost * 100)}</em></div></div>
         <div class="adv t-${t}" style="margin-top:10px"><i>${t === "p" ? "✓" : "!"}</i><span>${esc(txt)}</span></div></div>`; })()}
       <div class="panel">
-        <h4>Chart <div class="seg" id="rng">${[[63,"3M"],[130,"6M"],[260,"1J"]].map(([v,l])=>`<button data-r="${v}" class="${v==chartRange?"on":""}">${l}</button>`).join("")}</div></h4>
-        <div class="fig" id="fig"><svg></svg><div class="tip" id="tip"></div></div>
-        <div class="legend"><span><i style="background:#eef2f7"></i>Kurs</span><span><i style="background:#5ea8ff"></i>SMA ${DATA.params.fast_sma}</span><span><i style="background:#a78bfa"></i>SMA ${DATA.params.slow_sma}</span><span><i style="background:repeating-linear-gradient(90deg,#a78bfa 0 2px,transparent 2px 5px)"></i>SMA 200</span><span><i style="background:#ff5c7a"></i>Stop-Loss</span><span><b class="buy">▲</b> Kauf <b class="sell">▼</b> Verkauf</span></div>
+        <h4>Chart <div class="seg" id="rng">${[[21,"1M"],[63,"3M"],[130,"6M"],[260,"1J"],["5y","5J"]].map(([v,l])=>`<button data-r="${v}" class="${v==chartRange?"on":""}">${l}</button>`).join("")}</div></h4>
+        <div class="ctl"><div class="seg" id="ctype"><button data-ct="line" class="${ctype==="line"?"on":""}">Linie</button><button data-ct="candle" class="${ctype==="candle"?"on":""}">Kerzen</button></div>
+          <div class="chips" style="padding:0">${[["sma","SMA 20/50"],["l200","SMA 200"],["lv","Unterst./Widerst."],["tgt","Kursziel"],["mine","Mein Einstieg"],["vol","Volumen"]].filter(([k])=>k!=="mine"||held(r.id)).filter(([k])=>k!=="tgt"||r.analyst).map(([k,l])=>`<button class="chip ${ovl[k]?"on":""}" data-ov="${k}">${l}</button>`).join("")}</div></div>
+        ${r.detail && r.detail.chart ? `<div class="fig" id="fig" style="height:300px"><svg></svg><div class="tip" id="tip"></div></div>
+        <div class="sublbl">RSI (14) <span>über 70 überkauft · unter 30 überverkauft</span></div><div class="fig sub" id="rsiFig"><svg></svg></div>
+        <div class="sublbl">MACD-Histogramm <span>grün = Momentum steigt</span></div><div class="fig sub" id="macdFig" style="height:56px"><svg></svg></div>
+        <div class="legend"><span><i style="background:#eef2f7"></i>Kurs</span><span><i style="background:#5ea8ff"></i>SMA ${DATA.params.fast_sma}</span><span><i style="background:#a78bfa"></i>SMA ${DATA.params.slow_sma}</span><span><i style="background:repeating-linear-gradient(90deg,#a78bfa 0 2px,transparent 2px 5px)"></i>SMA 200</span><span><b class="buy">▲</b> Kauf <b class="sell">▼</b> Verkauf</span></div>` : `<div class="load" style="padding:40px 0">Chart wird geladen …</div>`}
       </div>
+      ${r.detail && r.detail.chart ? `<div class="panel"><h4>Wichtige Kursmarken <small>Abstand zum Kurs</small></h4>${levelsHtml(r)}</div>` : ""}
 
       ${r.status !== "SELL" ? `<div class="panel"><h4>Positionsrechner <small>${r.status === "WAIT" ? "falls ein Kaufsignal kommt" : "Stop-Loss als Risiko"}</small></h4>
         <div class="calc"><label>Depotgröße (€)<input id="depot" type="number" inputmode="decimal" min="0" step="100" value="${store.get("depot",10000)}"></label>
@@ -634,7 +744,7 @@ function openDetail(id, push=true) {
 
       <div class="links"><a href="https://app.traderepublic.com" rel="noopener">Trade Republic</a><a href="https://finance.yahoo.com/quote/${encodeURIComponent(r.ticker)}" rel="noopener">Yahoo Finance</a></div>
     </div>`;
-  const d = $("#detail"); d.scrollTop = 0; d.classList.add("open"); d.setAttribute("aria-hidden","false");
+  const d = $("#detail"); if (!d.classList.contains("open") || cur !== r) d.scrollTop = 0; d.classList.add("open"); d.setAttribute("aria-hidden","false");
   document.body.style.overflow = "hidden";
   if (push && location.hash !== "#" + id) history.pushState(null, "", "#" + id);
   requestAnimationFrame(drawChart);
@@ -649,10 +759,12 @@ function closeDetail(push=true) {
 // ---------- Ereignisse
 document.addEventListener("click", e => {
   if (e.target.id === "sheet") { $("#sheet").classList.remove("open"); return renderAll(); }
-  const t = e.target.closest("[data-act],[data-del],[data-id],[data-tab],[data-rg],[data-st],[data-r],#back,#more"); if (!t) return;
+  const t = e.target.closest("[data-act],[data-del],[data-ct],[data-ov],[data-id],[data-tab],[data-rg],[data-st],[data-r],#back,#more"); if (!t) return;
   if (t.dataset.act === "edit") return openSheet();
   if (t.dataset.act === "close") { $("#sheet").classList.remove("open"); return renderAll(); }
   if (t.dataset.del != null) { depot.splice(+t.dataset.del, 1); saveDepot(); return openSheet(); }
+  if (t.dataset.act === "copy") { const v = $("#code").value; (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => $("#codeMsg").textContent = "Kopiert.").catch(() => { $("#code").select(); $("#codeMsg").textContent = "Code markiert – jetzt kopieren."; }); return; }
+  if (t.dataset.act === "import") { const out = parseCode($("#code").value); if (!out.length) { $("#codeMsg").textContent = "Code nicht erkannt."; return; } depot = out; saveDepot(); openSheet(); $("#codeMsg").textContent = `${out.length} Positionen übernommen.`; return; }
   if (t.dataset.act === "add") {
     const r = byId[$("#newId").value], cost = parseFloat($("#newCost").value), val = parseFloat($("#newVal").value) || cost;
     if (!r || !(cost > 0)) return;
@@ -665,7 +777,9 @@ document.addEventListener("click", e => {
   if (t.dataset.tab) { state.tab = t.dataset.tab; state.status = null; state.shown = 30; store.set("tab", state.tab); renderHero(); return renderList(); }
   if (t.dataset.rg) { state.region = t.dataset.rg; state.shown = 30; return renderList(); }
   if (t.dataset.st) { state.status = state.status === t.dataset.st ? null : t.dataset.st; state.shown = 30; renderHero(); renderList(); return $("#tabs").scrollIntoView({behavior:"smooth"}); }
-  if (t.dataset.r) { chartRange = +t.dataset.r; store.set("range", chartRange); document.querySelectorAll("#rng button").forEach(b=>b.classList.toggle("on", b===t)); return drawChart(); }
+  if (t.dataset.r) { chartRange = t.dataset.r === "5y" ? "5y" : +t.dataset.r; store.set("range2", chartRange); document.querySelectorAll("#rng button").forEach(b=>b.classList.toggle("on", b===t)); return drawChart(); }
+  if (t.dataset.ct) { ctype = t.dataset.ct; store.set("ctype", ctype); document.querySelectorAll("#ctype button").forEach(b=>b.classList.toggle("on", b===t)); return drawChart(); }
+  if (t.dataset.ov) { ovl[t.dataset.ov] = !ovl[t.dataset.ov]; store.set("ovl", ovl); t.classList.toggle("on", ovl[t.dataset.ov]); return drawChart(); }
 });
 document.addEventListener("change", e => {
   const ed = e.target.dataset.ed; if (!ed) return;
