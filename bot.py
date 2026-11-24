@@ -77,6 +77,69 @@ def fetch_prices(ticker, years=5):
     return rows, res["meta"].get("currency") or "EUR"
 
 
+# ---------------------------------------------------------------- Analysten (Yahoo quoteSummary)
+_YAHOO = {"opener": None, "crumb": None, "tried": False}
+
+
+def _yahoo_session():
+    if _YAHOO["tried"]:
+        return _YAHOO["opener"], _YAHOO["crumb"]
+    _YAHOO["tried"] = True
+    import http.cookiejar
+    jar = http.cookiejar.CookieJar()
+    op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
+    op.addheaders = [("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                                    "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")]
+    for url in ("https://fc.yahoo.com", "https://finance.yahoo.com/quote/AAPL"):
+        try:
+            op.open(url, timeout=20).read(2000)
+        except Exception:
+            pass
+    try:
+        crumb = op.open("https://query2.finance.yahoo.com/v1/test/getcrumb", timeout=20).read().decode().strip()
+        if crumb and "<" not in crumb and len(crumb) < 40:
+            _YAHOO.update(opener=op, crumb=crumb)
+    except Exception as e:
+        print(f"Analysten-Daten nicht verfügbar (Crumb): {e}")
+    return _YAHOO["opener"], _YAHOO["crumb"]
+
+
+def fetch_analyst(ticker):
+    op, crumb = _yahoo_session()
+    if not crumb:
+        return None
+    url = (f"https://query2.finance.yahoo.com/v10/finance/quoteSummary/{urllib.parse.quote(ticker)}"
+           f"?modules=financialData,recommendationTrend&crumb={urllib.parse.quote(crumb)}")
+    try:
+        res = json.load(op.open(url, timeout=20))["quoteSummary"]["result"][0]
+    except Exception:
+        return None
+    fd = res.get("financialData", {})
+    raw = lambda k: (fd.get(k) or {}).get("raw") if isinstance(fd.get(k), dict) else None
+    n = raw("numberOfAnalystOpinions")
+    mean = raw("targetMeanPrice")
+    if not n or not mean:
+        return None
+    trend = (res.get("recommendationTrend", {}).get("trend") or [{}])[0]
+    return {
+        "n": int(n), "mean": mean, "high": raw("targetHighPrice"), "low": raw("targetLowPrice"),
+        "rec": fd.get("recommendationKey"), "rec_mean": raw("recommendationMean"),
+        "cur": fd.get("financialCurrency"),
+        "votes": {k: int(trend.get(k, 0) or 0) for k in ("strongBuy", "buy", "hold", "sell", "strongSell")},
+    }
+
+
+def demo_analyst(seed, price):
+    rnd = random.Random(seed * 7)
+    if rnd.random() < 0.15:
+        return None
+    m = price * rnd.uniform(0.85, 1.6)
+    v = {"strongBuy": rnd.randint(0, 12), "buy": rnd.randint(0, 15), "hold": rnd.randint(0, 10),
+         "sell": rnd.randint(0, 3), "strongSell": rnd.randint(0, 1)}
+    return {"n": sum(v.values()) or 1, "mean": m, "high": m * 1.4, "low": m * 0.7, "rec": "buy",
+            "rec_mean": rnd.uniform(1.4, 3.2), "cur": None, "votes": v}
+
+
 def demo_prices(seed, days=1260):
     rnd = random.Random(seed)
     price, drift, d, out = rnd.uniform(20, 400), 0.0, datetime(2021, 11, 1).date(), []
@@ -210,7 +273,7 @@ def clamp(x, lo=0.0, hi=1.0):
     return max(lo, min(hi, x))
 
 
-def analyse(item, prices, cur, fx, cfg):
+def analyse(item, prices, cur, fx, cfg, analyst=None):
     dates = [d for d, _ in prices]
     closes = [c for _, c in prices]
     fast, slow = sma(closes, cfg["fast_sma"]), sma(closes, cfg["slow_sma"])
@@ -293,6 +356,25 @@ def analyse(item, prices, cur, fx, cfg):
     else:
         add("~", "Zu wenige historische Signale für eine verlässliche Statistik.")
 
+    # ---- Analysten
+    an = None
+    if analyst and analyst.get("mean"):
+        v = analyst["votes"]
+        pos_votes = v["strongBuy"] + v["buy"]
+        tot_votes = sum(v.values()) or 0
+        up = (analyst["mean"] / price - 1) * 100
+        rm = analyst.get("rec_mean") or 3
+        label = ("Starker Kauf" if rm <= 1.6 else "Kaufen" if rm <= 2.4 else "Halten" if rm <= 3.4 else "Verkaufen")
+        an = {**analyst, "upside": up, "label": label,
+              "buy_share": 100 * pos_votes / tot_votes if tot_votes else None}
+        if rm <= 2.4 and up > 15:
+            add("+", f"Analysten: {analyst['n']} Experten sagen im Schnitt „{label}“, Kursziel "
+                     f"{de(analyst['mean'], '.2f')} {cur} = {de(up, '+.0f')} % Potenzial in 12 Monaten.")
+        elif up < 0:
+            add("-", f"Analysten: Ø Kursziel {de(analyst['mean'], '.2f')} {cur} liegt {de(abs(up), '.0f')} % unter dem Kurs.")
+        else:
+            add("~", f"Analysten: „{label}“, Ø Kursziel {de(analyst['mean'], '.2f')} {cur} ({de(up, '+.0f')} %).")
+
     # ---- Handlungsanweisung
     rate = fx.get(cur) or 1.0
     rec = {"status": status, "confidence": "Hoch" if score >= 70 else "Mittel" if score >= 50 else "Niedrig"}
@@ -333,7 +415,7 @@ def analyse(item, prices, cur, fx, cfg):
     return {
         **item, "id": re.sub(r"[^A-Za-z0-9]+", "-", item["ticker"]).strip("-"),
         "cur": cur, "eur_rate": 1 / rate, "price": price, "date": str(today),
-        "status": status, "score": score, "parts": parts, "parts_max": maxes,
+        "status": status, "score": score, "parts": parts, "parts_max": maxes, "analyst": an,
         "ind": ind, "stats": st, "trades": trades[-8:][::-1], "rec": rec, "why": why,
         "chart": chart, "spark": spark,
     }
@@ -382,13 +464,23 @@ def main():
 
     fx = fx_rates({cur for _, _, cur in raw}, demo)
     results = []
-    for it, prices, cur in raw:
+    n_an = 0
+    for k, (it, prices, cur) in enumerate(raw):
         try:
-            results.append(analyse(it, prices, cur, fx, cfg))
+            if demo:
+                an = demo_analyst(k, prices[-1][1])
+            elif it["region"] in ("Krypto", "Rohstoffe", "ETFs"):
+                an = None
+            else:
+                an = fetch_analyst(it["ticker"])
+                time.sleep(0.2)
+            n_an += an is not None
+            results.append(analyse(it, prices, cur, fx, cfg, an))
         except Exception as e:
             print(f"FEHLER Analyse {it['name']}: {e}")
             failed.append(it["name"])
 
+    print(f"Analysten-Daten für {n_an} Werte geladen.")
     above = [r for r in results if r["ind"]["dist200"] is not None]
     breadth = 100 * sum(r["ind"]["dist200"] > 0 for r in above) / len(above) if above else 0
     counts = {k: sum(r["status"] == k for r in results) for k in ("BUY", "SELL", "HOLD", "WAIT")}

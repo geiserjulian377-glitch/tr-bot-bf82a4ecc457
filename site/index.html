@@ -171,6 +171,22 @@ summary{font-weight:700;cursor:pointer}
 details p{color:var(--mut);font-size:14px}
 footer{color:var(--dim);font-size:12px;padding:10px 0 40px}
 .load{padding:80px 0;text-align:center;color:var(--mut)}
+/* ---- Analysten */
+.lens{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
+.lens div{border-radius:14px;padding:10px 12px;background:#0b0f15}
+.lens span{display:block;font-size:12px;color:var(--mut)}
+.lens b{font-size:16px}
+.votes{display:flex;height:12px;border-radius:7px;overflow:hidden;gap:2px;margin:10px 0 6px}
+.votes i{display:block;height:100%}
+.vleg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--mut)}
+.tgt{position:relative;height:48px;margin:22px 6px 8px}
+.tgt .rail{position:absolute;left:0;right:0;top:20px;height:8px;border-radius:5px;background:linear-gradient(90deg,#ff5c7a55,#ffb54755,#2ee59d55)}
+.tgt .mk{position:absolute;top:8px;width:3px;height:32px;border-radius:2px;transform:translateX(-50%)}
+.tgt .lb{position:absolute;top:-16px;transform:translateX(-50%);font-size:11px;font-weight:700;white-space:nowrap}
+.tgt .lo,.tgt .hi{position:absolute;top:34px;font-size:11px;color:var(--mut)}
+.tgt .hi{right:0}
+.note{font-size:12px;color:var(--dim);margin:10px 0 0;line-height:1.45}
+.ziel{font-size:11px;font-weight:700;margin-left:6px}
 /* ---- Depot */
 .dep{background:linear-gradient(160deg,#122238 0%,var(--card) 65%);border:1px solid var(--line);border-radius:24px;padding:18px;margin-top:6px}
 .dep .hd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
@@ -316,6 +332,9 @@ function importFromHash() {
 function advice(r) {
   const sp = DATA.params.stop_loss_pct, rec = r.rec, st = r.stats;
   const holdBetter = st.n >= 3 && st.buy_hold_pct > st.strategy_pct;
+  const an = r.analyst, bull = an && an.rec_mean <= 2.4 && an.upside > 20;
+  if ((r.status === "SELL" || r.status === "WAIT") && r.region !== "ETFs" && bull)
+    return ["n", `Gemischtes Bild: Der Kurs ist im Abwärtstrend, aber ${an.n} Analysten sagen im Schnitt „${an.label}“ mit Ø Kursziel ${money(an.mean, r.cur)} (${pct(an.upside, 0)}). Langfristig dran glauben → halten, aber Schutz-Stop bei ${money(r.price * (1 - sp / 100), r.cur)} setzen. Dem Trend folgen → verkaufen.`];
   if (r.status === "SELL") return ["m", `Verkaufen – ${rec.reason}. Die Regel steigt hier aus.`];
   if (r.status === "HOLD" || r.status === "BUY")
     return ["p", `Halten. Stop-Loss in Trade Republic auf ${money(rec.stop, r.cur)} setzen – fällt der Kurs darunter, automatisch raus.`];
@@ -437,7 +456,7 @@ function renderList() {
   $("#list").innerHTML = xs.slice(0, state.shown).map(r => `
     <div class="item" data-id="${esc(r.id)}">
       ${ring(r.score)}
-      <div><div class="n">${esc(r.name)}${held(r.id) ? `<span class="mine">Depot</span>` : ""}</div><div class="t"><span class="tag" style="background:color-mix(in srgb,${COLOR[r.status]} 22%,transparent);color:${COLOR[r.status]}">${LABEL[r.status]}</span>${esc(r.ticker)} · ${esc(r.region)}</div></div>
+      <div><div class="n">${esc(r.name)}${held(r.id) ? `<span class="mine">Depot</span>` : ""}</div><div class="t"><span class="tag" style="background:color-mix(in srgb,${COLOR[r.status]} 22%,transparent);color:${COLOR[r.status]}">${LABEL[r.status]}</span>${esc(r.ticker)}${r.analyst ? `<span class="ziel ${cls(r.analyst.upside)}">Ziel ${pct(r.analyst.upside, 0)}</span>` : ` · ${esc(r.region)}`}</div></div>
       ${spark(r.spark, (r.ind.r3m ?? 0) >= 0 ? "#2ee59d" : "#ff5c7a")}
       <div class="p"><b class="num">${money(r.price, r.cur)}</b><span class="num ${cls(r.ind.r1d)}">${pct(r.ind.r1d)}</span></div>
     </div>`).join("");
@@ -547,11 +566,13 @@ function openDetail(id, push=true) {
         <div class="verb">${LABEL[r.status]}<span class="conf">Vertrauen ${rec.confidence}</span></div>
         <p>${esc(rec.text)}</p>
         <div class="grid2">${posCells.map(([a,b])=>`<div><span>${a}</span><b class="num">${b}</b></div>`).join("")}</div>
+        <div class="lens"><div><span>Chart-Trend</span><b class="${(ind.dist200 ?? ind.gap) > 0 ? "up" : "down"}">${(ind.dist200 ?? ind.gap) > 0 ? "▲ Aufwärts" : "▼ Abwärts"}</b></div>
+        <div><span>Analysten (12 Monate)</span><b class="${r.analyst ? cls(r.analyst.upside) : "wait"}">${r.analyst ? `${esc(r.analyst.label)} · ${pct(r.analyst.upside, 0)}` : "keine Daten"}</b></div></div>
       </div>
 
       ${(() => { const h = held(r.id); if (!h) return ""; const v = h.shares * eurPrice(r), pl = v - h.cost, [t, txt] = advice(r);
         return `<div class="panel"><h4>Deine Position <small>${nf(h.shares, 3)} Stück</small></h4>
-        <div class="grid2" style="margin-top:0"><div><span>Wert</span><b class="num">${nf(v, 2)}\u202f€</b></div><div><span>Seit Kauf</span><b class="num ${cls(pl)}">${pl >= 0 ? "+" : "−"}${nf(Math.abs(pl), 2)}\u202f€</b><span class="${cls(pl)}" style="font-size:13px;font-weight:700">${pct(pl / h.cost * 100)}</span></div></div>
+        <div class="grid2" style="margin-top:0"><div><span>Wert</span><b class="num">${nf(v, 2)}\u202f€</b></div><div><span>Seit Kauf</span><b class="num ${cls(pl)}">${pl >= 0 ? "+" : "−"}${nf(Math.abs(pl), 2)}\u202f€</b><em class="${cls(pl)}" style="display:block;font-style:normal;font-size:13px;font-weight:700">${pct(pl / h.cost * 100)}</em></div></div>
         <div class="adv t-${t}" style="margin-top:10px"><i>${t === "p" ? "✓" : "!"}</i><span>${esc(txt)}</span></div></div>`; })()}
       <div class="panel">
         <h4>Chart <div class="seg" id="rng">${[[63,"3M"],[130,"6M"],[260,"1J"]].map(([v,l])=>`<button data-r="${v}" class="${v==chartRange?"on":""}">${l}</button>`).join("")}</div></h4>
@@ -568,6 +589,19 @@ function openDetail(id, push=true) {
         <div class="bigscore">${ring(r.score, 72, 7)}<p>${r.score>=70?"Starkes Setup – Trend, Momentum und Historie passen zusammen.":r.score>=50?"Solides Setup mit einzelnen Schwächen.":"Schwaches Setup – Signale hier mit Vorsicht behandeln."}</p></div>
         ${partsHtml}</div>
 
+      ${r.analyst ? (() => { const a = r.analyst, v = a.votes, tv = Object.values(v).reduce((x,y)=>x+y,0) || 1;
+        const segs = [["Starker Kauf", v.strongBuy, "#2ee59d"], ["Kaufen", v.buy, "#7fe9b8"], ["Halten", v.hold, "#ffb547"], ["Verkaufen", v.sell, "#ff8fa3"], ["Starker Verkauf", v.strongSell, "#ff5c7a"]];
+        const lo = Math.min(a.low ?? a.mean, r.price), hi = Math.max(a.high ?? a.mean, r.price), P = x => ((x - lo) / ((hi - lo) || 1) * 100).toFixed(1);
+        return `<div class="panel"><h4>Analysten <small>${a.n} Einschätzungen · 12-Monats-Ziel</small></h4>
+          <div class="bigscore" style="margin-bottom:4px"><div><div class="verb" style="font-size:24px;color:${a.rec_mean <= 2.4 ? "var(--buy)" : a.rec_mean <= 3.4 ? "var(--hold)" : "var(--sell)"}">${esc(a.label)}</div>
+          <p>Ø Kursziel <b class="num" style="color:var(--ink)">${money(a.mean, r.cur)}</b> · <b class="${cls(a.upside)}">${pct(a.upside, 0)}</b> zum aktuellen Kurs</p></div></div>
+          <div class="votes">${segs.filter(x => x[1]).map(x => `<i style="width:${x[1]/tv*100}%;background:${x[2]}"></i>`).join("")}</div>
+          <div class="vleg">${segs.filter(x => x[1]).map(x => `<span><b style="color:${x[2]}">${x[1]}</b> ${x[0]}</span>`).join("")}</div>
+          <div class="tgt"><div class="rail"></div>
+            <div class="mk" style="left:${P(r.price)}%;background:var(--ink)"></div><div class="lb" style="left:${P(r.price)}%">Kurs</div>
+            <div class="mk" style="left:${P(a.mean)}%;background:var(--blue)"></div><div class="lb" style="left:${P(a.mean)}%;color:var(--blue)">Ø Ziel</div>
+            <div class="lo">Tiefstes Ziel ${a.low ? money(a.low, r.cur) : "–"}</div><div class="hi">Höchstes ${a.high ? money(a.high, r.cur) : "–"}</div></div>
+          <p class="note">Kursziele sind Prognosen, keine Garantie. Analysten passen sie oft erst nach Kursbewegungen an. Deshalb zeigt die App beides: was der Kurs gerade tut (Chart) und was Analysten erwarten.</p></div>`; })() : ""}
       <div class="panel"><h4>Warum?</h4><ul class="why">${r.why.map(w=>`<li class="${tone[w.t]}"><i>${icon[w.t]}</i><span>${esc(w.x)}</span></li>`).join("")}</ul></div>
 
       <div class="panel"><h4>Indikatoren</h4><div class="inds">${indHtml}</div></div>
