@@ -58,7 +58,10 @@ Ab jetzt meldet sich der Bot **Mo–Fr um ca. 19 Uhr** (Sommerzeit 20 Uhr).
 
 | Einstellung | Bedeutung |
 |---|---|
-| `watchlist` | Deine Werte. `ticker` = Yahoo-Finance-Kürzel |
+| `listen` | Fertige Listen an (`true`) oder aus (`false`): `deutschland` (37 deutsche Top-Aktien), `us_tech` (12), `etfs` (6), `krypto` (5), `rohstoffe` (4). Die Listen stehen in `presets.json` |
+| `eigene_werte` | Zusätzliche Werte: `{ "name": "...", "ticker": "..." }` |
+| `dashboard_max_karten` | Wie viele Chart-Karten das Dashboard zeigt (Signale zuerst, dann Positionen, dann Kandidaten) |
+| `einzel_push_pro_signal` | `true` = jedes KAUFEN/VERKAUFEN kommt zusätzlich als eigene Push-Nachricht mit großem Chart und Buttons |
 | `fast_sma` / `slow_sma` | Schneller/langsamer Durchschnitt in Tagen (20/50 = aktiv, 50/200 = ruhig, wenige Signale) |
 | `stop_loss_pct` | Trailing-Stop in %: der Stop zieht mit steigendem Kurs nach oben |
 | `position_size_eur` | Betrag pro Kauf (für die Gebührenrechnung im Backtest) |
@@ -72,6 +75,12 @@ endet das Kürzel auf `.DE` (Xetra) bzw. `.F` (Frankfurt), z. B. `SAP.DE`, `ALV.
 ---
 
 ## So liest du die Nachricht
+
+Jeden Abend kommt das **Signal-Radar**: oben die Zahl der Werte pro Status, darunter
+Karten mit 6-Monats-Chart (weiß = Kurs, blau = schneller, lila = langsamer
+Durchschnitt, rot gestrichelt = Stop-Loss, ▲/▼ = frühere Kauf-/Verkaufssignale).
+Das Bild hängt an der Push-Nachricht (bei ntfy.sh ca. 3 Stunden abrufbar) und liegt
+außerdem dauerhaft als `dashboard.png` in deinem Repo.
 
 - 🟢 **JETZT KAUFEN**: Der 20-Tage-Schnitt hat den 50-Tage-Schnitt nach oben gekreuzt.
   Kaufe in Trade Republic und setze dort eine **Stop-Loss-Order** zum genannten Preis.

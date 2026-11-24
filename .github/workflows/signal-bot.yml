@@ -2,12 +2,15 @@ name: Trading-Signal-Bot
 
 on:
   schedule:
-    # Mo–Fr um 18:07 UTC (= 19:07 Uhr Winterzeit / 20:07 Uhr Sommerzeit),
-    # nach Xetra-Handelsschluss
+    # Mo–Fr 18:07 UTC (= 19:07 Uhr Winterzeit / 20:07 Uhr Sommerzeit), nach Xetra-Schluss
     - cron: "7 18 * * 1-5"
-  workflow_dispatch: {}   # erlaubt "Run workflow" per Hand
+  workflow_dispatch: {}
   push:
-    branches: [main]      # nach jeder Änderung (z. B. config.json) sofort ein Bericht
+    branches: [main]
+    paths: ["config.json", "presets.json", "bot.py", "render.py"]
+
+permissions:
+  contents: write
 
 jobs:
   signale:
@@ -17,9 +20,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - run: pip install matplotlib
       - name: Signale berechnen und senden
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python bot.py
+      - name: Dashboard im Repo speichern
+        run: |
+          git config user.name "signal-bot"
+          git config user.email "signal-bot@users.noreply.github.com"
+          git add dashboard.png
+          git commit -m "Dashboard aktualisiert [skip ci]" || true
+          git push || true

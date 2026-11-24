@@ -6,22 +6,21 @@ Strategie: Kreuzung gleitender Durchschnitte (SMA) + Trailing-Stop-Loss.
 - KAUFEN, wenn der schnelle Durchschnitt den langsamen von unten kreuzt.
 - VERKAUFEN, wenn er ihn von oben kreuzt ODER der Stop-Loss erreicht wird.
 
-Der Bot holt Tageskurse von Yahoo Finance, berechnet die Signale und
-schickt dir eine Nachricht per Telegram. Die Order gibst du selbst in
+Holt Tageskurse von Yahoo Finance, zeichnet ein Dashboard und schickt es
+als Push-Nachricht (App "ntfy") aufs Handy. Die Order gibst du selbst in
 der Trade-Republic-App ein.
 
-Nur Python-Standardbibliothek, keine Installation nötig.
-
-Aufruf:
-  python bot.py            -> Signale berechnen und per Telegram senden
-  python bot.py --print    -> nur in der Konsole ausgeben (kein Telegram)
-  python bot.py --demo     -> Test mit erfundenen Kursen (ohne Internet)
+  python bot.py            -> berechnen und senden
+  python bot.py --print    -> nur Konsole + Bilder lokal, nichts senden
+  python bot.py --demo     -> wie --print, mit erfundenen Kursen
 """
 import json
 import math
 import os
 import random
+import re
 import sys
+import time
 import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta, timezone
@@ -30,15 +29,28 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 # ---------------------------------------------------------------- Konfiguration
-def load_config():
-    with open(os.path.join(HERE, "config.json"), encoding="utf-8") as f:
+def load_json(name):
+    with open(os.path.join(HERE, name), encoding="utf-8") as f:
         return json.load(f)
+
+
+def watchlist(cfg):
+    presets = load_json("presets.json")
+    items, seen = [], set()
+    for key, on in cfg.get("listen", {}).items():
+        if on:
+            items += [{"name": n, "ticker": t} for n, t in presets.get(key, [])]
+    items += cfg.get("eigene_werte", []) + cfg.get("watchlist", [])
+    out = []
+    for it in items:
+        if it["ticker"] not in seen:
+            seen.add(it["ticker"])
+            out.append(it)
+    return out
 
 
 # ---------------------------------------------------------------- Kursdaten
 def fetch_prices(ticker, years=5):
-    """Tages-Schlusskurse von Yahoo Finance: Liste von (datum, kurs)."""
-    import time
     data, last_err = None, None
     for attempt, host in enumerate(["query1", "query2", "query1"]):
         url = (f"https://{host}.finance.yahoo.com/v8/finance/chart/"
@@ -48,35 +60,29 @@ def fetch_prices(ticker, years=5):
             with urllib.request.urlopen(req, timeout=30) as r:
                 data = json.load(r)
             break
-        except Exception as e:  # z. B. kurzzeitige Sperre (429) – kurz warten, neu versuchen
+        except Exception as e:
             last_err = e
             time.sleep(3 * (attempt + 1))
     if data is None:
         raise RuntimeError(f"Kurse nicht abrufbar ({last_err})")
     res = data["chart"]["result"][0]
-    currency = res["meta"].get("currency", "")
     closes = res["indicators"]["quote"][0]["close"]
-    out = []
-    for ts, c in zip(res["timestamp"], closes):
-        if c is not None:
-            d = datetime.fromtimestamp(ts, tz=timezone.utc).date()
-            out.append((d, float(c)))
-    return out, currency
+    out = [(datetime.fromtimestamp(ts, tz=timezone.utc).date(), float(c))
+           for ts, c in zip(res["timestamp"], closes) if c is not None]
+    return out, res["meta"].get("currency", "")
 
 
 def demo_prices(seed, days=1250):
-    """Erfundene Kurse (Random Walk mit Trendphasen) zum Testen."""
     rnd = random.Random(seed)
-    price, drift = 100.0, 0.0
-    d = datetime(2021, 11, 1).date()
-    out = []
+    price, drift = rnd.uniform(20, 400), 0.0
+    d, out = datetime(2021, 11, 1).date(), []
     while len(out) < days:
         d += timedelta(days=1)
         if d.weekday() >= 5:
             continue
-        if rnd.random() < 0.01:
-            drift = rnd.uniform(-0.002, 0.003)
-        price *= math.exp(drift + rnd.gauss(0, 0.015))
+        if rnd.random() < 0.012:
+            drift = rnd.uniform(-0.003, 0.004)
+        price *= math.exp(drift + rnd.gauss(0, 0.016))
         out.append((d, price))
     return out, "EUR"
 
@@ -94,191 +100,189 @@ def sma(values, n):
 
 
 def simulate(prices, cfg):
-    """Spielt die Strategie über die ganze Historie durch.
-    Gibt abgeschlossene Trades, Ereignisse und den aktuellen Zustand zurück."""
     fast_n, slow_n = cfg["fast_sma"], cfg["slow_sma"]
     stop_pct = cfg["stop_loss_pct"] / 100
     fee, size = cfg["fee_per_order_eur"], cfg["position_size_eur"]
     dates = [d for d, _ in prices]
     closes = [c for _, c in prices]
     fast, slow = sma(closes, fast_n), sma(closes, slow_n)
-
-    trades, events = [], []
-    pos = None  # dict(entry_date, entry_price, stop)
+    trades, events, pos = [], [], None
     for i in range(slow_n, len(closes)):
         c, d = closes[i], dates[i]
-        cross_up = fast[i - 1] <= slow[i - 1] and fast[i] > slow[i]
-        cross_dn = fast[i - 1] >= slow[i - 1] and fast[i] < slow[i]
+        up = fast[i - 1] <= slow[i - 1] and fast[i] > slow[i]
+        dn = fast[i - 1] >= slow[i - 1] and fast[i] < slow[i]
         if pos is None:
-            if cross_up:
+            if up:
                 pos = {"entry_date": d, "entry_price": c, "stop": c * (1 - stop_pct)}
-                events.append({"date": d, "type": "BUY", "price": c})
+                events.append({"i": i, "date": d, "type": "BUY", "price": c})
         else:
-            pos["stop"] = max(pos["stop"], c * (1 - stop_pct))  # Trailing-Stop
-            reason = "Stop-Loss" if c <= pos["stop"] else ("Trendwende" if cross_dn else None)
+            pos["stop"] = max(pos["stop"], c * (1 - stop_pct))
+            reason = "Stop-Loss" if c <= pos["stop"] else ("Trendwende" if dn else None)
             if reason:
-                gross = c / pos["entry_price"] - 1
-                net = gross - 2 * fee / size
-                trades.append({
-                    "entry_date": pos["entry_date"], "exit_date": d,
-                    "entry": pos["entry_price"], "exit": c,
-                    "days": (d - pos["entry_date"]).days,
-                    "pct": net * 100, "reason": reason,
-                })
-                events.append({"date": d, "type": "SELL", "price": c, "reason": reason})
+                net = c / pos["entry_price"] - 1 - 2 * fee / size
+                trades.append({"days": (d - pos["entry_date"]).days, "pct": net * 100})
+                events.append({"i": i, "date": d, "type": "SELL", "price": c, "reason": reason})
                 pos = None
-
-    state = {
-        "date": dates[-1], "price": closes[-1],
-        "fast": fast[-1], "slow": slow[-1], "position": pos,
-        "trend_up": fast[-1] > slow[-1],
-    }
-    first = closes[slow_n]
-    buy_hold = (closes[-1] / first - 1) * 100
     equity = 1.0
     for t in trades:
         equity *= 1 + t["pct"] / 100
     if pos:
         equity *= closes[-1] / pos["entry_price"]
+    n = len(trades)
     stats = {
-        "n": len(trades),
-        "win_rate": 100 * sum(t["pct"] > 0 for t in trades) / len(trades) if trades else 0,
-        "avg_pct": sum(t["pct"] for t in trades) / len(trades) if trades else 0,
-        "avg_days": sum(t["days"] for t in trades) / len(trades) if trades else 0,
-        "min_days": min((t["days"] for t in trades), default=0),
-        "max_days": max((t["days"] for t in trades), default=0),
+        "n": n,
+        "win_rate": 100 * sum(t["pct"] > 0 for t in trades) / n if n else 0,
+        "avg_pct": sum(t["pct"] for t in trades) / n if n else 0,
+        "avg_days": sum(t["days"] for t in trades) / n if n else 0,
         "strategy_pct": (equity - 1) * 100,
-        "buy_hold_pct": buy_hold,
+        "buy_hold_pct": (closes[-1] / closes[slow_n] - 1) * 100,
         "since": dates[slow_n],
     }
-    return trades, events, state, stats
+    return {"dates": dates, "closes": closes, "fast": fast, "slow": slow,
+            "events": events, "position": pos, "stats": stats}
 
 
-# ---------------------------------------------------------------- Nachricht
-def eur(x, cur="EUR"):
-    sym = {"EUR": "€", "USD": "$"}.get(cur, cur)
-    s = f"{x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-    return f"{s} {sym}"
-
-
-def p(x, sign=True):
-    return (f"{x:+.1f}" if sign else f"{x:.0f}").replace(".", ",")
-
-
-def build_message(name, ticker, cur, events, state, stats, cfg):
-    today = state["date"]
-    lookback = cfg.get("alert_lookback_days", 3)
-    recent = [e for e in events if (today - e["date"]).days <= lookback]
+def analyse(item, prices, cur, cfg):
+    sim = simulate(prices, cfg)
+    today = sim["dates"][-1]
+    recent = [e for e in sim["events"] if (today - e["date"]).days <= cfg.get("alert_lookback_days", 3)]
     last = recent[-1] if recent else None
-    pos = state["position"]
-    price = eur(state["price"], cur)
+    pos = sim["position"]
+    status = last["type"] if last else ("HOLD" if pos else "WAIT")
+    return {**sim, **item, "cur": cur, "date": today, "price": sim["closes"][-1],
+            "status": status, "last": last,
+            "gap": (sim["fast"][-1] / sim["slow"][-1] - 1) * 100,
+            "held": (today - pos["entry_date"]).days if pos else 0}
 
-    lines = [f"<b>{name}</b> ({ticker}) – {price}  <i>[{today:%d.%m.%Y}]</i>"]
-    if last and last["type"] == "BUY":
-        lines.append(f"🟢 <b>JETZT KAUFEN</b> (Signal vom {last['date']:%d.%m.})")
-    elif last and last["type"] == "SELL":
-        lines.append(f"🔴 <b>JETZT VERKAUFEN</b> – {last['reason']} (Signal vom {last['date']:%d.%m.})")
-    elif pos:
-        gain = (state["price"] / pos["entry_price"] - 1) * 100
-        lines.append(f"🟡 HALTEN – gekauft am {pos['entry_date']:%d.%m.%Y} zu "
-                     f"{eur(pos['entry_price'], cur)} ({p(gain)} %)")
+
+# ---------------------------------------------------------------- Texte
+def money(x, cur):
+    sym = {"EUR": "€", "USD": "$"}.get(cur, cur)
+    return f"{x:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") + f" {sym}"
+
+
+def pct(x):
+    return f"{x:+.1f} %".replace(".", ",")
+
+
+def signal_text(r):
+    st, pos, last = r["stats"], r["position"], r["last"]
+    lines = []
+    if r["status"] == "BUY":
+        lines.append(f"Kaufen zu ca. {money(r['price'], r['cur'])}")
+        lines.append(f"Stop-Loss setzen: {money(pos['stop'], r['cur'])}")
+        lines.append(f"Halten bis zum Verkaufssignal, historisch Ø {st['avg_days']:.0f} Tage")
     else:
-        lines.append("⚪ WARTEN – kein Kaufsignal, nicht investiert sein")
+        lines.append(f"Verkaufen zu ca. {money(r['price'], r['cur'])} – Grund: {last['reason']}")
+    lines.append(f"Backtest: {st['n']} Trades, {st['win_rate']:.0f} % Treffer, Ø {pct(st['avg_pct'])}")
+    return "\n".join(lines)
 
-    if pos:
-        held = (today - pos["entry_date"]).days
-        lines.append(f"Stop-Loss: <b>{eur(pos['stop'], cur)}</b> (fällt der Kurs darunter → verkaufen)")
-        if stats["n"]:
-            rest = max(0, round(stats["avg_days"]) - held)
-            lines.append(f"Haltedauer: bis zum Verkaufssignal. Bisher {held} Tage, historisch "
-                         f"Ø {stats['avg_days']:.0f} Tage ({stats['min_days']}–{stats['max_days']}), "
-                         f"also grob noch ~{rest} Tage")
+
+def summary_text(results, failed):
+    def names(s, extra=None, limit=8):
+        rs = [r for r in results if r["status"] == s]
+        txt = ", ".join(f"{r['name']}" + (f" ({extra(r)})" if extra else "") for r in rs[:limit]) or "–"
+        return txt + (f" und {len(rs) - limit} weitere" if len(rs) > limit else "")
+    hold = lambda r: pct((r["price"] / r["position"]["entry_price"] - 1) * 100)
+    near = sorted((r for r in results if r["status"] == "WAIT" and r["gap"] < 0),
+                  key=lambda r: -r["gap"])[:4]
+    lines = [f"🟢 Kaufen: {names('BUY')}", f"🔴 Verkaufen: {names('SELL')}",
+             f"🟡 Halten: {names('HOLD', hold)}",
+             "👀 Bald Kaufsignal?: " + (", ".join(f"{r['name']} ({pct(r['gap'])})" for r in near) or "–")]
+    if failed:
+        lines.append(f"⚠️ Nicht geladen: {', '.join(failed)}")
+    return "\n".join(lines)
+
+
+def pick_cards(results, n):
+    sig = [r for r in results if r["status"] in ("BUY", "SELL")]
+    hold = sorted((r for r in results if r["status"] == "HOLD"),
+                  key=lambda r: -(r["price"] / r["position"]["entry_price"]))
+    near = sorted((r for r in results if r["status"] == "WAIT" and r["gap"] < 0), key=lambda r: -r["gap"])
+    return (sig + hold + near[:3])[:n] or results[:n]
+
+
+# ---------------------------------------------------------------- Versand (ntfy)
+def ntfy(topic, title, message, image=None, priority="default", tags="", actions=""):
+    params = {"title": title, "message": message[:3900], "priority": priority, "tags": tags}
+    if actions:
+        params["actions"] = actions
+    if image:
+        params["filename"] = os.path.basename(image)
+        with open(image, "rb") as f:
+            body = f.read()
     else:
-        gap = (state["fast"] / state["slow"] - 1) * 100
-        lines.append(f"Abstand bis Kaufsignal: SMA{cfg['fast_sma']} liegt {p(gap)} % zum SMA{cfg['slow_sma']}")
-
-    if stats["n"]:
-        lines.append(f"Backtest seit {stats['since']:%Y}: {stats['n']} Trades, "
-                     f"{stats['win_rate']:.0f} % Gewinner, Ø {p(stats['avg_pct'])} % je Trade | "
-                     f"Strategie {stats['strategy_pct']:+.0f} % vs. Kaufen&amp;Halten {stats['buy_hold_pct']:+.0f} %")
-    return "\n".join(lines), bool(last)
+        body = b""
+    url = f"https://ntfy.sh/{urllib.parse.quote(topic)}?" + urllib.parse.urlencode(params)
+    req = urllib.request.Request(url, data=body, method="PUT")
+    urllib.request.urlopen(req, timeout=60).close()
 
 
-# ---------------------------------------------------------------- Versand
-def plain(text):
-    import re
-    return re.sub(r"</?[bi]>", "", text).replace("&amp;", "&")
-
-
-def send_ntfy(topic, title, text, urgent):
-    """Push aufs Handy über die kostenlose App ntfy (kein Konto nötig)."""
-    req = urllib.request.Request(
-        f"https://ntfy.sh/{urllib.parse.quote(topic)}",
-        data=plain(text).encode("utf-8"),
-        headers={
-            "Title": title.encode("utf-8"),
-            "Priority": "high" if urgent else "default",
-            "Tags": "rotating_light" if urgent else "chart_with_upwards_trend",
-        },
-    )
-    urllib.request.urlopen(req, timeout=30).close()
-
-
-def send(text, title, urgent, cfg):
-    topic = os.environ.get("NTFY_TOPIC") or cfg.get("ntfy_topic")
-    if topic:
-        send_ntfy(topic, title, text, urgent)
-    else:
-        send_telegram(text)
-
-
-def send_telegram(text):
-    token = os.environ.get("TELEGRAM_TOKEN")
-    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
-    if not token or not chat_id:
-        raise SystemExit("Weder NTFY_TOPIC noch TELEGRAM_TOKEN/TELEGRAM_CHAT_ID gesetzt (siehe ANLEITUNG.md).")
-    body = urllib.parse.urlencode({
-        "chat_id": chat_id, "text": text, "parse_mode": "HTML",
-        "disable_web_page_preview": "true",
-    }).encode()
-    req = urllib.request.Request(f"https://api.telegram.org/bot{token}/sendMessage", data=body)
-    with urllib.request.urlopen(req, timeout=30) as r:
-        if json.load(r).get("ok") is not True:
-            raise RuntimeError("Telegram hat die Nachricht abgelehnt")
+def links(r):
+    yahoo = f"https://finance.yahoo.com/quote/{urllib.parse.quote(r['ticker'])}"
+    return f"view, Chart, {yahoo}; view, Trade Republic, https://app.traderepublic.com"
 
 
 # ---------------------------------------------------------------- Hauptprogramm
 def main():
     args = set(sys.argv[1:])
-    demo, only_print = "--demo" in args, "--print" in args or "--demo" in args
-    cfg = load_config()
-    blocks, any_signal, errors = [], False, []
+    demo = "--demo" in args
+    dry = demo or "--print" in args
+    cfg = load_json("config.json")
+    import render
 
-    for i, item in enumerate(cfg["watchlist"]):
-        name, ticker = item["name"], item["ticker"]
+    items = watchlist(cfg)
+    results, failed = [], []
+    for i, item in enumerate(items):
         try:
-            prices, cur = demo_prices(seed=i) if demo else fetch_prices(ticker, cfg.get("history_years", 5))
+            if demo:
+                prices, cur = demo_prices(i)
+            else:
+                prices, cur = fetch_prices(item["ticker"], cfg.get("history_years", 5))
+                time.sleep(0.3)
             if len(prices) < cfg["slow_sma"] + 2:
                 raise ValueError("zu wenig Kursdaten")
-            _, events, state, stats = simulate(prices, cfg)
-            text, signal = build_message(name, ticker, cur, events, state, stats, cfg)
-            any_signal |= signal
-            blocks.append(("‼️ " if signal else "") + text)
-        except Exception as e:  # ein Wert darf nicht den ganzen Bericht stoppen
-            errors.append(f"⚠️ {name} ({ticker}): {e}")
+            results.append(analyse(item, prices, cur, cfg))
+        except Exception as e:
+            print(f"FEHLER {item['name']} ({item['ticker']}): {e}")
+            failed.append(item["name"])
+    if not results:
+        raise SystemExit("Keine Kurse geladen.")
 
-    header = "🚨 <b>NEUES SIGNAL</b>\n\n" if any_signal else "📊 <b>Tagesbericht</b>\n\n"
-    msg = header + "\n\n".join(blocks + errors)
-    msg += "\n\n<i>Keine Anlageberatung – regelbasierte Signale, Verluste möglich.</i>"
+    date = max(r["date"] for r in results)
+    out = os.path.join(HERE, "dashboard.png")
+    picked = pick_cards(results, cfg.get("dashboard_max_karten", 10))
+    render.dashboard(results, picked, len(items), failed, date, cfg, out)
+    summary = summary_text(results, failed)
+    signals = [r for r in results if r["status"] in ("BUY", "SELL")]
+    print(summary)
 
-    if cfg.get("only_send_on_signal") and not any_signal and not only_print:
-        print("Kein neues Signal – keine Nachricht gesendet.")
+    if dry:
+        for r in signals[:3]:
+            render.signal_chart(r, cfg, os.path.join(HERE, f"signal_{r['ticker']}.png"))
+            print(f"\n[{r['status']}] {r['name']}\n{signal_text(r)}")
         return
-    if only_print:
-        print(plain(msg))
-    else:
-        send(msg, "Trading-Bot: NEUES SIGNAL" if any_signal else "Trading-Bot: Tagesbericht", any_signal, cfg)
-        print("Nachricht gesendet.")
+    if cfg.get("only_send_on_signal") and not signals:
+        print("Kein neues Signal – nichts gesendet.")
+        return
+
+    topic = os.environ.get("NTFY_TOPIC") or cfg["ntfy_topic"]
+    n_buy = sum(r["status"] == "BUY" for r in signals)
+    title = (f"Signal-Radar: {n_buy}× Kaufen, {len(signals) - n_buy}× Verkaufen"
+             if signals else f"Signal-Radar {date:%d.%m.} – keine neuen Signale")
+    ntfy(topic, title, summary, image=out, priority="high" if signals else "default",
+         tags="rotating_light" if signals else "bar_chart")
+
+    if cfg.get("einzel_push_pro_signal", True):
+        for r in signals[:8]:
+            img = os.path.join(HERE, "signal.png")
+            render.signal_chart(r, cfg, img)
+            buy = r["status"] == "BUY"
+            ntfy(topic, f"{'KAUFEN' if buy else 'VERKAUFEN'}: {r['name']}", signal_text(r), image=img,
+                 priority="urgent" if buy else "high", tags="green_circle" if buy else "red_circle",
+                 actions=links(r))
+            time.sleep(1)
+    print("Gesendet.")
 
 
 if __name__ == "__main__":
