@@ -1,4 +1,4 @@
-name: Trading-Signal-Bot
+name: Signal-Radar
 
 on:
   schedule:
@@ -7,28 +7,54 @@ on:
   workflow_dispatch: {}
   push:
     branches: [main]
-    paths: ["config.json", "presets.json", "bot.py", "render.py"]
+    paths: ["config.json", "presets.json", "bot.py", "site/**", ".github/workflows/**"]
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: signal-radar
+  cancel-in-progress: false
 
 jobs:
-  signale:
+  analyse:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install matplotlib
-      - name: Signale berechnen und senden
+      - name: Kurse laden und analysieren
+        run: python bot.py --no-push
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - uses: actions/upload-artifact@v4
+        with:
+          name: push
+          path: push.json
+
+  app-aktualisieren:
+    needs: analyse
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+  push-senden:
+    needs: app-aktualisieren
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: push
+      - name: Push-Nachricht senden
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
-        run: python bot.py
-      - name: Dashboard im Repo speichern
-        run: |
-          git config user.name "signal-bot"
-          git config user.email "signal-bot@users.noreply.github.com"
-          git add dashboard.png
-          git commit -m "Dashboard aktualisiert [skip ci]" || true
-          git push || true
+        run: python bot.py --notify

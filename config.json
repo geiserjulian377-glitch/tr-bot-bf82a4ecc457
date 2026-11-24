@@ -1,16 +1,16 @@
 {
-  "ntfy_topic": "tr-bot-bf82a4ecc457",
+  "app_url": "https://geiserjulian377-glitch.github.io/tr-bot-bf82a4ecc457/",
 
   "listen": {
+    "usa": true,
+    "europa": true,
     "deutschland": true,
-    "us_tech": true,
+    "asien": true,
     "etfs": true,
     "krypto": true,
-    "rohstoffe": false
+    "rohstoffe": true
   },
-  "eigene_werte": [
-    { "name": "Novo Nordisk", "ticker": "NOV.DE" }
-  ],
+  "eigene_werte": [],
 
   "fast_sma": 20,
   "slow_sma": 50,
@@ -20,7 +20,5 @@
   "history_years": 5,
   "alert_lookback_days": 3,
 
-  "dashboard_max_karten": 10,
-  "einzel_push_pro_signal": true,
   "only_send_on_signal": false
 }

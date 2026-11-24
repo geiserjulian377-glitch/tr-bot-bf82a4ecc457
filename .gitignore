@@ -1,2 +1,5 @@
 signal*.png
 __pycache__/
+site/data.json
+push.json
+dashboard.png

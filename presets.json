@@ -1,31 +1,54 @@
 {
-  "deutschland": [
-    ["Adidas", "ADS.DE"], ["Airbus", "AIR.DE"], ["Allianz", "ALV.DE"], ["BASF", "BAS.DE"],
-    ["Bayer", "BAYN.DE"], ["Beiersdorf", "BEI.DE"], ["BMW", "BMW.DE"], ["Brenntag", "BNR.DE"],
-    ["Commerzbank", "CBK.DE"], ["Continental", "CON.DE"], ["Daimler Truck", "DTG.DE"],
-    ["Deutsche Bank", "DBK.DE"], ["Deutsche Börse", "DB1.DE"], ["DHL Group", "DHL.DE"],
-    ["Deutsche Telekom", "DTE.DE"], ["E.ON", "EOAN.DE"], ["Fresenius", "FRE.DE"],
-    ["Hannover Rück", "HNR1.DE"], ["Heidelberg Materials", "HEI.DE"], ["Henkel", "HEN3.DE"],
-    ["Infineon", "IFX.DE"], ["Mercedes-Benz", "MBG.DE"], ["Merck KGaA", "MRK.DE"],
-    ["MTU Aero Engines", "MTX.DE"], ["Münchener Rück", "MUV2.DE"], ["Porsche AG", "P911.DE"],
-    ["Qiagen", "QIA.DE"], ["Rheinmetall", "RHM.DE"], ["RWE", "RWE.DE"], ["SAP", "SAP.DE"],
-    ["Siemens", "SIE.DE"], ["Siemens Energy", "ENR.DE"], ["Siemens Healthineers", "SHL.DE"],
-    ["Symrise", "SY1.DE"], ["Volkswagen", "VOW3.DE"], ["Vonovia", "VNA.DE"], ["Zalando", "ZAL.DE"]
+  "usa": [
+    ["Apple", "AAPL", "Technologie"], ["Microsoft", "MSFT", "Technologie"], ["Nvidia", "NVDA", "Halbleiter"],
+    ["Amazon", "AMZN", "Handel & Cloud"], ["Alphabet", "GOOGL", "Technologie"], ["Meta", "META", "Technologie"],
+    ["Tesla", "TSLA", "Auto"], ["Broadcom", "AVGO", "Halbleiter"], ["Berkshire Hathaway", "BRK-B", "Finanzen"],
+    ["JPMorgan", "JPM", "Finanzen"], ["Visa", "V", "Finanzen"], ["Mastercard", "MA", "Finanzen"],
+    ["Eli Lilly", "LLY", "Gesundheit"], ["UnitedHealth", "UNH", "Gesundheit"], ["Johnson & Johnson", "JNJ", "Gesundheit"],
+    ["Exxon Mobil", "XOM", "Energie"], ["Procter & Gamble", "PG", "Konsum"], ["Coca-Cola", "KO", "Konsum"],
+    ["PepsiCo", "PEP", "Konsum"], ["Costco", "COST", "Handel"], ["Walmart", "WMT", "Handel"],
+    ["Home Depot", "HD", "Handel"], ["Netflix", "NFLX", "Medien"], ["AMD", "AMD", "Halbleiter"],
+    ["Oracle", "ORCL", "Software"], ["Salesforce", "CRM", "Software"], ["Adobe", "ADBE", "Software"],
+    ["Palantir", "PLTR", "Software"], ["Disney", "DIS", "Medien"], ["McDonald's", "MCD", "Konsum"],
+    ["Nike", "NKE", "Konsum"], ["Boeing", "BA", "Luftfahrt"], ["Caterpillar", "CAT", "Industrie"],
+    ["Goldman Sachs", "GS", "Finanzen"], ["Uber", "UBER", "Technologie"], ["Spotify", "SPOT", "Medien"]
   ],
-  "us_tech": [
-    ["Apple", "AAPL"], ["Microsoft", "MSFT"], ["Nvidia", "NVDA"], ["Amazon", "AMZN"],
-    ["Alphabet", "GOOGL"], ["Meta", "META"], ["Tesla", "TSLA"], ["Netflix", "NFLX"],
-    ["AMD", "AMD"], ["Broadcom", "AVGO"], ["Palantir", "PLTR"], ["Oracle", "ORCL"]
+  "europa": [
+    ["ASML", "ASML.AS", "Halbleiter"], ["LVMH", "MC.PA", "Luxus"], ["Hermès", "RMS.PA", "Luxus"],
+    ["L'Oréal", "OR.PA", "Konsum"], ["TotalEnergies", "TTE.PA", "Energie"], ["Schneider Electric", "SU.PA", "Industrie"],
+    ["Airbus", "AIR.PA", "Luftfahrt"], ["Novo Nordisk", "NOVO-B.CO", "Gesundheit"], ["Nestlé", "NESN.SW", "Konsum"],
+    ["Roche", "ROG.SW", "Gesundheit"], ["Novartis", "NOVN.SW", "Gesundheit"], ["UBS", "UBSG.SW", "Finanzen"],
+    ["Shell", "SHEL.L", "Energie"], ["AstraZeneca", "AZN.L", "Gesundheit"], ["HSBC", "HSBA.L", "Finanzen"],
+    ["Unilever", "ULVR.L", "Konsum"], ["Rolls-Royce", "RR.L", "Luftfahrt"], ["Ferrari", "RACE.MI", "Auto"],
+    ["UniCredit", "UCG.MI", "Finanzen"], ["Inditex", "ITX.MC", "Handel"], ["Santander", "SAN.MC", "Finanzen"],
+    ["Adyen", "ADYEN.AS", "Finanzen"]
+  ],
+  "deutschland": [
+    ["SAP", "SAP.DE", "Software"], ["Siemens", "SIE.DE", "Industrie"], ["Allianz", "ALV.DE", "Finanzen"],
+    ["Rheinmetall", "RHM.DE", "Rüstung"], ["Deutsche Telekom", "DTE.DE", "Telekom"], ["Münchener Rück", "MUV2.DE", "Finanzen"],
+    ["Siemens Energy", "ENR.DE", "Energie"], ["Deutsche Bank", "DBK.DE", "Finanzen"], ["Infineon", "IFX.DE", "Halbleiter"],
+    ["Mercedes-Benz", "MBG.DE", "Auto"], ["BMW", "BMW.DE", "Auto"], ["Volkswagen", "VOW3.DE", "Auto"],
+    ["BASF", "BAS.DE", "Chemie"], ["Adidas", "ADS.DE", "Konsum"], ["Commerzbank", "CBK.DE", "Finanzen"],
+    ["E.ON", "EOAN.DE", "Energie"], ["Airbus", "AIR.DE", "Luftfahrt"], ["Bayer", "BAYN.DE", "Gesundheit"]
+  ],
+  "asien": [
+    ["TSMC", "TSM", "Halbleiter"], ["Toyota", "TM", "Auto"], ["Sony", "SONY", "Technologie"],
+    ["Alibaba", "BABA", "Handel"], ["Tencent", "0700.HK", "Technologie"], ["BYD", "1211.HK", "Auto"],
+    ["Samsung Electronics", "005930.KS", "Halbleiter"], ["Nintendo", "7974.T", "Medien"],
+    ["Mitsubishi UFJ", "MUFG", "Finanzen"], ["Infosys", "INFY", "Software"]
   ],
   "etfs": [
-    ["MSCI World", "EUNL.DE"], ["S&P 500", "SXR8.DE"], ["Nasdaq 100", "SXRV.DE"],
-    ["FTSE All-World", "VWCE.DE"], ["Emerging Markets", "IS3N.DE"], ["DAX-ETF", "EXS1.DE"]
+    ["MSCI World", "EUNL.DE", "ETF"], ["S&P 500", "SXR8.DE", "ETF"], ["Nasdaq 100", "SXRV.DE", "ETF"],
+    ["FTSE All-World", "VWCE.DE", "ETF"], ["Emerging Markets", "IS3N.DE", "ETF"], ["STOXX Europe 600", "EXSA.DE", "ETF"],
+    ["DAX", "EXS1.DE", "ETF"]
   ],
   "krypto": [
-    ["Bitcoin", "BTC-EUR"], ["Ethereum", "ETH-EUR"], ["Solana", "SOL-EUR"],
-    ["XRP", "XRP-EUR"], ["Cardano", "ADA-EUR"]
+    ["Bitcoin", "BTC-EUR", "Krypto"], ["Ethereum", "ETH-EUR", "Krypto"], ["Solana", "SOL-EUR", "Krypto"],
+    ["XRP", "XRP-EUR", "Krypto"], ["BNB", "BNB-EUR", "Krypto"], ["Cardano", "ADA-EUR", "Krypto"],
+    ["Dogecoin", "DOGE-EUR", "Krypto"]
   ],
   "rohstoffe": [
-    ["Gold", "GC=F"], ["Silber", "SI=F"], ["Öl (WTI)", "CL=F"], ["Kupfer", "HG=F"]
+    ["Gold", "GC=F", "Rohstoff"], ["Silber", "SI=F", "Rohstoff"], ["Öl (WTI)", "CL=F", "Rohstoff"],
+    ["Kupfer", "HG=F", "Rohstoff"]
   ]
 }

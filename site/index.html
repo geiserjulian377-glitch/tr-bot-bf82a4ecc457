@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07090d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Signal-Radar">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Signal-Radar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE   ruhig, präzise, wie ein Profi-Terminal in der Hosentasche
+IDEA    ein Radar: oben das Lagebild des Markts, darunter nur was heute zu tun ist
+PICTURE Radar-Ring der Marktbreite, große Signal-Karten, ausführliche Detailseite
+COLOUR  tiefes Schwarzblau, Signalgrün / Alarmrot / Bernstein, kühles Blau für Linien
+LAYOUT  eine Spalte (max 720px), Tabs + Filter, Detail als Vollbild-Ebene
+*/
+:root{
+  --bg:#07090d;--bg2:#0d1117;--card:#121821;--card2:#171f2b;--line:#222c3a;
+  --ink:#eef2f7;--mut:#8d99ab;--dim:#5c6778;
+  --buy:#2ee59d;--sell:#ff5c7a;--hold:#ffb547;--wait:#6b7a90;--blue:#5ea8ff;--violet:#a78bfa;--teal:#38d6e0;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Manrope,system-ui,sans-serif;font-feature-settings:"tnum"}
+body{overflow-x:clip;padding-bottom:env(safe-area-inset-bottom)}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.buy{color:var(--buy)}.sell{color:var(--sell)}.hold{color:var(--hold)}.wait{color:var(--mut)}
+.up{color:var(--buy)}.down{color:var(--sell)}
+
+/* ---- Kopf */
+header{padding:calc(env(safe-area-inset-top) + 18px) 0 8px;background:radial-gradient(120% 90% at 85% -10%,#12324a 0%,transparent 55%),radial-gradient(90% 80% at 0% 0%,#0f2a22 0%,transparent 60%)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:-.01em}
+.brand svg{width:30px;height:30px}
+.stamp{color:var(--mut);font-size:13px;text-align:right;line-height:1.3}
+.hero{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;align-items:center;margin:18px 0 6px}
+.ring{position:relative;width:150px;height:150px}
+.ring svg{width:100%;height:100%}
+.ring .c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring b{font-size:36px;font-weight:800;line-height:1}
+.ring small{color:var(--mut);font-size:12px;line-height:1.2;margin-top:4px}
+.mood h1{margin:0 0 6px;font-size:24px;line-height:1.15;letter-spacing:-.02em;text-wrap:balance}
+.mood p{margin:0;color:var(--mut);font-size:14px}
+.counts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:16px 0 4px}
+.cnt{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px;text-align:left;cursor:pointer;transition:border-color .2s}
+.cnt b{display:block;font-size:24px;font-weight:800;line-height:1.1}
+.cnt span{font-size:12px;color:var(--mut)}
+.cnt.on{border-color:currentColor}
+
+/* ---- Heute zu tun */
+h2{font-size:18px;margin:26px 0 12px;letter-spacing:-.01em;display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+h2 small{font-size:13px;color:var(--mut);font-weight:500}
+.todo{display:grid;gap:12px}
+.sig{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:22px;padding:16px 16px 14px 20px;cursor:pointer}
+.sig::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--k)}
+.sig .row1{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.verb{font-weight:800;font-size:13px;letter-spacing:.02em;color:var(--k)}
+.sig h3{margin:2px 0 0;font-size:21px;line-height:1.2}
+.sig .meta{color:var(--mut);font-size:13px}
+.sig p{margin:10px 0 0;font-size:14px;color:#c9d2de}
+.kv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.kv div{background:#0b0f15;border-radius:12px;padding:8px 10px}
+.kv>div>span{display:block;font-size:11px;color:var(--mut)}
+.kv b{font-size:15px}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:20px;padding:18px;color:var(--mut)}
+.empty b{color:var(--ink)}
+
+/* ---- Liste */
+.tabs{display:flex;gap:4px;background:var(--card);border-radius:14px;padding:4px;margin-top:26px;position:sticky;top:0;z-index:5;box-shadow:0 8px 20px #07090dcc}
+.tabs button{flex:1;border:0;background:none;border-radius:10px;padding:10px 4px;font-weight:700;font-size:14px;color:var(--mut);cursor:pointer;min-height:44px}
+.tabs button.on{background:var(--card2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.tools{display:flex;gap:8px;margin:12px 0 8px}
+.tools input,.tools select{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:16px;min-height:44px}
+.tools input{flex:1}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:none;border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600;color:var(--mut);cursor:pointer;min-height:36px}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.list{display:grid;gap:2px}
+.item{display:grid;grid-template-columns:44px minmax(0,1fr) 74px 92px;gap:12px;align-items:center;padding:12px 6px;border-bottom:1px solid #151c26;cursor:pointer;border-radius:12px}
+.item:active{background:var(--card)}
+.item .n{font-weight:700;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .t{font-size:12px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .p{text-align:right}
+.item .p b{display:block;font-size:14px}
+.item .p span{font-size:12px}
+.spark{width:74px;height:30px}
+.score{position:relative;width:44px;height:44px;flex:none}
+.score svg{width:44px;height:44px;transform:rotate(-90deg)}
+.score b{position:absolute;inset:0;display:grid;place-items:center;font-size:14px;font-weight:800}
+.bigscore .score b{font-size:24px}
+.tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 7px;border-radius:6px;margin-right:6px;vertical-align:1px}
+.more{width:100%;margin:10px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;font-weight:700;cursor:pointer;min-height:44px}
+
+/* ---- Detail */
+#detail{position:fixed;inset:0;z-index:20;background:var(--bg);overflow-y:auto;transform:translateY(100%);transition:transform .32s cubic-bezier(.2,.8,.2,1);overscroll-behavior:contain}
+#detail.open{transform:none}
+.dbar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 10px) 16px 10px;background:#07090de6;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid #141b25}
+.back{border:0;background:var(--card);border-radius:12px;width:44px;height:44px;font-size:22px;cursor:pointer;flex:none}
+.dbar b{font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dbar span{color:var(--mut);font-size:12px;display:block}
+.price{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:18px 0 4px;flex-wrap:wrap}
+.price .big{font-size:clamp(30px,8vw,40px);font-weight:800;line-height:1;letter-spacing:-.02em}
+.price small{display:block;color:var(--mut);font-size:13px;margin-top:6px}
+.rets{display:flex;gap:6px;flex-wrap:wrap}
+.rets span{background:var(--card);border-radius:10px;padding:5px 9px;font-size:13px;font-weight:700}
+.rets i{font-style:normal;color:var(--mut);font-weight:500;margin-right:4px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;margin-top:14px}
+.panel h4{margin:0 0 12px;font-size:15px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.panel h4 small{color:var(--mut);font-weight:500;font-size:12px}
+.action{background:linear-gradient(160deg,color-mix(in srgb,var(--k) 22%,var(--card)) 0%,var(--card) 60%);border-color:color-mix(in srgb,var(--k) 45%,var(--line))}
+.action .verb{font-size:28px;letter-spacing:-.01em}
+.action p{margin:8px 0 0;color:#d5dce6}
+.conf{display:inline-block;margin-left:8px;font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:#ffffff14;color:var(--ink);vertical-align:6px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
+.grid2 div{background:#0b0f15;border-radius:14px;padding:10px 12px}
+.grid2>div>span{display:block;font-size:12px;color:var(--mut)}
+.grid2 b{font-size:17px}
+.calc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.calc label{font-size:12px;color:var(--mut)}
+.calc input{width:100%;margin-top:4px;background:#0b0f15;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:16px;min-height:44px}
+.calcout{margin-top:10px;padding:12px;border-radius:14px;background:#0b0f15;font-size:14px}
+.calcout b{font-size:18px}
+.seg{display:flex;gap:4px;background:#0b0f15;border-radius:10px;padding:3px}
+.seg button{border:0;background:none;color:var(--mut);font-weight:700;font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;min-height:32px}
+.seg button.on{background:var(--card2);color:var(--ink)}
+.fig{position:relative;height:280px;margin:4px -6px 0;touch-action:pan-y}
+.fig svg{position:absolute;inset:0;width:100%;height:100%}
+.tip{position:absolute;top:4px;left:8px;font-size:12px;color:var(--mut);pointer-events:none}
+.tip b{color:var(--ink);font-size:14px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin-top:6px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:3px}
+.bigscore{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+.bigscore p{margin:0;color:var(--mut);font-size:13px}
+.bar{display:grid;grid-template-columns:86px minmax(0,1fr) 48px;gap:10px;align-items:center;font-size:13px;margin:7px 0}
+.bar .tr{height:8px;background:#0b0f15;border-radius:6px;overflow:hidden}
+.bar .tr i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--blue),var(--teal))}
+.bar span:last-child{text-align:right;color:var(--mut)}
+.why{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.why li{display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;font-size:14px;line-height:1.45}
+.why li i{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:15px}
+.why .p i{background:#2ee59d22;color:var(--buy)}.why .m i{background:#ff5c7a22;color:var(--sell)}.why .n i{background:#ffffff12;color:var(--mut)}
+.inds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ind{background:#0b0f15;border-radius:14px;padding:10px 12px}
+.ind>span{display:block;font-size:12px;color:var(--mut)}
+.ind b{font-size:18px}
+.ind em{display:block;font-style:normal;font-size:12px;color:var(--dim);margin-top:2px}
+.gauge{height:6px;border-radius:4px;margin-top:8px;background:linear-gradient(90deg,var(--sell) 0 30%,#3a4556 30% 70%,var(--hold) 70%);position:relative}
+.gauge i{position:absolute;top:-4px;width:4px;height:14px;border-radius:2px;background:var(--ink);transform:translateX(-50%)}
+.vs{display:grid;gap:10px}
+.vs .r{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;align-items:center;font-size:13px}
+.vs .bars{display:grid;gap:4px}
+.vs .bars div{height:22px;border-radius:7px;display:flex;align-items:center;padding:0 8px;font-weight:700;font-size:12px;white-space:nowrap;min-width:fit-content}
+.trades{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.trades td{padding:8px 4px;border-top:1px solid #1b2330}
+.trades td:last-child{text-align:right}
+.links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0 30px}
+.links a{display:block;text-align:center;text-decoration:none;font-weight:800;border-radius:16px;padding:14px;background:var(--ink);color:var(--bg)}
+.links a+a{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+details{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin:26px 0 12px}
+summary{font-weight:700;cursor:pointer}
+details p{color:var(--mut);font-size:14px}
+footer{color:var(--dim);font-size:12px;padding:10px 0 40px}
+.load{padding:80px 0;text-align:center;color:var(--mut)}
+@media(max-width:420px){
+  .hero{grid-template-columns:118px minmax(0,1fr);gap:14px}.ring{width:118px;height:118px}.ring b{font-size:28px}
+  .mood h1{font-size:20px}
+  .item{grid-template-columns:40px minmax(0,1fr) 58px 84px;gap:9px}.spark{width:58px}
+  .kv b{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){#detail{transition:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="top">
+    <div class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="#2ee59d" stroke-opacity=".35" stroke-width="2"/><circle cx="16" cy="16" r="8" fill="none" stroke="#2ee59d" stroke-opacity=".6" stroke-width="2"/><path d="M16 16 L28 9" stroke="#2ee59d" stroke-width="2.5" stroke-linecap="round"/><circle cx="23" cy="12" r="2.6" fill="#2ee59d"/></svg>Signal-Radar</div>
+    <div class="stamp" id="stamp">lädt …</div>
+  </div>
+  <div id="hero"></div>
+</div></header>
+
+<main class="wrap">
+  <h2>Heute zu tun <small id="todoSub"></small></h2>
+  <div class="todo" id="todo"><div class="load">Daten werden geladen …</div></div>
+
+  <div class="tabs" role="tablist" id="tabs">
+    <button data-tab="sig" class="on">Signale</button>
+    <button data-tab="hold">Halten</button>
+    <button data-tab="watch">Kandidaten</button>
+    <button data-tab="all">Alle</button>
+  </div>
+  <div class="tools">
+    <input id="q" type="search" placeholder="Suchen: Name oder Kürzel" autocomplete="off">
+    <select id="sort" aria-label="Sortieren">
+      <option value="score">Score</option>
+      <option value="gap">Nähe Signal</option>
+      <option value="r3m">3 Monate</option>
+      <option value="r1d">Heute</option>
+      <option value="name">A–Z</option>
+    </select>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="list" id="list"></div>
+  <button class="more" id="more" hidden>Mehr anzeigen</button>
+
+  <details>
+    <summary>So entstehen die Signale</summary>
+    <p><b>Kaufen</b>, wenn der 20-Tage-Durchschnitt den 50-Tage-Durchschnitt von unten kreuzt. <b>Verkaufen</b>, wenn er ihn von oben kreuzt oder der Kurs den Trailing-Stop-Loss erreicht. Der Stop liegt anfangs 8 % unter dem Kaufkurs und zieht mit steigenden Kursen nach.</p>
+    <p>Der <b>Score (0–100)</b> bewertet die Qualität: Trend (200-Tage-Linie, Steigung, Durchschnitte), Momentum (3-Monats-Rendite, MACD), RSI, wie gut die Regel bei diesem Wert in 5 Jahren funktioniert hat, und Schwankung. Ein Kaufsignal mit hohem Score ist stärker als eines mit niedrigem.</p>
+    <p>Der <b>Positionsrechner</b> rechnet aus, wie viele Stück du kaufen kannst, damit du beim Stop-Loss höchstens den gewählten Anteil deines Depots verlierst.</p>
+  </details>
+  <footer id="foot">Regelbasierte Signale aus Kursdaten von Yahoo Finance. Keine Anlageberatung – vergangene Ergebnisse garantieren nichts, Verluste sind möglich.</footer>
+</main>
+
+<section id="detail" aria-hidden="true"></section>
+
+<script>
+{
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const SYM = {EUR:"€",USD:"$",GBp:"p",GBP:"£",CHF:"CHF",DKK:"kr",HKD:"HK$",JPY:"¥",KRW:"₩"};
+const nf = (x, d=2) => x == null || isNaN(x) ? "–" : Number(x).toLocaleString("de-DE",{minimumFractionDigits:d,maximumFractionDigits:d});
+const money = (x, cur) => { const d = Math.abs(x) >= 1000 ? 0 : Math.abs(x) < 1 ? 4 : 2; return nf(x, d) + " " + (SYM[cur] || cur); };
+const pct = (x, d=1) => x == null ? "–" : (x > 0 ? "+" : x < 0 ? "−" : "") + nf(Math.abs(x), d) + " %";
+const cls = x => x > 0 ? "up" : x < 0 ? "down" : "";
+const LABEL = {BUY:"KAUFEN",SELL:"VERKAUFEN",HOLD:"HALTEN",WAIT:"WARTEN"};
+const COLOR = {BUY:"var(--buy)",SELL:"var(--sell)",HOLD:"var(--hold)",WAIT:"var(--wait)"};
+const scoreColor = s => s >= 70 ? "var(--buy)" : s >= 50 ? "var(--hold)" : "var(--sell)";
+const store = {get(k,d){try{const v=localStorage.getItem("sr_"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("sr_"+k,JSON.stringify(v))}catch(e){}}};
+
+let DATA = null, byId = {};
+const state = {tab: store.get("tab","sig"), region: "Alle", q: "", sort: store.get("sort","score"), shown: 30, status: null};
+
+function ring(score, size=44, stroke=4) {
+  const r = (size - stroke) / 2, c = 2 * Math.PI * r;
+  return `<div class="score" style="width:${size}px;height:${size}px"><svg viewBox="0 0 ${size} ${size}" style="width:${size}px;height:${size}px"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="#1d2633" stroke-width="${stroke}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${scoreColor(score)}" stroke-width="${stroke}" stroke-linecap="round" stroke-dasharray="${c*score/100} ${c}"/></svg><b>${score}</b></div>`;
+}
+function spark(v, color) {
+  const pts = v.filter(x => x != null); if (pts.length < 2) return "";
+  const lo = Math.min(...pts), hi = Math.max(...pts), w = 74, h = 30;
+  const d = pts.map((y, i) => `${(i/(pts.length-1)*w).toFixed(1)},${(h-2-(y-lo)/((hi-lo)||1)*(h-4)).toFixed(1)}`).join(" ");
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="${d}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+}
+
+// ---------- Übersicht
+function renderHero() {
+  const m = DATA.market, b = Math.round(m.breadth), r = 64, c = 2*Math.PI*r;
+  const mood = b >= 65 ? ["Starker Markt", "Die meisten Werte liegen im Aufwärtstrend. Kaufsignale haben Rückenwind."]
+    : b >= 45 ? ["Gemischter Markt", "Etwa die Hälfte der Werte ist im Aufwärtstrend. Nur Signale mit hohem Score beachten."]
+    : ["Schwacher Markt", "Die meisten Werte sind im Abwärtstrend. Vorsicht bei Käufen, Stop-Loss konsequent nutzen."];
+  const cnt = m.counts;
+  $("#hero").innerHTML = `
+    <div class="hero">
+      <div class="ring"><svg viewBox="0 0 150 150">
+        ${[64,46,28].map((rr,i)=>`<circle cx="75" cy="75" r="${rr}" fill="none" stroke="#1a2a2a" stroke-width="${i?1:10}"/>`).join("")}
+        <circle cx="75" cy="75" r="${r}" fill="none" stroke="${scoreColor(b)}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${c*b/100} ${c}" transform="rotate(-90 75 75)"/>
+      </svg><div class="c"><b>${b}%</b><small>im Aufwärts-<br>trend</small></div></div>
+      <div class="mood"><h1>${mood[0]}</h1><p>${mood[1]}</p><p style="margin-top:6px">Ø Score ${Math.round(m.avg_score)} · ${DATA.items.length} Werte weltweit</p></div>
+    </div>
+    <div class="counts">
+      ${["BUY","SELL","HOLD","WAIT"].map(k=>`<button class="cnt ${k.toLowerCase()} ${state.status===k?"on":""}" data-st="${k}"><b>${cnt[k]}</b><span>${{BUY:"Kaufen",SELL:"Verkaufen",HOLD:"Halten",WAIT:"Warten"}[k]}</span></button>`).join("")}
+    </div>`;
+}
+
+function sigCard(r) {
+  const rec = r.rec, k = COLOR[r.status];
+  const cells = r.status === "SELL"
+    ? [["Verkaufen bei", money(r.price, r.cur)], ["Grund", esc(rec.reason)], ["Score", r.score]]
+    : [["Kaufen bei", money(r.price, r.cur)], ["Stop-Loss", money(rec.stop, r.cur)], ["Ø Haltedauer", Math.round(r.stats.avg_days) + " Tage"]];
+  return `<article class="sig" style="--k:${k}" data-id="${esc(r.id)}">
+    <div class="row1"><div><div class="verb">${LABEL[r.status]} · Vertrauen ${rec.confidence}</div><h3>${esc(r.name)}</h3>
+    <div class="meta">${esc(r.ticker)} · ${esc(r.region)} · ${esc(r.sector)}</div></div>${ring(r.score, 52, 5)}</div>
+    <p>${esc(rec.text)}</p>
+    <div class="kv">${cells.map(([a,b])=>`<div><span>${a}</span><b class="num">${b}</b></div>`).join("")}</div>
+  </article>`;
+}
+
+function renderTodo() {
+  const sig = DATA.items.filter(r => r.status === "BUY" || r.status === "SELL").sort((a,b)=>(a.status>b.status?1:-1)||b.score-a.score);
+  $("#todoSub").textContent = sig.length ? `${sig.length} Signal${sig.length>1?"e":""}` : "";
+  if (sig.length) { $("#todo").innerHTML = sig.map(sigCard).join(""); return; }
+  const watch = DATA.items.filter(r => r.rec.watch).sort((a,b)=>b.ind.gap-a.ind.gap).slice(0,3);
+  $("#todo").innerHTML = `<div class="empty"><b>Heute nichts kaufen oder verkaufen.</b> Bestehende Positionen halten und Stop-Loss prüfen.${watch.length?`<br><br>Am nächsten an einem Kaufsignal: ${watch.map(r=>`<b>${esc(r.name)}</b> (${pct(r.ind.gap)})`).join(", ")}.`:""}</div>`;
+}
+
+function filtered() {
+  let xs = DATA.items;
+  if (state.status) xs = xs.filter(r => r.status === state.status);
+  else if (state.tab === "sig") xs = xs.filter(r => r.status === "BUY" || r.status === "SELL");
+  else if (state.tab === "hold") xs = xs.filter(r => r.status === "HOLD");
+  else if (state.tab === "watch") xs = xs.filter(r => r.status === "WAIT" && r.ind.gap < 0).sort((a,b)=>b.ind.gap-a.ind.gap);
+  if (state.region !== "Alle") xs = xs.filter(r => r.region === state.region);
+  if (state.q) { const q = state.q.toLowerCase(); xs = xs.filter(r => (r.name + " " + r.ticker + " " + r.sector).toLowerCase().includes(q)); }
+  const s = state.sort, key = {score:r=>-r.score, gap:r=>-(r.ind.gap ?? -99), r3m:r=>-(r.ind.r3m ?? -999), r1d:r=>-(r.ind.r1d ?? -999), name:r=>r.name};
+  if (!(state.tab === "watch" && s === "score")) xs = [...xs].sort((a,b)=>{const x=key[s](a),y=key[s](b);return x<y?-1:x>y?1:0});
+  return xs;
+}
+
+function renderList() {
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", !state.status && b.dataset.tab === state.tab));
+  const regions = ["Alle", ...new Set(DATA.items.map(r => r.region))];
+  $("#chips").innerHTML = regions.map(g => `<button class="chip ${g===state.region?"on":""}" data-rg="${esc(g)}">${esc(g)}</button>`).join("");
+  const xs = filtered();
+  if (!xs.length) { $("#list").innerHTML = `<div class="empty">Keine Werte in dieser Auswahl.</div>`; $("#more").hidden = true; return; }
+  $("#list").innerHTML = xs.slice(0, state.shown).map(r => `
+    <div class="item" data-id="${esc(r.id)}">
+      ${ring(r.score)}
+      <div><div class="n">${esc(r.name)}</div><div class="t"><span class="tag" style="background:color-mix(in srgb,${COLOR[r.status]} 22%,transparent);color:${COLOR[r.status]}">${LABEL[r.status]}</span>${esc(r.ticker)} · ${esc(r.region)}</div></div>
+      ${spark(r.spark, (r.ind.r3m ?? 0) >= 0 ? "#2ee59d" : "#ff5c7a")}
+      <div class="p"><b class="num">${money(r.price, r.cur)}</b><span class="num ${cls(r.ind.r1d)}">${pct(r.ind.r1d)}</span></div>
+    </div>`).join("");
+  $("#more").hidden = xs.length <= state.shown;
+  $("#more").textContent = `Alle ${xs.length} anzeigen`;
+}
+
+// ---------- Detail
+let chartRange = store.get("range", 130), cur = null;
+function drawChart() {
+  const fig = $("#fig"); if (!fig || !cur) return;
+  const svg = fig.querySelector("svg"), W = fig.clientWidth, H = fig.clientHeight;
+  const ch = cur.chart, n = ch.c.length, a = Math.max(0, n - chartRange);
+  const sl = k => ch[k].slice(a);
+  const C = sl("c"), F = sl("f"), S = sl("s"), L = sl("l");
+  const stop = cur.rec.stop;
+  const vals = [...C, ...F, ...S, ...L].filter(v => v != null); if (stop && cur.status !== "SELL") vals.push(stop);
+  let lo = Math.min(...vals), hi = Math.max(...vals); const pad = (hi - lo) * .08 || 1; lo -= pad; hi += pad;
+  const top = 26, bot = 22, X = i => 8 + i / (C.length - 1) * (W - 58), Y = v => top + (1 - (v - lo) / (hi - lo)) * (H - top - bot);
+  const path = arr => { let d = "", pen = false; arr.forEach((v,i)=>{ if (v == null) { pen = false; return; } d += (pen?"L":"M") + X(i).toFixed(1) + " " + Y(v).toFixed(1); pen = true; }); return d; };
+  const up = C[C.length-1] >= C[0], col = up ? "#2ee59d" : "#ff5c7a";
+  let g = `<defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".28"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>`;
+  for (let k = 0; k <= 3; k++) { const v = lo + (hi - lo) * k / 3, y = Y(v); g += `<line x1="8" x2="${W-50}" y1="${y}" y2="${y}" stroke="#1a222e"/><text x="${W-4}" y="${y+4}" fill="#5c6778" font-size="10" text-anchor="end">${esc(nf(v, v>=1000?0:v<1?4:2))}</text>`; }
+  g += `<path d="${path(C)} L${X(C.length-1)} ${H-bot} L${X(0)} ${H-bot}Z" fill="url(#gr)"/>`;
+  g += `<path d="${path(L)}" fill="none" stroke="#a78bfa" stroke-width="1.4" stroke-dasharray="2 4" opacity=".8"/>`;
+  g += `<path d="${path(S)}" fill="none" stroke="#a78bfa" stroke-width="1.8"/>`;
+  g += `<path d="${path(F)}" fill="none" stroke="#5ea8ff" stroke-width="1.8"/>`;
+  g += `<path d="${path(C)}" fill="none" stroke="#eef2f7" stroke-width="2.2" stroke-linejoin="round"/>`;
+  if (stop && cur.status !== "SELL") g += `<line x1="8" x2="${W-50}" y1="${Y(stop)}" y2="${Y(stop)}" stroke="#ff5c7a" stroke-dasharray="5 5" stroke-width="1.4"/><text x="12" y="${Y(stop)-6}" fill="#ff5c7a" font-size="11" font-weight="700">Stop ${esc(money(stop,cur.cur))}</text>`;
+  ch.e.forEach(e => { const i = e.i - a; if (i < 0 || i >= C.length) return; const x = X(i), y = Y(C[i]), b = e.t === "BUY";
+    g += `<path d="${b?`M${x} ${y+8} l7 12 h-14z`:`M${x} ${y-8} l7 -12 h-14z`}" fill="${b?"#2ee59d":"#ff5c7a"}" stroke="#07090d" stroke-width="1.5"/>`; });
+  const d0 = ch.d[a], d1 = ch.d[n-1];
+  g += `<text x="8" y="${H-4}" fill="#5c6778" font-size="11">${esc(fmtDate(d0))}</text><text x="${W-50}" y="${H-4}" fill="#5c6778" font-size="11" text-anchor="end">${esc(fmtDate(d1))}</text>`;
+  g += `<line id="cross" x1="0" x2="0" y1="${top}" y2="${H-bot}" stroke="#8d99ab" stroke-width="1" opacity="0"/><circle id="dot" r="5" fill="#eef2f7" opacity="0"/>`;
+  svg.innerHTML = g;
+  const tip = $("#tip"), setTip = i => { tip.innerHTML = `<b>${esc(money(C[i], cur.cur))}</b> · ${esc(fmtDate(ch.d[a+i]))}`; };
+  setTip(C.length - 1);
+  fig.onpointermove = fig.onpointerdown = ev => {
+    const rect = fig.getBoundingClientRect(), i = Math.max(0, Math.min(C.length-1, Math.round((ev.clientX - rect.left - 8) / (W - 58) * (C.length - 1))));
+    const cx = svg.querySelector("#cross"), dt = svg.querySelector("#dot");
+    cx.setAttribute("x1", X(i)); cx.setAttribute("x2", X(i)); cx.setAttribute("opacity", .6);
+    dt.setAttribute("cx", X(i)); dt.setAttribute("cy", Y(C[i])); dt.setAttribute("opacity", 1); setTip(i);
+  };
+  fig.onpointerleave = () => { svg.querySelector("#cross").setAttribute("opacity",0); svg.querySelector("#dot").setAttribute("opacity",0); setTip(C.length-1); };
+}
+const fmtDate = s => { const [y,m,d] = s.split("-"); return `${d}.${m}.${y.slice(2)}`; };
+
+function calcHtml(r) {
+  const depot = store.get("depot", 10000), risk = store.get("risk", 1);
+  const stop = r.rec.stop ?? r.price * (1 - DATA.params.stop_loss_pct / 100);
+  const perShare = (r.price - stop) * r.eur_rate, priceEur = r.price * r.eur_rate;
+  let qty = perShare > 0 ? depot * risk / 100 / perShare : 0;
+  const cap = depot * 0.25 / priceEur; let capped = false;
+  if (qty > cap) { qty = cap; capped = true; }
+  const frac = priceEur > depot * 0.05 || r.region === "Krypto";
+  const q = frac ? Math.floor(qty * 1000) / 1000 : Math.floor(qty);
+  const amount = q * priceEur, loss = q * perShare;
+  return `<b class="num">${nf(q, frac ? 3 : 0)} Stück</b> ≈ <b class="num">${nf(amount,0)} €</b><br><span class="wait">Verlust bis Stop-Loss: ${nf(loss,0)} € (${nf(loss/depot*100,1)} % vom Depot)${capped?" · auf 25 % des Depots begrenzt":""}${r.cur!=="EUR"?` · Kurs ≈ ${nf(priceEur, priceEur<1?4:2)} €`:""}</span>`;
+}
+
+function openDetail(id, push=true) {
+  const r = byId[id]; if (!r) return;
+  cur = r;
+  const st = r.stats, ind = r.ind, rec = r.rec, k = COLOR[r.status];
+  const posCells = rec.stop != null && r.status !== "SELL" ? [
+    ["Einstieg", money(rec.entry, r.cur) + (rec.entry_date ? `<br><span class="wait" style="font-size:12px">${fmtDate(rec.entry_date)}</span>` : "")],
+    ["Stop-Loss", `<span class="sell">${money(rec.stop, r.cur)}</span>`],
+    ["Seit Kauf", `<span class="${cls(rec.gain_pct)}">${pct(rec.gain_pct)}</span>`],
+    ["Abstand zum Stop", pct(-rec.risk_pct)],
+    ["Haltedauer", `${rec.held} Tage`],
+    ["Typisch (Backtest)", `Ø ${Math.round(st.avg_days)} T · ${st.min_days}–${st.max_days}`],
+  ] : [
+    ["Abstand zum Signal", pct(ind.gap)],
+    ["Typische Haltedauer", `Ø ${Math.round(st.avg_days)} Tage`],
+    ["Trefferquote", nf(st.win_rate,0) + " %"],
+    ["Ø Gewinn je Trade", `<span class="${cls(st.avg_pct)}">${pct(st.avg_pct)}</span>`],
+  ];
+  const partsHtml = Object.entries(r.parts).map(([n,v]) => `<div class="bar"><span>${n}</span><div class="tr"><i style="width:${v/r.parts_max[n]*100}%"></i></div><span class="num">${v}/${r.parts_max[n]}</span></div>`).join("");
+  const tone = {"+":"p","-":"m","~":"n"}, icon = {"+":"+","-":"−","~":"·"};
+  const rsiPos = Math.max(0, Math.min(100, ind.rsi));
+  const indHtml = [
+    ["RSI (14)", nf(ind.rsi,0), ind.rsi>70?"überkauft":ind.rsi<30?"überverkauft":"neutral", `<div class="gauge"><i style="left:${rsiPos}%"></i></div>`],
+    ["MACD", ind.macd_hist_pct > 0 ? "positiv" : "negativ", "Histogramm " + pct(ind.macd_hist_pct, 2), ""],
+    ["200-Tage-Linie", pct(ind.dist200), ind.dist200 > 0 ? "darüber = Aufwärtstrend" : "darunter = Abwärtstrend", ""],
+    ["Trend SMA50", pct(ind.slope50), "Steigung über 20 Tage", ""],
+    ["Volatilität", nf(ind.vol,0) + " %", ind.vol < 30 ? "ruhig" : ind.vol < 50 ? "mittel" : "sehr hoch", ""],
+    ["Max. Rückgang 1 J.", pct(ind.dd1y), "vom Hoch zum Tief", ""],
+    ["Abstand 52-W-Hoch", pct(ind.from_high), "", ""],
+    ["Rendite 1 Jahr", pct(ind.r1y), "", ""],
+  ].map(([a,b,c,x]) => `<div class="ind"><span>${a}</span><b class="num">${b}</b>${c?`<em>${c}</em>`:""}${x}</div>`).join("");
+  const vsRow = (label, a, b, inv=false) => {
+    const m = Math.max(Math.abs(a), Math.abs(b), 1), w = v => Math.max(8, Math.abs(v) / m * 100);
+    const better = inv ? a > b : a > b;
+    return `<div class="r"><span class="wait">${label}</span><div class="bars">
+      <div style="width:${w(a)}%;background:${better?"#2ee59d33":"#ffffff14"};color:${better?"var(--buy)":"var(--ink)"}">Regel ${pct(a,0)}</div>
+      <div style="width:${w(b)}%;background:${!better?"#2ee59d33":"#ffffff14"};color:${!better?"var(--buy)":"var(--ink)"}">Halten ${pct(b,0)}</div></div></div>`;
+  };
+  const trades = r.trades.length ? `<table class="trades">${r.trades.map(t => `<tr><td>${fmtDate(t.in)} → ${fmtDate(t.out)}<br><span class="wait">${t.days} Tage · ${esc(t.reason)}</span></td><td class="num ${cls(t.pct)}"><b>${pct(t.pct)}</b></td></tr>`).join("")}</table>` : `<p class="wait">Noch keine abgeschlossenen Trades.</p>`;
+
+  $("#detail").innerHTML = `
+    <div class="dbar"><button class="back" id="back" aria-label="Zurück">‹</button><div><b>${esc(r.name)}</b><span>${esc(r.ticker)} · ${esc(r.region)} · ${esc(r.sector)}</span></div></div>
+    <div class="wrap">
+      <div class="price"><div><div class="big num">${money(r.price, r.cur)}</div><small>Schlusskurs ${fmtDate(r.date)}${r.cur!=="EUR"?` · ≈ ${nf(r.price*r.eur_rate, r.price*r.eur_rate<1?4:2)} €`:""}</small></div>
+      <div class="rets">${[["1T",ind.r1d],["1M",ind.r1m],["3M",ind.r3m],["1J",ind.r1y]].map(([a,b])=>`<span class="num ${cls(b)}"><i>${a}</i>${pct(b)}</span>`).join("")}</div></div>
+
+      <div class="panel action" style="--k:${k}">
+        <div class="verb">${LABEL[r.status]}<span class="conf">Vertrauen ${rec.confidence}</span></div>
+        <p>${esc(rec.text)}</p>
+        <div class="grid2">${posCells.map(([a,b])=>`<div><span>${a}</span><b class="num">${b}</b></div>`).join("")}</div>
+      </div>
+
+      <div class="panel">
+        <h4>Chart <div class="seg" id="rng">${[[63,"3M"],[130,"6M"],[260,"1J"]].map(([v,l])=>`<button data-r="${v}" class="${v==chartRange?"on":""}">${l}</button>`).join("")}</div></h4>
+        <div class="fig" id="fig"><svg></svg><div class="tip" id="tip"></div></div>
+        <div class="legend"><span><i style="background:#eef2f7"></i>Kurs</span><span><i style="background:#5ea8ff"></i>SMA ${DATA.params.fast_sma}</span><span><i style="background:#a78bfa"></i>SMA ${DATA.params.slow_sma}</span><span><i style="background:repeating-linear-gradient(90deg,#a78bfa 0 2px,transparent 2px 5px)"></i>SMA 200</span><span><i style="background:#ff5c7a"></i>Stop-Loss</span><span><b class="buy">▲</b> Kauf <b class="sell">▼</b> Verkauf</span></div>
+      </div>
+
+      ${r.status !== "SELL" ? `<div class="panel"><h4>Positionsrechner <small>${r.status === "WAIT" ? "falls ein Kaufsignal kommt" : "Stop-Loss als Risiko"}</small></h4>
+        <div class="calc"><label>Depotgröße (€)<input id="depot" type="number" inputmode="decimal" min="0" step="100" value="${store.get("depot",10000)}"></label>
+        <label>Max. Risiko je Trade (%)<input id="risk" type="number" inputmode="decimal" min="0.1" max="10" step="0.1" value="${store.get("risk",1)}"></label></div>
+        <div class="calcout" id="calcout">${calcHtml(r)}</div></div>` : ""}
+
+      <div class="panel"><h4>Signal-Qualität <small>Score 0–100</small></h4>
+        <div class="bigscore">${ring(r.score, 72, 7)}<p>${r.score>=70?"Starkes Setup – Trend, Momentum und Historie passen zusammen.":r.score>=50?"Solides Setup mit einzelnen Schwächen.":"Schwaches Setup – Signale hier mit Vorsicht behandeln."}</p></div>
+        ${partsHtml}</div>
+
+      <div class="panel"><h4>Warum?</h4><ul class="why">${r.why.map(w=>`<li class="${tone[w.t]}"><i>${icon[w.t]}</i><span>${esc(w.x)}</span></li>`).join("")}</ul></div>
+
+      <div class="panel"><h4>Indikatoren</h4><div class="inds">${indHtml}</div></div>
+
+      <div class="panel"><h4>Backtest <small>${nf(st.years,1)} Jahre · ${st.n} Trades</small></h4>
+        <div class="vs">${vsRow("Gesamt", st.strategy_pct, st.buy_hold_pct)}${vsRow("Pro Jahr", st.strategy_cagr, st.buy_hold_cagr)}${vsRow("Max. Rückgang", st.strategy_maxdd, st.buy_hold_maxdd)}</div>
+        <div class="inds" style="margin-top:12px">
+          <div class="ind"><span>Trefferquote</span><b class="num">${nf(st.win_rate,0)} %</b></div>
+          <div class="ind"><span>Profit-Faktor</span><b class="num">${st.profit_factor==null?"–":nf(st.profit_factor,2)}</b><em>über 1,5 = gut</em></div>
+          <div class="ind"><span>Ø Gewinner</span><b class="num up">${pct(st.avg_win)}</b></div>
+          <div class="ind"><span>Ø Verlierer</span><b class="num down">${pct(st.avg_loss)}</b></div>
+        </div>
+        <h4 style="margin-top:16px">Letzte Trades</h4>${trades}</div>
+
+      <div class="links"><a href="https://app.traderepublic.com" rel="noopener">Trade Republic</a><a href="https://finance.yahoo.com/quote/${encodeURIComponent(r.ticker)}" rel="noopener">Yahoo Finance</a></div>
+    </div>`;
+  const d = $("#detail"); d.scrollTop = 0; d.classList.add("open"); d.setAttribute("aria-hidden","false");
+  document.body.style.overflow = "hidden";
+  if (push && location.hash !== "#" + id) history.pushState(null, "", "#" + id);
+  requestAnimationFrame(drawChart);
+}
+function closeDetail(push=true) {
+  const d = $("#detail"); d.classList.remove("open"); d.setAttribute("aria-hidden","true");
+  document.body.style.overflow = ""; cur = null;
+  if (push && location.hash) history.pushState(null, "", location.pathname);
+}
+
+// ---------- Ereignisse
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-id],[data-tab],[data-rg],[data-st],[data-r],#back,#more"); if (!t) return;
+  if (t.id === "back") return closeDetail();
+  if (t.id === "more") { state.shown = 9999; return renderList(); }
+  if (t.dataset.id) return openDetail(t.dataset.id);
+  if (t.dataset.tab) { state.tab = t.dataset.tab; state.status = null; state.shown = 30; store.set("tab", state.tab); renderHero(); return renderList(); }
+  if (t.dataset.rg) { state.region = t.dataset.rg; state.shown = 30; return renderList(); }
+  if (t.dataset.st) { state.status = state.status === t.dataset.st ? null : t.dataset.st; state.shown = 30; renderHero(); renderList(); return $("#tabs").scrollIntoView({behavior:"smooth"}); }
+  if (t.dataset.r) { chartRange = +t.dataset.r; store.set("range", chartRange); document.querySelectorAll("#rng button").forEach(b=>b.classList.toggle("on", b===t)); return drawChart(); }
+});
+document.addEventListener("input", e => {
+  if (e.target.id === "q") { state.q = e.target.value.trim(); state.shown = 30; renderList(); }
+  if ((e.target.id === "depot" || e.target.id === "risk") && cur) {
+    const v = parseFloat(e.target.value); if (!(v > 0)) return;
+    store.set(e.target.id, v); $("#calcout").innerHTML = calcHtml(cur);
+  }
+});
+$("#sort").addEventListener("change", e => { state.sort = e.target.value; store.set("sort", state.sort); renderList(); });
+window.addEventListener("popstate", () => { const id = location.hash.slice(1); id && byId[id] ? openDetail(id, false) : closeDetail(false); });
+const ro = new ResizeObserver(() => drawChart()); ro.observe(document.body);
+
+fetch("data.json?v=" + Date.now()).then(r => r.json()).then(d => {
+  DATA = d; d.items.forEach(r => byId[r.id] = r);
+  $("#sort").value = state.sort;
+  const gen = new Date(d.generated);
+  $("#stamp").innerHTML = `Stand ${esc(fmtDate(d.date))}<br>aktualisiert ${esc(gen.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"}))} Uhr`;
+  if (d.market.failed.length) $("#foot").textContent += ` Heute nicht geladen: ${d.market.failed.join(", ")}.`;
+  if (state.tab === "sig" && !d.items.some(r => r.status === "BUY" || r.status === "SELL")) state.tab = "watch";
+  renderHero(); renderTodo(); renderList();
+  const id = location.hash.slice(1); if (id && byId[id]) openDetail(id, false);
+}).catch(() => { $("#todo").innerHTML = `<div class="empty"><b>Daten konnten nicht geladen werden.</b> Bitte später erneut öffnen.</div>`; });
+}
+</script>
+</body>
+</html>
