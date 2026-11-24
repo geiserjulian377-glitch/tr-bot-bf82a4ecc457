@@ -17,7 +17,7 @@
     ["ASML", "ASML.AS", "Halbleiter"], ["LVMH", "MC.PA", "Luxus"], ["Hermès", "RMS.PA", "Luxus"],
     ["L'Oréal", "OR.PA", "Konsum"], ["TotalEnergies", "TTE.PA", "Energie"], ["Schneider Electric", "SU.PA", "Industrie"],
     ["Airbus", "AIR.PA", "Luftfahrt"], ["Novo Nordisk", "NOVO-B.CO", "Gesundheit"], ["Nestlé", "NESN.SW", "Konsum"],
-    ["Roche", "ROG.SW", "Gesundheit"], ["Novartis", "NOVN.SW", "Gesundheit"], ["UBS", "UBSG.SW", "Finanzen"],
+    ["Roche", "RHHBY", "Gesundheit"], ["Novartis", "NOVN.SW", "Gesundheit"], ["UBS", "UBSG.SW", "Finanzen"],
     ["Shell", "SHEL.L", "Energie"], ["AstraZeneca", "AZN.L", "Gesundheit"], ["HSBC", "HSBA.L", "Finanzen"],
     ["Unilever", "ULVR.L", "Konsum"], ["Rolls-Royce", "RR.L", "Luftfahrt"], ["Ferrari", "RACE.MI", "Auto"],
     ["UniCredit", "UCG.MI", "Finanzen"], ["Inditex", "ITX.MC", "Handel"], ["Santander", "SAN.MC", "Finanzen"],
