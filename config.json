@@ -1,0 +1,16 @@
+{
+  "watchlist": [
+    { "name": "MSCI World ETF", "ticker": "EUNL.DE" },
+    { "name": "SAP", "ticker": "SAP.DE" },
+    { "name": "Apple", "ticker": "APC.DE" },
+    { "name": "Bitcoin", "ticker": "BTC-EUR" }
+  ],
+  "fast_sma": 20,
+  "slow_sma": 50,
+  "stop_loss_pct": 8,
+  "position_size_eur": 1000,
+  "fee_per_order_eur": 1,
+  "history_years": 5,
+  "alert_lookback_days": 3,
+  "only_send_on_signal": false
+}

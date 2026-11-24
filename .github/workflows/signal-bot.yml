@@ -1,0 +1,23 @@
+name: Trading-Signal-Bot
+
+on:
+  schedule:
+    # Mo–Fr um 18:07 UTC (= 19:07 Uhr Winterzeit / 20:07 Uhr Sommerzeit),
+    # nach Xetra-Handelsschluss
+    - cron: "7 18 * * 1-5"
+  workflow_dispatch: {}   # erlaubt "Run workflow" per Hand
+
+jobs:
+  signale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Signale berechnen und senden
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python bot.py
