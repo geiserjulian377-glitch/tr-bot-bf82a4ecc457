@@ -224,8 +224,8 @@ def send_ntfy(topic, title, text, urgent):
     urllib.request.urlopen(req, timeout=30).close()
 
 
-def send(text, title, urgent):
-    topic = os.environ.get("NTFY_TOPIC")
+def send(text, title, urgent, cfg):
+    topic = os.environ.get("NTFY_TOPIC") or cfg.get("ntfy_topic")
     if topic:
         send_ntfy(topic, title, text, urgent)
     else:
@@ -277,7 +277,7 @@ def main():
     if only_print:
         print(plain(msg))
     else:
-        send(msg, "Trading-Bot: NEUES SIGNAL" if any_signal else "Trading-Bot: Tagesbericht", any_signal)
+        send(msg, "Trading-Bot: NEUES SIGNAL" if any_signal else "Trading-Bot: Tagesbericht", any_signal, cfg)
         print("Nachricht gesendet.")
 
 

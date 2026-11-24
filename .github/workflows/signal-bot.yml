@@ -6,6 +6,8 @@ on:
     # nach Xetra-Handelsschluss
     - cron: "7 18 * * 1-5"
   workflow_dispatch: {}   # erlaubt "Run workflow" per Hand
+  push:
+    branches: [main]      # nach jeder Änderung (z. B. config.json) sofort ein Bericht
 
 jobs:
   signale:
