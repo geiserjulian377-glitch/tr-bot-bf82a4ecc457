@@ -233,7 +233,7 @@ def analyse(item, prices, cur, fx, cfg):
         "rsi": rsi(closes[-300:]),
         "macd_hist_pct": macd_hist / price * 100,
         "dist200": (price / s200[-1] - 1) * 100 if s200[-1] else None,
-        "slope50": (slow[-1] / slow[-21] - 1) * 100 if slow[-21] else None,
+        "slope50": (slow[-1] / slow[-21] - 1) * 100 if len(slow) > 21 and slow[-21] else None,
         "gap": (fast[-1] / slow[-1] - 1) * 100,
         "r1d": ret(closes, 1), "r1m": ret(closes, 21), "r3m": ret(closes, 63), "r1y": ret(closes, 252),
         "vol": vol,
@@ -243,7 +243,7 @@ def analyse(item, prices, cur, fx, cfg):
 
     # ---- Score 0–100: Trend 40, Momentum 25, RSI 15, Backtest 15, Risiko 5
     parts = {}
-    parts["Trend"] = (20 if ind["dist200"] is not None and ind["dist200"] > 0 else 0) \
+    parts["Trend"] = (10 if ind["dist200"] is None else 20 if ind["dist200"] > 0 else 0) \
         + (10 if (ind["slope50"] or 0) > 0 else 0) + (10 if ind["gap"] > 0 else 0)
     parts["Momentum"] = round(clamp(((ind["r3m"] or 0) + 10) / 30) * 15 + (10 if macd_hist > 0 else 0))
     r = ind["rsi"]
@@ -268,6 +268,8 @@ def analyse(item, prices, cur, fx, cfg):
             add("+", f"Kurs liegt {de(ind['dist200'])} % über der 200-Tage-Linie – langfristiger Aufwärtstrend.")
         else:
             add("-", f"Kurs liegt {de(abs(ind['dist200']))} % unter der 200-Tage-Linie – langfristig im Abwärtstrend.")
+    else:
+        add("~", f"Erst {len(closes)} Handelstage an der Börse – langfristiger Trend und Statistik noch begrenzt.")
     add("+" if ind["gap"] > 0 else "-",
         f"SMA{cfg['fast_sma']} liegt {de(ind['gap'], '+.1f')} % zum SMA{cfg['slow_sma']} – "
         + ("kurzfristiger Trend zeigt nach oben." if ind["gap"] > 0 else "kurzfristiger Trend zeigt nach unten."))
@@ -369,7 +371,7 @@ def main():
             prices, cur = demo_prices(i) if demo else fetch_prices(it["ticker"], cfg.get("history_years", 5))
             if not demo:
                 time.sleep(0.25)
-            if len(prices) < 260:
+            if len(prices) < cfg["slow_sma"] + 15:
                 raise ValueError(f"nur {len(prices)} Kurstage")
             raw.append((it, prices, cur))
         except Exception as e:
@@ -415,6 +417,11 @@ def main():
     print(msg)
     if failed:
         print("Nicht geladen:", ", ".join(failed))
+    for r in results:
+        p = r["rec"]
+        print(f"WERT {r['id']} {r['status']} score={r['score']} preis={r['price']:.2f}{r['cur']} "
+              f"stop={p.get('stop') or 0:.2f} d200={r['ind']['dist200'] if r['ind']['dist200'] is None else round(r['ind']['dist200'], 1)} "
+              f"rsi={r['ind']['rsi']:.0f} r3m={r['ind']['r3m'] if r['ind']['r3m'] is None else round(r['ind']['r3m'], 1)}")
 
     app = cfg["app_url"]
     nb = sum(r["status"] == "BUY" for r in sig)

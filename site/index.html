@@ -171,6 +171,47 @@ summary{font-weight:700;cursor:pointer}
 details p{color:var(--mut);font-size:14px}
 footer{color:var(--dim);font-size:12px;padding:10px 0 40px}
 .load{padding:80px 0;text-align:center;color:var(--mut)}
+/* ---- Depot */
+.dep{background:linear-gradient(160deg,#122238 0%,var(--card) 65%);border:1px solid var(--line);border-radius:24px;padding:18px;margin-top:6px}
+.dep .hd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.dep .lbl{font-size:13px;color:var(--mut);font-weight:600}
+.dep .tot{font-size:clamp(30px,8vw,38px);font-weight:800;line-height:1.1;letter-spacing:-.02em}
+.dep .pl{font-size:15px;font-weight:700;margin-top:2px}
+.edit{border:1px solid var(--line);background:#0b0f15;border-radius:12px;padding:8px 12px;font-weight:700;font-size:13px;cursor:pointer;min-height:40px}
+.alloc{display:flex;height:10px;border-radius:6px;overflow:hidden;gap:2px;margin:16px 0 8px}
+.alloc i{display:block;height:100%}
+.aleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--mut)}
+.aleg b{display:inline-block;width:8px;height:8px;border-radius:3px;margin-right:5px}
+.dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+.dstats div{background:#0b0f15;border-radius:12px;padding:8px 10px}
+.dstats span{display:block;font-size:11px;color:var(--mut)}
+.dstats b{font-size:16px}
+.warn{display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px;margin-top:12px;padding:10px 12px;border-radius:14px;background:#ffb5471a;color:#ffd79a;font-size:13px;line-height:1.45}
+.warn i{font-style:normal;font-weight:800}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:14px 0 12px;border-top:1px solid #1d2838;cursor:pointer}
+.hrow:first-of-type{margin-top:14px}
+.hrow .n{font-weight:700;font-size:16px}
+.hrow .s{font-size:12px;color:var(--mut)}
+.hrow .v{text-align:right}
+.hrow .v b{display:block;font-size:15px}
+.hrow .v span{font-size:13px;font-weight:700}
+.adv{grid-column:1/-1;display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;margin-top:6px;font-size:13px;line-height:1.45;color:#d3dbe6;background:#0b0f15;border-radius:12px;padding:9px 10px}
+.adv i{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px}
+.adv.t-p i{background:#2ee59d22;color:var(--buy)}.adv.t-m i{background:#ff5c7a22;color:var(--sell)}.adv.t-n i{background:#ffb54722;color:var(--hold)}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}input[type=number]{-moz-appearance:textfield}
+.mine{display:inline-block;font-size:10px;font-weight:800;padding:1px 6px;border-radius:5px;background:#5ea8ff26;color:var(--blue);margin-left:6px;vertical-align:2px}
+#sheet{position:fixed;inset:0;z-index:30;background:#000a;display:none;align-items:flex-end;justify-content:center}
+#sheet.open{display:flex}
+.sh{width:100%;max-width:720px;max-height:88vh;overflow-y:auto;background:var(--bg2);border-radius:24px 24px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.sh h3{margin:0 0 4px;font-size:19px;display:flex;justify-content:space-between;align-items:center}
+.sh p{margin:0 0 12px;color:var(--mut);font-size:13px}
+.er{display:grid;grid-template-columns:minmax(0,1fr) 96px 96px 40px;gap:8px;align-items:end;padding:10px 0;border-top:1px solid #1d2838}
+.er label{font-size:11px;color:var(--mut)}
+.er input,.er select{width:100%;margin-top:3px;background:#0b0f15;border:1px solid var(--line);border-radius:10px;padding:9px 6px;font-size:16px;min-height:42px}
+.er .x{border:0;background:#ff5c7a22;color:var(--sell);border-radius:10px;height:42px;font-weight:800;cursor:pointer}
+.er .nm{font-weight:700;font-size:14px;padding-bottom:10px}
+.addb{width:100%;margin-top:12px;border:0;background:var(--ink);color:var(--bg);border-radius:14px;padding:13px;font-weight:800;cursor:pointer;min-height:46px}
+@media(max-width:420px){.er{grid-template-columns:minmax(0,1fr) 78px 78px 36px;gap:6px}}
 @media(max-width:420px){
   .hero{grid-template-columns:118px minmax(0,1fr);gap:14px}.ring{width:118px;height:118px}.ring b{font-size:28px}
   .mood h1{font-size:20px}
@@ -190,6 +231,8 @@ footer{color:var(--dim);font-size:12px;padding:10px 0 40px}
 </div></header>
 
 <main class="wrap">
+  <h2>Mein Depot <small id="depSub"></small></h2>
+  <div id="depot"></div>
   <h2>Heute zu tun <small id="todoSub"></small></h2>
   <div class="todo" id="todo"><div class="load">Daten werden geladen …</div></div>
 
@@ -223,6 +266,7 @@ footer{color:var(--dim);font-size:12px;padding:10px 0 40px}
 </main>
 
 <section id="detail" aria-hidden="true"></section>
+<div id="sheet" role="dialog" aria-modal="true"><div class="sh" id="sh"></div></div>
 
 <script>
 {
@@ -250,6 +294,83 @@ function spark(v, color) {
   const lo = Math.min(...pts), hi = Math.max(...pts), w = 74, h = 30;
   const d = pts.map((y, i) => `${(i/(pts.length-1)*w).toFixed(1)},${(h-2-(y-lo)/((hi-lo)||1)*(h-4)).toFixed(1)}`).join(" ");
   return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="${d}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+}
+
+// ---------- Depot (bleibt nur auf diesem Gerät gespeichert)
+const PAL = ["#5ea8ff","#2ee59d","#ffb547","#a78bfa","#38d6e0","#ff5c7a","#f472b6","#94a3b8"];
+let depot = store.get("positions", []);
+const saveDepot = () => store.set("positions", depot);
+const eurPrice = r => r.price * r.eur_rate;
+const held = id => depot.find(h => h.id === id);
+function importFromHash() {
+  const m = location.hash.match(/^#depot=(.+)$/); if (!m) return false;
+  const out = [];
+  decodeURIComponent(m[1]).split(",").forEach(part => {
+    const [id, value, cost] = part.split(":"); const r = byId[id];
+    if (r && +value > 0) out.push({id, shares: +value / eurPrice(r), cost: +cost || +value});
+  });
+  if (out.length) { depot = out; saveDepot(); }
+  history.replaceState(null, "", location.pathname);
+  return true;
+}
+function advice(r) {
+  const sp = DATA.params.stop_loss_pct, rec = r.rec, st = r.stats;
+  const holdBetter = st.n >= 3 && st.buy_hold_pct > st.strategy_pct;
+  if (r.status === "SELL") return ["m", `Verkaufen – ${rec.reason}. Die Regel steigt hier aus.`];
+  if (r.status === "HOLD" || r.status === "BUY")
+    return ["p", `Halten. Stop-Loss in Trade Republic auf ${money(rec.stop, r.cur)} setzen – fällt der Kurs darunter, automatisch raus.`];
+  if (r.region === "ETFs")
+    return ["n", `Gerade kein Aufwärtstrend. Als langfristige Basis trotzdem halten${holdBetter ? " – bei diesem ETF war Halten historisch besser als Timing" : ""}. Nachkaufen lieber per Sparplan.`];
+  return ["m", `Kein Aufwärtstrend – die Regel wäre hier nicht investiert. Verkaufen oder zumindest einen Schutz-Stop bei ${money(r.price * (1 - sp / 100), r.cur)} setzen.`];
+}
+function renderDepot() {
+  const hs = depot.filter(h => byId[h.id]);
+  if (!hs.length) {
+    $("#depSub").textContent = "";
+    $("#depot").innerHTML = `<div class="empty"><b>Noch keine Positionen.</b> Trag deine Aktien ein, dann bekommst du für jede eine eigene Empfehlung.<button class="addb" data-act="edit">Positionen eintragen</button></div>`;
+    return;
+  }
+  const rows = hs.map((h, i) => { const r = byId[h.id], v = h.shares * eurPrice(r); return {h, r, v, pl: v - h.cost, c: PAL[i % PAL.length]}; })
+    .sort((a, b) => b.v - a.v);
+  const tot = rows.reduce((a, x) => a + x.v, 0), cost = rows.reduce((a, x) => a + x.h.cost, 0), pl = tot - cost;
+  const wScore = rows.reduce((a, x) => a + x.r.score * x.v, 0) / tot;
+  const wVol = rows.reduce((a, x) => a + x.r.ind.vol * x.v, 0) / tot;
+  const day = rows.reduce((a, x) => a + x.v * (x.r.ind.r1d ?? 0) / 100, 0);
+  const warns = [];
+  rows.forEach(x => { if (x.v / tot > 0.35 && x.r.region !== "ETFs") warns.push(`<b>${esc(x.r.name)}</b> macht ${nf(x.v / tot * 100, 0)}\u202f% deines Depots aus. Ein Einbruch dieser einen Aktie trifft dich stark – breiter streuen, z. B. über den ETF.`); });
+  const sells = rows.filter(x => x.r.status === "SELL" || (x.r.status === "WAIT" && x.r.region !== "ETFs"));
+  if (sells.length) warns.push(`${sells.length} von ${rows.length} Positionen sind laut Regel nicht im Aufwärtstrend: ${sells.map(x => esc(x.r.name)).join(", ")}.`);
+  if (wVol > 45) warns.push(`Dein Depot schwankt stark (Ø ${nf(wVol, 0)}\u202f% p.a.). Rückgänge von 20–30\u202f% sind damit jederzeit möglich.`);
+  $("#depSub").textContent = `${rows.length} Positionen`;
+  $("#depot").innerHTML = `<div class="dep">
+    <div class="hd"><div><div class="lbl">Depotwert</div><div class="tot num">${nf(tot, 2)}\u202f€</div>
+      <div class="pl num ${cls(pl)}">${pl >= 0 ? "+" : "−"}${nf(Math.abs(pl), 2)}\u202f€ · ${pct(pl / cost * 100)} <span class="wait" style="font-weight:500">seit Kauf</span></div></div>
+      <button class="edit" data-act="edit">Bearbeiten</button></div>
+    <div class="alloc">${rows.map(x => `<i style="width:${x.v / tot * 100}%;background:${x.c}"></i>`).join("")}</div>
+    <div class="aleg">${rows.map(x => `<span><b style="background:${x.c}"></b>${esc(x.r.name)} ${nf(x.v / tot * 100, 0)}\u202f%</span>`).join("")}</div>
+    <div class="dstats"><div><span>Heute</span><b class="num ${cls(day)}">${day >= 0 ? "+" : "−"}${nf(Math.abs(day), 2)}\u202f€</b></div>
+      <div><span>Depot-Score</span><b class="num" style="color:${scoreColor(wScore)}">${Math.round(wScore)}</b></div>
+      <div><span>Schwankung</span><b class="num">${nf(wVol, 0)}\u202f%</b></div></div>
+    ${warns.map(w => `<div class="warn"><i>!</i><span>${w}</span></div>`).join("")}
+    ${rows.map(x => { const [t, txt] = advice(x.r); return `<div class="hrow" data-id="${esc(x.r.id)}">
+      <div><div class="n">${esc(x.r.name)}</div><div class="s"><span class="tag" style="background:color-mix(in srgb,${COLOR[x.r.status]} 22%,transparent);color:${COLOR[x.r.status]}">${LABEL[x.r.status]}</span>Score ${x.r.score}</div></div>
+      <div class="v"><b class="num">${nf(x.v, 2)}\u202f€</b><span class="num ${cls(x.pl)}">${x.pl >= 0 ? "+" : "−"}${nf(Math.abs(x.pl), 2)}\u202f€ (${pct(x.pl / x.h.cost * 100)})</span></div>
+      <div class="adv t-${t}"><i>${t === "p" ? "✓" : "!"}</i><span>${esc(txt)}</span></div></div>`; }).join("")}
+  </div>`;
+}
+function openSheet() {
+  const opts = [...DATA.items].sort((a, b) => a.name.localeCompare(b.name, "de")).map(r => `<option value="${esc(r.id)}">${esc(r.name)} (${esc(r.ticker)})</option>`).join("");
+  $("#sh").innerHTML = `<h3>Depot bearbeiten <button class="edit" data-act="close">Fertig</button></h3>
+    <p>Trag pro Position ein, wie viel du investiert hast und was sie laut Trade Republic gerade wert ist. Die Daten bleiben nur auf diesem Gerät.</p>
+    ${depot.filter(h => byId[h.id]).map((h, i) => { const r = byId[h.id]; return `<div class="er"><div class="nm">${esc(r.name)}</div>
+      <label>Investiert €<input type="number" inputmode="decimal" step="0.01" data-ed="cost" data-i="${i}" value="${h.cost.toFixed(2)}"></label>
+      <label>Wert jetzt €<input type="number" inputmode="decimal" step="0.01" data-ed="value" data-i="${i}" value="${(h.shares * eurPrice(r)).toFixed(2)}"></label>
+      <button class="x" data-del="${i}" aria-label="Entfernen">✕</button></div>`; }).join("")}
+    <div class="er" style="grid-template-columns:minmax(0,1fr)"><label>Neue Position<select id="newId">${opts}</select></label></div>
+    <div class="er" style="grid-template-columns:repeat(2,minmax(0,1fr))"><label>Investiert €<input id="newCost" type="number" inputmode="decimal" step="0.01" placeholder="100"></label>
+      <label>Wert jetzt €<input id="newVal" type="number" inputmode="decimal" step="0.01" placeholder="95"></label></div>
+    <button class="addb" data-act="add">Hinzufügen</button>`;
+  $("#sheet").classList.add("open");
 }
 
 // ---------- Übersicht
@@ -293,6 +414,7 @@ function renderTodo() {
   $("#todo").innerHTML = `<div class="empty"><b>Heute nichts kaufen oder verkaufen.</b> Bestehende Positionen halten und Stop-Loss prüfen.${watch.length?`<br><br>Am nächsten an einem Kaufsignal: ${watch.map(r=>`<b>${esc(r.name)}</b> (${pct(r.ind.gap)})`).join(", ")}.`:""}</div>`;
 }
 
+function renderAll() { renderHero(); renderDepot(); renderTodo(); renderList(); }
 function filtered() {
   let xs = DATA.items;
   if (state.status) xs = xs.filter(r => r.status === state.status);
@@ -315,7 +437,7 @@ function renderList() {
   $("#list").innerHTML = xs.slice(0, state.shown).map(r => `
     <div class="item" data-id="${esc(r.id)}">
       ${ring(r.score)}
-      <div><div class="n">${esc(r.name)}</div><div class="t"><span class="tag" style="background:color-mix(in srgb,${COLOR[r.status]} 22%,transparent);color:${COLOR[r.status]}">${LABEL[r.status]}</span>${esc(r.ticker)} · ${esc(r.region)}</div></div>
+      <div><div class="n">${esc(r.name)}${held(r.id) ? `<span class="mine">Depot</span>` : ""}</div><div class="t"><span class="tag" style="background:color-mix(in srgb,${COLOR[r.status]} 22%,transparent);color:${COLOR[r.status]}">${LABEL[r.status]}</span>${esc(r.ticker)} · ${esc(r.region)}</div></div>
       ${spark(r.spark, (r.ind.r3m ?? 0) >= 0 ? "#2ee59d" : "#ff5c7a")}
       <div class="p"><b class="num">${money(r.price, r.cur)}</b><span class="num ${cls(r.ind.r1d)}">${pct(r.ind.r1d)}</span></div>
     </div>`).join("");
@@ -427,6 +549,10 @@ function openDetail(id, push=true) {
         <div class="grid2">${posCells.map(([a,b])=>`<div><span>${a}</span><b class="num">${b}</b></div>`).join("")}</div>
       </div>
 
+      ${(() => { const h = held(r.id); if (!h) return ""; const v = h.shares * eurPrice(r), pl = v - h.cost, [t, txt] = advice(r);
+        return `<div class="panel"><h4>Deine Position <small>${nf(h.shares, 3)} Stück</small></h4>
+        <div class="grid2" style="margin-top:0"><div><span>Wert</span><b class="num">${nf(v, 2)}\u202f€</b></div><div><span>Seit Kauf</span><b class="num ${cls(pl)}">${pl >= 0 ? "+" : "−"}${nf(Math.abs(pl), 2)}\u202f€</b><span class="${cls(pl)}" style="font-size:13px;font-weight:700">${pct(pl / h.cost * 100)}</span></div></div>
+        <div class="adv t-${t}" style="margin-top:10px"><i>${t === "p" ? "✓" : "!"}</i><span>${esc(txt)}</span></div></div>`; })()}
       <div class="panel">
         <h4>Chart <div class="seg" id="rng">${[[63,"3M"],[130,"6M"],[260,"1J"]].map(([v,l])=>`<button data-r="${v}" class="${v==chartRange?"on":""}">${l}</button>`).join("")}</div></h4>
         <div class="fig" id="fig"><svg></svg><div class="tip" id="tip"></div></div>
@@ -464,6 +590,7 @@ function openDetail(id, push=true) {
   requestAnimationFrame(drawChart);
 }
 function closeDetail(push=true) {
+  renderDepot();
   const d = $("#detail"); d.classList.remove("open"); d.setAttribute("aria-hidden","true");
   document.body.style.overflow = ""; cur = null;
   if (push && location.hash) history.pushState(null, "", location.pathname);
@@ -471,7 +598,17 @@ function closeDetail(push=true) {
 
 // ---------- Ereignisse
 document.addEventListener("click", e => {
-  const t = e.target.closest("[data-id],[data-tab],[data-rg],[data-st],[data-r],#back,#more"); if (!t) return;
+  if (e.target.id === "sheet") { $("#sheet").classList.remove("open"); return renderAll(); }
+  const t = e.target.closest("[data-act],[data-del],[data-id],[data-tab],[data-rg],[data-st],[data-r],#back,#more"); if (!t) return;
+  if (t.dataset.act === "edit") return openSheet();
+  if (t.dataset.act === "close") { $("#sheet").classList.remove("open"); return renderAll(); }
+  if (t.dataset.del != null) { depot.splice(+t.dataset.del, 1); saveDepot(); return openSheet(); }
+  if (t.dataset.act === "add") {
+    const r = byId[$("#newId").value], cost = parseFloat($("#newCost").value), val = parseFloat($("#newVal").value) || cost;
+    if (!r || !(cost > 0)) return;
+    const ex = held(r.id); if (ex) { ex.cost += cost; ex.shares += val / eurPrice(r); } else depot.push({id: r.id, shares: val / eurPrice(r), cost});
+    saveDepot(); return openSheet();
+  }
   if (t.id === "back") return closeDetail();
   if (t.id === "more") { state.shown = 9999; return renderList(); }
   if (t.dataset.id) return openDetail(t.dataset.id);
@@ -479,6 +616,12 @@ document.addEventListener("click", e => {
   if (t.dataset.rg) { state.region = t.dataset.rg; state.shown = 30; return renderList(); }
   if (t.dataset.st) { state.status = state.status === t.dataset.st ? null : t.dataset.st; state.shown = 30; renderHero(); renderList(); return $("#tabs").scrollIntoView({behavior:"smooth"}); }
   if (t.dataset.r) { chartRange = +t.dataset.r; store.set("range", chartRange); document.querySelectorAll("#rng button").forEach(b=>b.classList.toggle("on", b===t)); return drawChart(); }
+});
+document.addEventListener("change", e => {
+  const ed = e.target.dataset.ed; if (!ed) return;
+  const h = depot[+e.target.dataset.i], v = parseFloat(e.target.value); if (!h || !(v > 0)) return;
+  if (ed === "cost") h.cost = v; else h.shares = v / eurPrice(byId[h.id]);
+  saveDepot();
 });
 document.addEventListener("input", e => {
   if (e.target.id === "q") { state.q = e.target.value.trim(); state.shown = 30; renderList(); }
@@ -498,7 +641,8 @@ fetch("data.json?v=" + Date.now()).then(r => r.json()).then(d => {
   $("#stamp").innerHTML = `Stand ${esc(fmtDate(d.date))}<br>aktualisiert ${esc(gen.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"}))} Uhr`;
   if (d.market.failed.length) $("#foot").textContent += ` Heute nicht geladen: ${d.market.failed.join(", ")}.`;
   if (state.tab === "sig" && !d.items.some(r => r.status === "BUY" || r.status === "SELL")) state.tab = "watch";
-  renderHero(); renderTodo(); renderList();
+  importFromHash();
+  renderAll();
   const id = location.hash.slice(1); if (id && byId[id]) openDetail(id, false);
 }).catch(() => { $("#todo").innerHTML = `<div class="empty"><b>Daten konnten nicht geladen werden.</b> Bitte später erneut öffnen.</div>`; });
 }
