@@ -33,7 +33,7 @@ body{overflow-x:clip;padding-bottom:env(safe-area-inset-bottom)}
 button,input,select{font:inherit;color:inherit}
 .wrap{max-width:720px;margin:0 auto;padding:0 16px}
 .num{font-variant-numeric:tabular-nums;white-space:nowrap}
-.buy{color:var(--buy)}.sell{color:var(--sell)}.hold{color:var(--hold)}.wait{color:var(--mut)}
+.trend{color:var(--blue)}.buy{color:var(--buy)}.sell{color:var(--sell)}.hold{color:var(--hold)}.wait{color:var(--mut)}
 .up{color:var(--buy)}.down{color:var(--sell)}
 
 /* ---- Kopf */
@@ -254,7 +254,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 
   <div class="tabs" role="tablist" id="tabs">
     <button data-tab="sig" class="on">Signale</button>
-    <button data-tab="hold">Halten</button>
+    <button data-tab="hold">Aufwärts</button>
     <button data-tab="watch">Kandidaten</button>
     <button data-tab="all">Alle</button>
   </div>
@@ -342,6 +342,21 @@ function advice(r) {
     return ["n", `Gerade kein Aufwärtstrend. Als langfristige Basis trotzdem halten${holdBetter ? " – bei diesem ETF war Halten historisch besser als Timing" : ""}. Nachkaufen lieber per Sparplan.`];
   return ["m", `Kein Aufwärtstrend – die Regel wäre hier nicht investiert. Verkaufen oder zumindest einen Schutz-Stop bei ${money(r.price * (1 - sp / 100), r.cur)} setzen.`];
 }
+// Persönliche Sicht: was bedeutet das Signal für DICH (hast du die Aktie oder nicht?)
+function view(r) {
+  const h = held(r.id), rec = r.rec, sp = DATA.params.stop_loss_pct;
+  if (h) {
+    if (r.status === "SELL") return {k:"SELL", label:"VERKAUFEN", color:"var(--sell)", text:`Du hast diese Aktie: verkaufen – ${rec.reason}.`};
+    if (r.status === "BUY" || r.status === "HOLD") return {k:"HOLD", label:"HALTEN", color:"var(--hold)", text:`Du hast diese Aktie: halten und Stop-Loss bei ${money(rec.stop, r.cur)} setzen.`};
+    const [t, txt] = advice(r);
+    return {k:"CHECK", label:"PRÜFEN", color: t === "m" ? "var(--sell)" : "var(--hold)", text: txt};
+  }
+  if (r.status === "BUY") return {k:"BUY", label:"KAUFEN", color:"var(--buy)", text: rec.text};
+  if (r.status === "SELL") return {k:"AVOID", label:"NICHT KAUFEN", color:"var(--wait)", text:`Trend ist gerade gekippt (${rec.reason}). Du hast die Aktie nicht – nichts zu tun, nicht einsteigen.`};
+  if (r.status === "HOLD") return {k:"TREND", label:"AUFWÄRTSTREND", color:"var(--blue)", text:`Im Aufwärtstrend seit ${fmtDate(rec.entry_date)} (${pct(rec.gain_pct)}). Das Kaufsignal ist ${rec.held} Tage her – wer jetzt noch einsteigt, nur mit Stop-Loss bei ${money(rec.stop, r.cur)}.`};
+  return {k:"WAIT", label:"WARTEN", color:"var(--wait)", text: rec.text};
+}
+
 function renderDepot() {
   const hs = depot.filter(h => byId[h.id]);
   if (!hs.length) {
@@ -372,7 +387,7 @@ function renderDepot() {
       <div><span>Schwankung</span><b class="num">${nf(wVol, 0)}\u202f%</b></div></div>
     ${warns.map(w => `<div class="warn"><i>!</i><span>${w}</span></div>`).join("")}
     ${rows.map(x => { const [t, txt] = advice(x.r); return `<div class="hrow" data-id="${esc(x.r.id)}">
-      <div><div class="n">${esc(x.r.name)}</div><div class="s"><span class="tag" style="background:color-mix(in srgb,${COLOR[x.r.status]} 22%,transparent);color:${COLOR[x.r.status]}">${LABEL[x.r.status]}</span>Score ${x.r.score}</div></div>
+      <div><div class="n">${esc(x.r.name)}</div><div class="s">${(v => `<span class="tag" style="background:color-mix(in srgb,${v.color} 22%,transparent);color:${v.color}">${v.label}</span>`)(view(x.r))}Score ${x.r.score}</div></div>
       <div class="v"><b class="num">${nf(x.v, 2)}\u202f€</b><span class="num ${cls(x.pl)}">${x.pl >= 0 ? "+" : "−"}${nf(Math.abs(x.pl), 2)}\u202f€ (${pct(x.pl / x.h.cost * 100)})</span></div>
       <div class="adv t-${t}"><i>${t === "p" ? "✓" : "!"}</i><span>${esc(txt)}</span></div></div>`; }).join("")}
   </div>`;
@@ -398,7 +413,8 @@ function renderHero() {
   const mood = b >= 65 ? ["Starker Markt", "Die meisten Werte liegen im Aufwärtstrend. Kaufsignale haben Rückenwind."]
     : b >= 45 ? ["Gemischter Markt", "Etwa die Hälfte der Werte ist im Aufwärtstrend. Nur Signale mit hohem Score beachten."]
     : ["Schwacher Markt", "Die meisten Werte sind im Abwärtstrend. Vorsicht bei Käufen, Stop-Loss konsequent nutzen."];
-  const cnt = m.counts;
+  const cnt = {BUY:0, SELL:0, TREND:0, WAIT:0};
+  DATA.items.forEach(r => { const k = view(r).k; if (k in cnt) cnt[k]++; });
   $("#hero").innerHTML = `
     <div class="hero">
       <div class="ring"><svg viewBox="0 0 150 150">
@@ -408,37 +424,37 @@ function renderHero() {
       <div class="mood"><h1>${mood[0]}</h1><p>${mood[1]}</p><p style="margin-top:6px">Ø Score ${Math.round(m.avg_score)} · ${DATA.items.length} Werte weltweit</p></div>
     </div>
     <div class="counts">
-      ${["BUY","SELL","HOLD","WAIT"].map(k=>`<button class="cnt ${k.toLowerCase()} ${state.status===k?"on":""}" data-st="${k}"><b>${cnt[k]}</b><span>${{BUY:"Kaufen",SELL:"Verkaufen",HOLD:"Halten",WAIT:"Warten"}[k]}</span></button>`).join("")}
+      ${[["BUY","Kaufen","buy"],["SELL","Verkaufen","sell"],["TREND","Aufwärts","trend"],["WAIT","Warten","wait"]].map(([k,l,c])=>`<button class="cnt ${c} ${state.status===k?"on":""}" data-st="${k}"><b>${cnt[k]}</b><span>${l}</span></button>`).join("")}
     </div>`;
 }
 
 function sigCard(r) {
-  const rec = r.rec, k = COLOR[r.status];
+  const rec = r.rec, v = view(r), k = v.color;
   const cells = r.status === "SELL"
     ? [["Verkaufen bei", money(r.price, r.cur)], ["Grund", esc(rec.reason)], ["Score", r.score]]
     : [["Kaufen bei", money(r.price, r.cur)], ["Stop-Loss", money(rec.stop, r.cur)], ["Ø Haltedauer", Math.round(r.stats.avg_days) + " Tage"]];
   return `<article class="sig" style="--k:${k}" data-id="${esc(r.id)}">
-    <div class="row1"><div><div class="verb">${LABEL[r.status]} · Vertrauen ${rec.confidence}</div><h3>${esc(r.name)}</h3>
+    <div class="row1"><div><div class="verb">${v.label}${held(r.id) ? " · Im Depot" : ` · Vertrauen ${rec.confidence}`}</div><h3>${esc(r.name)}</h3>
     <div class="meta">${esc(r.ticker)} · ${esc(r.region)} · ${esc(r.sector)}</div></div>${ring(r.score, 52, 5)}</div>
-    <p>${esc(rec.text)}</p>
+    <p>${esc(v.text)}</p>
     <div class="kv">${cells.map(([a,b])=>`<div><span>${a}</span><b class="num">${b}</b></div>`).join("")}</div>
   </article>`;
 }
 
 function renderTodo() {
-  const sig = DATA.items.filter(r => r.status === "BUY" || r.status === "SELL").sort((a,b)=>(a.status>b.status?1:-1)||b.score-a.score);
+  const sig = DATA.items.filter(r => ["BUY","SELL"].includes(view(r).k)).sort((a,b)=>(view(a).k === "SELL" ? -1 : 0) - (view(b).k === "SELL" ? -1 : 0) || b.score-a.score);
   $("#todoSub").textContent = sig.length ? `${sig.length} Signal${sig.length>1?"e":""}` : "";
   if (sig.length) { $("#todo").innerHTML = sig.map(sigCard).join(""); return; }
   const watch = DATA.items.filter(r => r.rec.watch).sort((a,b)=>b.ind.gap-a.ind.gap).slice(0,3);
-  $("#todo").innerHTML = `<div class="empty"><b>Heute nichts kaufen oder verkaufen.</b> Bestehende Positionen halten und Stop-Loss prüfen.${watch.length?`<br><br>Am nächsten an einem Kaufsignal: ${watch.map(r=>`<b>${esc(r.name)}</b> (${pct(r.ind.gap)})`).join(", ")}.`:""}</div>`;
+  $("#todo").innerHTML = `<div class="empty"><b>Heute nichts kaufen oder verkaufen.</b> Deine Positionen siehst du oben unter „Mein Depot“.${watch.length?`<br><br>Am nächsten an einem Kaufsignal: ${watch.map(r=>`<b>${esc(r.name)}</b> (${pct(r.ind.gap)})`).join(", ")}.`:""}</div>`;
 }
 
 function renderAll() { renderHero(); renderDepot(); renderTodo(); renderList(); }
 function filtered() {
   let xs = DATA.items;
-  if (state.status) xs = xs.filter(r => r.status === state.status);
-  else if (state.tab === "sig") xs = xs.filter(r => r.status === "BUY" || r.status === "SELL");
-  else if (state.tab === "hold") xs = xs.filter(r => r.status === "HOLD");
+  if (state.status) xs = xs.filter(r => view(r).k === state.status);
+  else if (state.tab === "sig") xs = xs.filter(r => ["BUY","SELL"].includes(view(r).k));
+  else if (state.tab === "hold") xs = xs.filter(r => ["TREND","HOLD"].includes(view(r).k));
   else if (state.tab === "watch") xs = xs.filter(r => r.status === "WAIT" && r.ind.gap < 0).sort((a,b)=>b.ind.gap-a.ind.gap);
   if (state.region !== "Alle") xs = xs.filter(r => r.region === state.region);
   if (state.q) { const q = state.q.toLowerCase(); xs = xs.filter(r => (r.name + " " + r.ticker + " " + r.sector).toLowerCase().includes(q)); }
@@ -456,7 +472,7 @@ function renderList() {
   $("#list").innerHTML = xs.slice(0, state.shown).map(r => `
     <div class="item" data-id="${esc(r.id)}">
       ${ring(r.score)}
-      <div><div class="n">${esc(r.name)}${held(r.id) ? `<span class="mine">Depot</span>` : ""}</div><div class="t"><span class="tag" style="background:color-mix(in srgb,${COLOR[r.status]} 22%,transparent);color:${COLOR[r.status]}">${LABEL[r.status]}</span>${esc(r.ticker)}${r.analyst ? `<span class="ziel ${cls(r.analyst.upside)}">Ziel ${pct(r.analyst.upside, 0)}</span>` : ` · ${esc(r.region)}`}</div></div>
+      <div><div class="n">${esc(r.name)}${held(r.id) ? `<span class="mine">Depot</span>` : ""}</div><div class="t">${(v => `<span class="tag" style="background:color-mix(in srgb,${v.color} 22%,transparent);color:${v.color}">${v.label}</span>`)(view(r))}${esc(r.ticker)}${r.analyst ? `<span class="ziel ${cls(r.analyst.upside)}">Ziel ${pct(r.analyst.upside, 0)}</span>` : ` · ${esc(r.region)}`}</div></div>
       ${spark(r.spark, (r.ind.r3m ?? 0) >= 0 ? "#2ee59d" : "#ff5c7a")}
       <div class="p"><b class="num">${money(r.price, r.cur)}</b><span class="num ${cls(r.ind.r1d)}">${pct(r.ind.r1d)}</span></div>
     </div>`).join("");
@@ -520,8 +536,8 @@ function calcHtml(r) {
 function openDetail(id, push=true) {
   const r = byId[id]; if (!r) return;
   cur = r;
-  const st = r.stats, ind = r.ind, rec = r.rec, k = COLOR[r.status];
-  const posCells = rec.stop != null && r.status !== "SELL" ? [
+  const st = r.stats, ind = r.ind, rec = r.rec, vw = view(r), k = vw.color;
+  const posCells = rec.stop != null && r.status !== "SELL" && (held(r.id) || r.status === "BUY") ? [
     ["Einstieg", money(rec.entry, r.cur) + (rec.entry_date ? `<br><span class="wait" style="font-size:12px">${fmtDate(rec.entry_date)}</span>` : "")],
     ["Stop-Loss", `<span class="sell">${money(rec.stop, r.cur)}</span>`],
     ["Seit Kauf", `<span class="${cls(rec.gain_pct)}">${pct(rec.gain_pct)}</span>`],
@@ -563,8 +579,8 @@ function openDetail(id, push=true) {
       <div class="rets">${[["1T",ind.r1d],["1M",ind.r1m],["3M",ind.r3m],["1J",ind.r1y]].map(([a,b])=>`<span class="num ${cls(b)}"><i>${a}</i>${pct(b)}</span>`).join("")}</div></div>
 
       <div class="panel action" style="--k:${k}">
-        <div class="verb">${LABEL[r.status]}<span class="conf">Vertrauen ${rec.confidence}</span></div>
-        <p>${esc(rec.text)}</p>
+        <div class="verb">${vw.label}<span class="conf">${held(r.id) ? "Im Depot" : "Vertrauen " + rec.confidence}</span></div>
+        <p>${esc(vw.text)}</p>
         <div class="grid2">${posCells.map(([a,b])=>`<div><span>${a}</span><b class="num">${b}</b></div>`).join("")}</div>
         <div class="lens"><div><span>Chart-Trend</span><b class="${(ind.dist200 ?? ind.gap) > 0 ? "up" : "down"}">${(ind.dist200 ?? ind.gap) > 0 ? "▲ Aufwärts" : "▼ Abwärts"}</b></div>
         <div><span>Analysten (12 Monate)</span><b class="${r.analyst ? cls(r.analyst.upside) : "wait"}">${r.analyst ? `${esc(r.analyst.label)} · ${pct(r.analyst.upside, 0)}` : "keine Daten"}</b></div></div>
@@ -674,8 +690,9 @@ fetch("data.json?v=" + Date.now()).then(r => r.json()).then(d => {
   const gen = new Date(d.generated);
   $("#stamp").innerHTML = `Stand ${esc(fmtDate(d.date))}<br>aktualisiert ${esc(gen.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"}))} Uhr`;
   if (d.market.failed.length) $("#foot").textContent += ` Heute nicht geladen: ${d.market.failed.join(", ")}.`;
-  if (state.tab === "sig" && !d.items.some(r => r.status === "BUY" || r.status === "SELL")) state.tab = "watch";
+
   importFromHash();
+  if (state.tab === "sig" && !d.items.some(r => ["BUY","SELL"].includes(view(r).k))) state.tab = "watch";
   renderAll();
   const id = location.hash.slice(1); if (id && byId[id]) openDetail(id, false);
 }).catch(() => { $("#todo").innerHTML = `<div class="empty"><b>Daten konnten nicht geladen werden.</b> Bitte später erneut öffnen.</div>`; });

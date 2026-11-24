@@ -500,7 +500,7 @@ def main():
     hold = [r for r in results if r["status"] == "HOLD"]
     lines = []
     for r in sig:
-        verb = "KAUFEN" if r["status"] == "BUY" else "VERKAUFEN"
+        verb = "Kaufsignal" if r["status"] == "BUY" else "Trend gekippt (nur relevant, wenn du sie hast)"
         lines.append(f"{'🟢' if r['status'] == 'BUY' else '🔴'} {verb}: {r['name']} {fmt(r['price'], r['cur'])} · Score {r['score']}")
     if not sig:
         lines.append("Heute keine neuen Kauf- oder Verkaufssignale.")
@@ -519,7 +519,7 @@ def main():
     nb = sum(r["status"] == "BUY" for r in sig)
     push = {
         "send": bool(sig) or not cfg.get("only_send_on_signal"),
-        "title": f"Signal-Radar: {nb}× Kaufen, {len(sig) - nb}× Verkaufen" if sig else "Signal-Radar: Tagesupdate",
+        "title": f"Signal-Radar: {nb}× Kaufsignal, {len(sig) - nb}× Trend gekippt" if sig else "Signal-Radar: Tagesupdate",
         "message": msg,
         "click": f"{app}#{sig[0]['id']}" if sig else app,
         "priority": "high" if sig else "low",
