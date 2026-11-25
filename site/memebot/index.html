@@ -394,7 +394,7 @@ async function pretrain(manual) {
     const lists = [];
     for (const x of ["toptrending/1h", "toptraded/1h", "toptrending/6h"]) { await sleep(1500); const r = await getJSON(`https://lite-api.jup.ag/tokens/v2/${x}?limit=50`).catch(() => []); if (Array.isArray(r)) lists.push(...r); }
     const mints = [...new Set([...lists.map(t => t && t.id), ...Object.keys(lastPairs)].filter(Boolean))].filter(m => m !== SOL && m !== USDC);
-    const pairs = Object.values({...(await pairsFor(mints)), ...lastPairs}).filter(p => (p.liquidity?.usd || 0) >= C.minLiq).sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0)).slice(0, 24);
+    const pairs = Object.values({...(await pairsFor(mints)), ...lastPairs}).filter(p => (p.liquidity?.usd || 0) >= C.minLiq && Date.now() - (p.pairCreatedAt || 0) < 14 * 86400000)   // nur junge Coins, kein BTC & Co..sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0)).slice(0, 24);
     let n = 0, wins = 0, sum = 0, pools = 0;
     for (const p of pairs) {
       if ((S.pretrainSeen || {})[p.pairAddress] > Date.now() - 4 * 3600000) continue;   // denselben Verlauf nicht doppelt lernen
