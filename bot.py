@@ -764,10 +764,10 @@ def main():
             return None
         rid = re.sub(r"[^A-Za-z0-9]+", "-", it["ticker"]).strip("-")
         old = prev_items.get(rid, {}).get("analyst")
-        if mode == "quick" and prev:
+        if mode == "quick" and prev and rid in prev_items:
             return {k2: old[k2] for k2 in ("n", "mean", "high", "low", "rec", "rec_mean", "cur", "votes")} if old else None
-        return fetch_analyst(it["ticker"])
-    if not demo and (mode != "quick" or not prev):
+        return fetch_analyst(it["ticker"])   # Voll-Lauf oder neuer Wert ohne Cache
+    if not demo:
         _yahoo_session()
     with ThreadPoolExecutor(max_workers=1 if demo else 6) as ex:
         ans = list(ex.map(lambda a: analyst_for(*a), [(k, it, p[0]) for k, (it, p, _) in enumerate(raw)]))
