@@ -239,11 +239,11 @@ function signals(p, boosted) {
 }
 function filterReason(p) {
   const age = (Date.now() - (p.pairCreatedAt || 0)) / 3600000;
-  if (!p.pairCreatedAt || age > C.maxAgeH) return `älter als ${C.maxAgeH} Std.`;
-  if (p.dexId === "pumpfun" && !(p.liquidity?.usd)) return "noch in der Pump.fun-Startphase (zu früh, höchstes Risiko)";
-  if ((p.liquidity?.usd || 0) < C.minLiq) return `Liquidität ${usd(p.liquidity?.usd || 0, 0)} < ${usd(C.minLiq, 0)}`;
-  if ((p.volume?.h1 || 0) < C.minVolH1) return `Volumen 1 Std. ${usd(p.volume?.h1 || 0, 0)} zu klein`;
-  if ((p.priceChange?.h1 || 0) > C.maxH1 && (p.priceChange?.m5 || 0) > 0) return `schon ${pct(p.priceChange.h1)} in 1 Std. ohne Rücksetzer – nicht jagen`;
+  if (!p.pairCreatedAt || age > C.maxAgeH) return `zu alt: über ${C.maxAgeH} Std.`;
+  if (p.dexId === "pumpfun" && !(p.liquidity?.usd)) return "Pump.fun-Startphase: zu früh, höchstes Risiko";
+  if ((p.liquidity?.usd || 0) < C.minLiq) return `zu wenig Liquidität: ${usd(p.liquidity?.usd || 0, 0)} < ${usd(C.minLiq, 0)}`;
+  if ((p.volume?.h1 || 0) < C.minVolH1) return `zu wenig Volumen: ${usd(p.volume?.h1 || 0, 0)} in 1 Std.`;
+  if ((p.priceChange?.h1 || 0) > C.maxH1 && (p.priceChange?.m5 || 0) > 0) return `nicht jagen: schon ${pct(p.priceChange.h1)} in 1 Std. ohne Rücksetzer`;
   return null;
 }
 
@@ -350,14 +350,14 @@ async function cycle() {
     const cands = [], tally = {};
     for (const p of list) {
       const why = filterReason(p);
-      if (why) { S.stats.fil++; const k = why.replace(/[\d$.,%+−]+/g, "#").replace(/ +/g, " "); tally[k] = (tally[k] || 0) + 1; continue; }
+      if (why) { S.stats.fil++; const k = why.split(":")[0]; tally[k] = (tally[k] || 0) + 1; continue; }
       const sig = signals(p, boosted);
       if (sig.length < 2) { flow.push({p, st: `${sig.length} Signal – zu wenig`, c: "var(--mut)"}); continue; }
       S.stats.sig++; cands.push({p, sig});
     }
     if (!S.lastTally || Date.now() - S.lastTally > 300000) {
       S.lastTally = Date.now();
-      const parts = Object.entries(tally).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${n}× ${k.replace(/#/g, "…")}`);
+      const parts = Object.entries(tally).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${n}× ${k}`);
       log("INFO", "–", `Scan: ${list.length} frische Coins · ${cands.length} mit ≥2 Signalen` + (parts.length ? ` · aussortiert: ${parts.join(" · ")}` : ""));
     }
     cands.sort((a, b) => b.sig.length - a.sig.length || (b.p.volume?.m5 || 0) - (a.p.volume?.m5 || 0));
@@ -463,6 +463,7 @@ $("#recap").onclick = () => {
 };
 document.addEventListener("change", e => { const k = e.target.dataset.k; if (!k) return; C[k] = k === "ntfy" ? e.target.value.trim() : parseFloat(e.target.value); store.set("cfg", C); render(); });
 new ResizeObserver(() => drawEq()).observe($("#eqFig"));
+window.__memebot = {rugCheck, filterReason, signals};   // für Tests in der Konsole
 renderSettings(); render();
 }
 </script>
