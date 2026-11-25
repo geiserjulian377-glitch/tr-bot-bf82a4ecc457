@@ -201,7 +201,7 @@ if (store.get("cfgVer", 1) < 3) {   // v2: neue, ruhigere Ausstiegsregeln übern
 // ---------------- Zustand
 function fresh() { return {bal: C.startBal, start: Date.now(), startBal: C.startBal, pos: [], trades: [], log: [], eq: [[Date.now(), C.startBal]],
   wins: 0, losses: 0, streak: 0, peak: C.startBal, day: new Date().toDateString(), dayPeak: C.startBal, paused: false,
-  stats: {scan: 0, sig: 0, rug: 0, fil: 0}, holders: {}, block: {}, learn: {}, buys: [], shadow: [], slearn: {}}; }
+  stats: {scan: 0, sig: 0, rug: 0, fil: 0}, holders: {}, block: {}, learn: {}, buys: [], shadow: [], slearn: {}, rej: {}, explores: []}; }
 let S = store.get("state", null) || fresh();
 S.dayPeak0 = S.dayPeak0 || S.startBal; S.block = S.block || {}; S.learn = S.learn || {}; S.buys = S.buys || []; S.shadow = S.shadow || []; S.slearn = S.slearn || {}; S.brain = S.brain || null; S.pretrainBusy = false; S.rej = S.rej || {}; S.explores = S.explores || [];
 let confirmSeen = {}, guardAt = 0, lastPairs = {};
@@ -683,7 +683,7 @@ async function cycle() {
     cands.forEach(c => c.score = think(features(c.p, c.j, null, c.sig, null, lage.score)));   // Vorsortierung durch das Gehirn
     cands.sort((a, b) => b.score - a.score);
     S.buys = S.buys.filter(t => Date.now() - t < 3600000);
-    S.explores = S.explores.filter(t => Date.now() - t < 3600000);
+    S.explores = (S.explores || []).filter(t => Date.now() - t < 3600000); S.rej = S.rej || {};
     for (const {p, sig, j} of cands.slice(0, 8)) {
       const m = p.baseToken.address, key = setupKey(sig);
       let ch = null;
@@ -923,7 +923,8 @@ $("#start").onclick = () => { running = true; $("#start").hidden = true; $("#sto
   clearInterval(window.__ptI); window.__ptI = setInterval(() => { if (running) pretrain(false); }, 2 * 3600000); };
 $("#stop").onclick = () => { running = false; if (worker) worker.postMessage("stop"); $("#start").hidden = false; $("#stop").hidden = true; log("INFO", "–", "Bot gestoppt"); save(); render(); setPhase("gestoppt"); };
 $("#reset").onclick = () => { const b = $("#reset"); if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = "Wirklich zurücksetzen?"; setTimeout(() => { b.dataset.sure = ""; b.textContent = "Testgeld zurücksetzen"; }, 4000); return; }
-  b.dataset.sure = ""; b.textContent = "Testgeld zurücksetzen"; const keepLearn = S.learn, keepBlock = S.block; S = fresh(); S.learn = keepLearn; S.block = keepBlock; log("INFO", "–", "Testgeld zurückgesetzt – Gelerntes und Sperrliste bleiben erhalten"); save(); render(); };
+  b.dataset.sure = ""; b.textContent = "Testgeld zurücksetzen"; const keep = {learn: S.learn, block: S.block, brain: S.brain, slearn: S.slearn, rej: S.rej, pretrained: S.pretrained, pretrainSeen: S.pretrainSeen, shadow: (S.shadow || []).filter(x => !x.done)};
+  S = fresh(); Object.assign(S, keep); log("INFO", "–", "Testgeld zurückgesetzt – Gehirn, Gelerntes, Schatten-Trades und Sperrliste bleiben erhalten"); save(); render(); };
 $("#recap").onclick = () => {
   const eq = equity(), best = [...S.trades].sort((a, b) => b.ret - a.ret)[0], worst = [...S.trades].sort((a, b) => a.ret - b.ret)[0];
   const by = {}; S.trades.forEach(t => by[t.sym] = (by[t.sym] || 0) + (t.got - t.cost));
