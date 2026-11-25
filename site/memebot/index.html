@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0d10">
+<title>Meme-Bot Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE   Trading-Terminal: ruhig, präzise, jede Entscheidung mit Begründung
+IDEA    sechs Agenten in einer Kette – Scanner → Rug-Check → Sizer → Executor → Logger → Equity
+PICTURE Live-Fluss der Kandidaten durch die Prüfungen, darunter Position, Protokoll, Equity-Kurve
+COLOUR  Papierweiß/Graphit, Grün für Gewinn, Rot für Verlust, Bernstein für Warnungen
+LAYOUT  Kopfzeile mit Kontostand, links Agenten, rechts Fluss + Position + Log
+*/
+:root{--bg:#0b0d10;--panel:#12161b;--panel2:#171c23;--line:#232a33;--ink:#e9eef4;--mut:#8b96a4;--dim:#5a6470;
+--g:#2ee59d;--r:#ff5c7a;--a:#ffb547;--b:#5ea8ff;--v:#a78bfa;color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Manrope,system-ui,sans-serif}
+.mono,.num{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1280px;margin:0 auto;padding:18px}
+.up{color:var(--g)}.down{color:var(--r)}.mut{color:var(--mut)}
+button,input,select{font:inherit;color:inherit}
+/* Kopf */
+.head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:18px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:16px 20px}
+.logo{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 18%,#d9dee5 19% 60%,#9aa3ad 61%);display:grid;place-items:center;position:relative}
+.logo::before,.logo::after{content:"";position:absolute;width:6px;height:14px;border-radius:3px;background:#111;top:20px;transform:rotate(-12deg)}
+.logo::before{left:20px}.logo::after{left:30px}
+.title{font-family:"JetBrains Mono";font-size:24px;font-weight:700}
+.title b{color:var(--g)}
+.ver{font-size:11px;border:1px solid var(--a);color:var(--a);border-radius:6px;padding:1px 6px;margin-left:8px;vertical-align:4px}
+.status{font-family:"JetBrains Mono";font-size:13px;margin-top:2px}
+.status .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--dim);margin-right:6px}
+.status.on .dot{background:var(--g);box-shadow:0 0 10px var(--g);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.chip{display:inline-block;margin-top:6px;font-family:"JetBrains Mono";font-size:11px;padding:3px 8px;border-radius:6px;background:#2ee59d18;border:1px solid #2ee59d44;color:var(--g)}
+.kpis{display:grid;grid-template-columns:repeat(4,auto);gap:4px 26px;text-align:right}
+.kpis b{display:block;font-family:"JetBrains Mono";font-size:26px;line-height:1.1}
+.kpis span{font-size:11px;color:var(--mut)}
+.mode{font-family:"JetBrains Mono";font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--a);color:var(--a)}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.btn{border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:9px 14px;font-weight:700;cursor:pointer}
+.btn.go{background:var(--g);color:#06110a;border-color:var(--g)}
+.btn.stop{background:var(--r);color:#fff;border-color:var(--r)}
+/* Raster */
+.grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:14px;margin-top:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px}
+.card h3{margin:0 0 10px;font-size:12px;letter-spacing:.04em;color:var(--mut);font-family:"JetBrains Mono";font-weight:600;display:flex;justify-content:space-between}
+.agent{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:start;padding:10px 0;border-top:1px solid var(--line)}
+.agent:first-of-type{border-top:0}
+.agent i{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:13px}
+.agent b{font-family:"JetBrains Mono";font-size:13px}
+.agent p{margin:2px 0 0;font-size:12px;color:var(--mut)}
+.agent em{font-style:normal;font-size:12px;color:var(--ink)}
+.agent .tag{font-family:"JetBrains Mono";font-size:10px;padding:2px 6px;border-radius:5px;background:#ffffff10;color:var(--mut)}
+.agent.act{background:linear-gradient(90deg,#2ee59d10,transparent);border-radius:10px}
+.flow{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.cand{flex:0 0 150px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:12px}
+.cand b{font-family:"JetBrains Mono";font-size:13px}
+.cand .st{font-family:"JetBrains Mono";font-size:10px;margin-top:4px}
+.pipe{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+.pipe div{background:var(--panel2);border-radius:12px;padding:8px 10px}
+.pipe span{display:block;font-size:11px;color:var(--mut)}
+.pipe b{font-family:"JetBrains Mono";font-size:18px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-top:14px}
+.pos{font-family:"JetBrains Mono";font-size:12px;border-top:1px solid var(--line);padding:10px 0}
+.pos:first-child{border-top:0}
+.pos .row{display:flex;justify-content:space-between;gap:8px}
+.log{height:360px;overflow-y:auto;font-family:"JetBrains Mono";font-size:12px}
+.log div{display:grid;grid-template-columns:52px 64px minmax(0,1fr) auto;gap:8px;padding:5px 0;border-bottom:1px solid #1a2028}
+.lt{font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;text-align:center;height:fit-content}
+.ENTER{background:#2ee59d22;color:var(--g)}.EXIT{background:#5ea8ff22;color:var(--b)}.FILTER{background:#ffffff10;color:var(--mut)}.RISK{background:#ff5c7a22;color:var(--r)}.INFO{background:#ffb54722;color:var(--a)}
+.res{display:grid;grid-template-columns:70px minmax(0,1fr) auto;gap:10px;align-items:center;font-family:"JetBrains Mono";font-size:13px;margin:6px 0}
+.res .bar{height:8px;border-radius:5px;background:#ffffff12;overflow:hidden}.res .bar i{display:block;height:100%;background:var(--g)}
+.fig{position:relative;height:200px}.fig svg{position:absolute;inset:0;width:100%;height:100%}
+details{margin-top:14px}
+summary{cursor:pointer;font-weight:700}
+.set{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+.set label{font-size:11px;color:var(--mut);display:grid;gap:3px}
+.set input{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-family:"JetBrains Mono"}
+.note{font-size:12px;color:var(--mut);line-height:1.5}
+.warn{background:#ffb5471a;color:#ffd79a;border-radius:12px;padding:10px 12px;font-size:12px;margin-top:10px}
+a{color:var(--b)}
+@media(max-width:980px){.grid,.two{grid-template-columns:minmax(0,1fr)}.head{grid-template-columns:auto minmax(0,1fr)}.kpis{grid-column:1/-1;text-align:left;grid-template-columns:repeat(4,minmax(0,1fr))}.set{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.status.on .dot{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div class="logo" aria-hidden="true"></div>
+    <div>
+      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v1 · test</span></div>
+      <div class="status" id="status"><span class="dot"></span>gestoppt</div>
+      <div class="chip" id="phase">bereit</div>
+    </div>
+    <div class="kpis">
+      <div><b class="num" id="kBal">$0</b><span>Kontostand</span></div>
+      <div><b class="num" id="kTr">0</b><span>Trades</span></div>
+      <div><b class="num up" id="kW">0</b><span>Gewinne</span></div>
+      <div><b class="num down" id="kL">0</b><span>Verluste</span></div>
+    </div>
+  </div>
+
+  <div class="ctrl">
+    <button class="btn go" id="start">▶ Bot starten</button>
+    <button class="btn stop" id="stop" hidden>■ Stoppen</button>
+    <button class="btn" id="recap">Zusammenfassung</button>
+    <button class="btn" id="reset">Testgeld zurücksetzen</button>
+    <span class="mode" id="mode" title="Im Testmodus werden Käufe nur simuliert – mit echten Live-Kursen.">TESTMODUS · Spielgeld · echte Kurse</span>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>AGENTEN <span id="agOnline">6 online</span></h3>
+      <div id="agents"></div>
+    </div>
+    <div>
+      <div class="card">
+        <h3>LIVE-FLUSS · SCAN → CHECK → GRÖSSE → AUSFÜHRUNG <span id="lastScan">–</span></h3>
+        <div class="flow" id="flow"><div class="note">Starte den Bot – dann siehst du hier, welche Coins gerade geprüft werden.</div></div>
+        <div class="pipe">
+          <div><span>Gescannt</span><b class="num" id="pScan">0</b></div>
+          <div><span>Signal (≥2)</span><b class="num" id="pSig">0</b></div>
+          <div><span>Rug-Check bestanden</span><b class="num" id="pRug">0</b></div>
+          <div><span>Ausgesiebt gesamt</span><b class="num" id="pFil">0</b></div>
+        </div>
+      </div>
+      <div class="two">
+        <div class="card"><h3>OFFENE POSITIONEN <span id="posN">0</span></h3><div id="positions"><div class="note">Keine offene Position.</div></div></div>
+        <div class="card"><h3>ERGEBNIS · START vs. JETZT <span id="since">–</span></h3>
+          <div class="res"><span>START</span><div class="bar"><i id="barS" style="width:30%;background:var(--dim)"></i></div><b class="num" id="rStart">$0</b></div>
+          <div class="res"><span>JETZT</span><div class="bar"><i id="barN"></i></div><b class="num" id="rNow">$0</b></div>
+          <div class="fig" id="eqFig"><svg></svg></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px"><h3>PROTOKOLL · jede Entscheidung mit Grund <span id="logN">0 Zeilen</span></h3><div class="log" id="log"></div></div>
+    </div>
+  </div>
+
+  <details class="card" id="cfgBox">
+    <summary>Einstellungen &amp; Regeln</summary>
+    <div class="set" id="settings"></div>
+    <p class="note">Push aufs Handy: trag dein ntfy-Thema ein, dann meldet der Bot jeden Kauf und Verkauf. Einstellungen werden in diesem Browser gespeichert.</p>
+  </details>
+
+  <div class="card" style="margin-top:14px">
+    <h3>SO ARBEITET DER BOT</h3>
+    <p class="note"><b>1 Scanner:</b> holt alle 20 Sek. frische Solana-Coins (DexScreener: neue Profile, Boosts, Community-Übernahmen) und sucht Signale: Volumen-Spike, Kaufdruck (Käufe &gt; Verkäufe), Momentum, Holder-Wachstum, Trending. Mindestens 2 Signale.<br>
+    <b>2 Rug-Check:</b> keine Mint-/Freeze-Rechte, nicht als „rugged“ markiert, keine Gefahren-Warnung, Top-10-Halter unter Grenze, Entwickler-Anteil klein, Liquidität gesperrt/verbrannt, genug Halter – und ein echter Verkaufs-Test über Jupiter (Honeypot-Schutz).<br>
+    <b>3 Sizer:</b> Positionsgröße aus dem aktuellen Kontostand, max. 2 offene Positionen, nach 2 Verlusten in Folge halbe Größe.<br>
+    <b>4 Executor:</b> Gewinnmitnahme in Stufen (40 % bei 2×, 30 % bei 4×), Rest mit Trailing-Stop; harter Stop −12 %, Zeit-Stop nach 25 Min., Sofort-Ausstieg wenn Liquidität abgezogen wird.<br>
+    <b>5 Logger &amp; 6 Equity:</b> jede Entscheidung mit Grund, Kontostand-Kurve, Tageslimit −30 % vom Höchststand → Pause.</p>
+    <div class="warn"><b>Testmodus:</b> Käufe werden mit echten Live-Kursen nur simuliert (inkl. Gebühren und Kursabweichung). Echtes Geld setzt der Bot nicht ein. Memecoins sind extrem riskant – auch gute Filter fangen nicht jede Abzocke ab. Lass den Tab offen (am besten eigenes Fenster, nicht minimiert), damit der Bot durchgehend läuft.</div>
+  </div>
+</div>
+
+<script>
+{
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const usd = (x, d) => (x < 0 ? "−" : "") + "$" + Math.abs(x).toLocaleString("en-US", {minimumFractionDigits: d ?? 2, maximumFractionDigits: d ?? 2});
+const pct = x => (x > 0 ? "+" : x < 0 ? "−" : "") + Math.abs(x).toFixed(1) + "%";
+const px = x => x >= 1 ? x.toFixed(4) : x.toPrecision(4);
+const hhmm = t => new Date(t).toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"});
+const store = {get(k, d){ try { const v = localStorage.getItem("mb_" + k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } },
+               set(k, v){ try { localStorage.setItem("mb_" + k, JSON.stringify(v)); } catch(e){} }};
+const SOL = "So11111111111111111111111111111111111111112";
+
+// ---------------- Einstellungen (wie im Video, anpassbar)
+const DEF = {startBal: 70, maxAgeH: 6, minLiq: 40000, minVolH1: 25000, minHolders: 300, buyRatio: 65, spikeX: 2.5,
+  maxH1: 300, sizePct: 25, maxOpen: 2, top10Max: 35, devMax: 5, lpMin: 90, maxImpact: 10,
+  tp1: 2, tp1Pct: 40, tp2: 4, tp2Pct: 30, trail: 25, stop: 12, timeStopMin: 25, ddLimit: 30, fee: 0.5, ntfy: ""};
+const LABEL = {startBal: "Startkapital ($)", maxAgeH: "Max. Alter (Std.)", minLiq: "Min. Liquidität ($)", minVolH1: "Min. Volumen 1 Std. ($)",
+  minHolders: "Min. Halter", buyRatio: "Kaufdruck min. (%)", spikeX: "Volumen-Spike (×)", maxH1: "Nicht jagen über (+% 1 Std.)",
+  sizePct: "Größe je Trade (% Konto)", maxOpen: "Max. offene Positionen", top10Max: "Top-10-Halter max. (%)", devMax: "Entwickler max. (%)",
+  lpMin: "Liquidität gesperrt min. (%)", maxImpact: "Max. Kursauswirkung Verkauf (%)", tp1: "Gewinnstufe 1 (×)", tp1Pct: "verkaufen bei Stufe 1 (%)",
+  tp2: "Gewinnstufe 2 (×)", tp2Pct: "verkaufen bei Stufe 2 (%)", trail: "Trailing-Stop (%)", stop: "Harter Stop (−%)",
+  timeStopMin: "Zeit-Stop (Min.)", ddLimit: "Tageslimit (−% vom Hoch)", fee: "Gebühren je Seite (%)", ntfy: "ntfy-Thema (Push)"};
+let C = {...DEF, ...store.get("cfg", {})};
+
+// ---------------- Zustand
+function fresh() { return {bal: C.startBal, start: Date.now(), startBal: C.startBal, pos: [], trades: [], log: [], eq: [[Date.now(), C.startBal]],
+  wins: 0, losses: 0, streak: 0, peak: C.startBal, day: new Date().toDateString(), dayPeak: C.startBal, paused: false,
+  stats: {scan: 0, sig: 0, rug: 0, fil: 0}, holders: {}}; }
+let S = store.get("state", null) || fresh();
+let running = false, busy = false, rugCache = {}, filteredAt = {}, flow = [], agentNote = {};
+const save = () => { S.log = S.log.slice(-600); S.eq = S.eq.slice(-3000); store.set("state", S); };
+
+function log(type, sym, text, val) {
+  S.log.push({t: Date.now(), type, sym, text, val: val ?? ""});
+  if (S.log.length % 5 === 0) save();
+}
+async function getJSON(url, tries = 2) {
+  for (let i = 0; i < tries; i++) {
+    try { const r = await fetch(url, {cache: "no-store"}); if (r.status === 429) { await sleep(3000); continue; } if (!r.ok) throw new Error(r.status); return await r.json(); }
+    catch (e) { if (i === tries - 1) throw e; await sleep(800); }
+  }
+}
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function push(title, msg) {
+  if (C.ntfy) fetch("https://ntfy.sh/" + encodeURIComponent(C.ntfy), {method: "POST", body: msg, headers: {Title: title.replace(/[^\x20-\x7E]/g, "")}}).catch(() => {});
+  try { if (Notification.permission === "granted") new Notification(title, {body: msg}); } catch (e) {}
+}
+const equity = () => S.bal + S.pos.reduce((a, p) => a + p.qty * (p.last || p.entry), 0);
+
+// ---------------- 1 SCANNER
+async function universe() {
+  const urls = ["https://api.dexscreener.com/token-profiles/latest/v1", "https://api.dexscreener.com/token-boosts/latest/v1",
+    "https://api.dexscreener.com/token-boosts/top/v1", "https://api.dexscreener.com/community-takeovers/latest/v1"];
+  const lists = await Promise.all(urls.map(u => getJSON(u).catch(() => [])));
+  const boosted = new Set([...(lists[1] || []), ...(lists[2] || [])].filter(x => x.chainId === "solana").map(x => x.tokenAddress));
+  const addrs = [...new Set(lists.flat().filter(x => x && x.chainId === "solana").map(x => x.tokenAddress))];
+  S.pos.forEach(p => { if (!addrs.includes(p.mint)) addrs.unshift(p.mint); });
+  const pairs = {};
+  for (let i = 0; i < addrs.length; i += 30) {
+    const batch = addrs.slice(i, i + 30);
+    const res = await getJSON("https://api.dexscreener.com/tokens/v1/solana/" + batch.join(",")).catch(() => []);
+    (res || []).forEach(p => { const m = p.baseToken && p.baseToken.address; if (!m) return;
+      if ([SOL, "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"].includes(p.quoteToken.address) && (!pairs[m] || (p.liquidity?.usd || 0) > (pairs[m].liquidity?.usd || 0))) pairs[m] = p; });
+  }
+  return {pairs, boosted};
+}
+function signals(p, boosted) {
+  const v = p.volume || {}, tx = p.txns || {}, ch = p.priceChange || {};
+  const sig = [];
+  const hourAvg5m = (v.h1 || 0) / 12;
+  if ((v.m5 || 0) >= C.spikeX * Math.max(hourAvg5m, 1)) sig.push(`Volumen-Spike ${((v.m5 || 0) / Math.max(hourAvg5m, 1)).toFixed(1)}×`);
+  const b = tx.m5?.buys || 0, s = tx.m5?.sells || 0;
+  if (b + s >= 20 && b / (b + s) * 100 >= C.buyRatio) sig.push(`Kaufdruck ${Math.round(b / (b + s) * 100)}%`);
+  if ((ch.m5 || 0) > 3 && (ch.h1 || 0) > 0) sig.push(`Momentum ${pct(ch.m5)} in 5 Min.`);
+  const h = S.holders[p.baseToken.address];
+  if (h && h.prev && h.n > h.prev * 1.03) sig.push(`Holder +${Math.round((h.n / h.prev - 1) * 100)}%`);
+  if (boosted.has(p.baseToken.address)) sig.push("Trending (Boost)");
+  return sig;
+}
+function filterReason(p) {
+  const age = (Date.now() - (p.pairCreatedAt || 0)) / 3600000;
+  if (!p.pairCreatedAt || age > C.maxAgeH) return `älter als ${C.maxAgeH} Std.`;
+  if ((p.liquidity?.usd || 0) < C.minLiq) return `Liquidität ${usd(p.liquidity?.usd || 0, 0)} < ${usd(C.minLiq, 0)}`;
+  if ((p.volume?.h1 || 0) < C.minVolH1) return `Volumen 1 Std. ${usd(p.volume?.h1 || 0, 0)} zu klein`;
+  if ((p.priceChange?.h1 || 0) > C.maxH1 && (p.priceChange?.m5 || 0) > 0) return `schon ${pct(p.priceChange.h1)} in 1 Std. ohne Rücksetzer – nicht jagen`;
+  return null;
+}
+
+// ---------------- 2 RUG-CHECK
+async function rugCheck(mint, sizeUsd, price) {
+  const c = rugCache[mint];
+  let rep = c && Date.now() - c.t < 180000 ? c.r : null;
+  if (!rep) { rep = await getJSON(`https://api.rugcheck.xyz/v1/tokens/${mint}/report`); rugCache[mint] = {t: Date.now(), r: rep}; }
+  const h = S.holders[mint] || {}; if (rep.totalHolders && rep.totalHolders !== h.n) S.holders[mint] = {prev: h.n || rep.totalHolders, n: rep.totalHolders, t: Date.now()};
+  const fails = [];
+  if (rep.rugged) fails.push("als „rugged“ markiert");
+  if (rep.mintAuthority) fails.push("Mint-Recht offen (neue Coins druckbar)");
+  if (rep.freezeAuthority) fails.push("Freeze-Recht offen (Guthaben einfrierbar)");
+  const danger = (rep.risks || []).filter(r => r.level === "danger");
+  if (danger.length) fails.push("Gefahr: " + danger.map(r => r.name).join(", "));
+  const known = rep.knownAccounts || {};
+  const pools = new Set((rep.markets || []).flatMap(m => [m.pubkey, m.liquidityA, m.liquidityB, m.liquidityAAccount, m.liquidityBAccount]).filter(Boolean));
+  const top = (rep.topHolders || []).filter(x => !known[x.owner] && !known[x.address] && !pools.has(x.address) && !pools.has(x.owner)).slice(0, 10);
+  const top10 = top.reduce((a, x) => a + (x.pct || 0), 0);
+  if (top10 > C.top10Max) fails.push(`Top-10-Halter ${top10.toFixed(0)}% > ${C.top10Max}%`);
+  const supply = rep.token?.supply || 0;
+  const dev = supply ? (rep.creatorBalance || 0) / supply * 100 : 0;
+  if (dev > C.devMax) fails.push(`Entwickler hält ${dev.toFixed(1)}%`);
+  const lp = Math.max(0, ...(rep.markets || []).map(m => m.lp?.lpLockedPct || 0));
+  if (lp < C.lpMin) fails.push(`Liquidität nur ${lp.toFixed(0)}% gesperrt`);
+  if ((rep.totalHolders || 0) < C.minHolders) fails.push(`nur ${rep.totalHolders || 0} Halter`);
+  if ((rep.insiderNetworks || []).length && rep.graphInsidersDetected > 20) fails.push("Insider-Netzwerk erkannt");
+  // Honeypot-Schutz: lässt sich die geplante Menge wirklich verkaufen?
+  if (!fails.length) {
+    const dec = rep.token?.decimals ?? 6;
+    const amt = BigInt(Math.max(1, Math.floor(sizeUsd / price * 10 ** dec)));
+    const q = await getJSON(`https://lite-api.jup.ag/swap/v1/quote?inputMint=${mint}&outputMint=${SOL}&amount=${amt}&slippageBps=300`).catch(() => null);
+    if (!q || !q.outAmount) fails.push("Verkaufs-Test fehlgeschlagen (mögliche Honeypot)");
+    else if (parseFloat(q.priceImpactPct) * 100 > C.maxImpact) fails.push(`Verkauf würde ${(parseFloat(q.priceImpactPct) * 100).toFixed(1)}% Kurs kosten`);
+    else rep._impact = parseFloat(q.priceImpactPct) * 100;
+  }
+  return {ok: !fails.length, fails, top10, dev, lp, holders: rep.totalHolders || 0, impact: rep._impact || 0};
+}
+
+// ---------------- 3 SIZER
+function sizeFor() {
+  let s = equity() * C.sizePct / 100;
+  if (S.streak >= 2) s *= 0.5;
+  return Math.min(s, S.bal * 0.98);
+}
+
+// ---------------- 4 EXECUTOR (Testmodus: simulierte Ausführung mit Live-Kursen)
+function buy(p, sizeUsd, rc, sig) {
+  const price = parseFloat(p.priceUsd), slip = Math.max(rc.impact, 0.5) / 100, fee = C.fee / 100;
+  const fill = price * (1 + slip);
+  const qty = sizeUsd * (1 - fee) / fill;
+  S.bal -= sizeUsd;
+  const pos = {mint: p.baseToken.address, sym: p.baseToken.symbol, name: p.baseToken.name, url: p.url, entry: fill, qty, qty0: qty, cost: sizeUsd,
+    t0: Date.now(), peak: price, last: price, liq0: p.liquidity?.usd || 0, tp1: false, tp2: false, got: 0};
+  S.pos.push(pos);
+  log("ENTER", p.baseToken.symbol, `Kauf ${usd(sizeUsd)} zu $${px(fill)} · Signale: ${sig.join(", ")} · Rug-Check ok (Top10 ${rc.top10.toFixed(0)}%, ${rc.holders} Halter)`, "Größe " + Math.round(sizeUsd / equity() * 100) + "%");
+  push(`KAUF ${p.baseToken.symbol}`, `${usd(sizeUsd)} zu $${px(fill)} | ${sig.join(", ")}`);
+}
+function sell(pos, share, price, why) {
+  const fee = C.fee / 100, slip = 0.01;
+  const q = pos.qty0 * share > pos.qty ? pos.qty : pos.qty0 * share;
+  const out = q * price * (1 - slip) * (1 - fee);
+  pos.qty -= q; pos.got += out; S.bal += out;
+  const done = pos.qty <= pos.qty0 * 0.001;
+  log("EXIT", pos.sym, `${done ? "Verkauf Rest" : "Teilverkauf " + Math.round(share * 100) + "%"} zu $${px(price)} – ${why}`, done ? pct((pos.got / pos.cost - 1) * 100) : "");
+  if (done) {
+    const r = (pos.got / pos.cost - 1) * 100, win = pos.got > pos.cost;
+    S.trades.push({sym: pos.sym, name: pos.name, mint: pos.mint, cost: pos.cost, got: pos.got, ret: r, t0: pos.t0, t1: Date.now(), why});
+    if (win) { S.wins++; S.streak = 0; } else { S.losses++; S.streak++; }
+    S.pos = S.pos.filter(x => x !== pos);
+    push(`${win ? "GEWINN" : "VERLUST"} ${pos.sym} ${r.toFixed(1)}%`, `${usd(pos.cost)} -> ${usd(pos.got)} | ${why}`);
+  }
+}
+function manage(pairs) {
+  for (const pos of [...S.pos]) {
+    const p = pairs[pos.mint];
+    if (!p) continue;
+    const price = parseFloat(p.priceUsd); pos.last = price; pos.peak = Math.max(pos.peak, price);
+    const mult = price / pos.entry, liq = p.liquidity?.usd || 0;
+    if (liq < pos.liq0 * 0.7) { sell(pos, 1, price, `Liquidität abgezogen (${usd(liq, 0)} statt ${usd(pos.liq0, 0)}) – Sofort-Ausstieg`); continue; }
+    if (mult <= 1 - C.stop / 100) { sell(pos, 1, price, `harter Stop −${C.stop}%`); continue; }
+    if (!pos.tp1 && mult >= C.tp1) { pos.tp1 = true; sell(pos, C.tp1Pct / 100, price, `Gewinnstufe ${C.tp1}× erreicht`); }
+    if (!pos.tp2 && mult >= C.tp2 && S.pos.includes(pos)) { pos.tp2 = true; sell(pos, C.tp2Pct / 100, price, `Gewinnstufe ${C.tp2}× erreicht`); }
+    if (!S.pos.includes(pos)) continue;
+    if (pos.tp1 && price <= pos.peak * (1 - C.trail / 100)) { sell(pos, 1, price, `Trailing-Stop ${C.trail}% unter Hoch`); continue; }
+    if (!pos.tp1 && Date.now() - pos.t0 > C.timeStopMin * 60000 && mult < 1.2) { sell(pos, 1, price, `Zeit-Stop nach ${C.timeStopMin} Min. ohne Ausbruch`); continue; }
+  }
+}
+
+// ---------------- Hauptschleife
+async function cycle() {
+  if (busy) return; busy = true;
+  try {
+    const today = new Date().toDateString();
+    if (S.day !== today) { S.day = today; S.dayPeak = equity(); if (S.paused) { S.paused = false; log("INFO", "–", "Neuer Tag – Tageslimit zurückgesetzt, Bot handelt wieder"); } }
+    setPhase("Scanner sucht frische Coins …"); agentNote.scan = "lädt DexScreener …";
+    const {pairs, boosted} = await universe();
+    manage(pairs);
+    const eq = equity(); S.peak = Math.max(S.peak, eq); S.dayPeak = Math.max(S.dayPeak, eq);
+    if (!S.paused && eq < S.dayPeak * (1 - C.ddLimit / 100)) { S.paused = true; log("RISK", "–", `Tageslimit: −${C.ddLimit}% vom Tageshoch – Pause bis morgen`); push("Bot pausiert", `Tageslimit -${C.ddLimit}% erreicht`); }
+    flow = [];
+    const list = Object.values(pairs).filter(p => !S.pos.some(x => x.mint === p.baseToken.address));
+    S.stats.scan += list.length; agentNote.scan = `${list.length} Paare geprüft`;
+    const cands = [];
+    for (const p of list) {
+      const why = filterReason(p);
+      if (why) { S.stats.fil++; continue; }
+      const sig = signals(p, boosted);
+      if (sig.length < 2) { flow.push({p, st: `${sig.length} Signal – zu wenig`, c: "var(--mut)"}); continue; }
+      S.stats.sig++; cands.push({p, sig});
+    }
+    cands.sort((a, b) => b.sig.length - a.sig.length || (b.p.volume?.m5 || 0) - (a.p.volume?.m5 || 0));
+    for (const {p, sig} of cands.slice(0, 6)) {
+      const m = p.baseToken.address;
+      if (S.paused || S.pos.length >= C.maxOpen) { flow.push({p, st: S.paused ? "Pause (Tageslimit)" : "Max. Positionen erreicht", c: "var(--a)"}); continue; }
+      const size = sizeFor();
+      if (size < 1) { flow.push({p, st: "zu wenig Guthaben", c: "var(--a)"}); continue; }
+      setPhase(`Rug-Check ${p.baseToken.symbol} …`); agentNote.rug = `prüft ${p.baseToken.symbol}`;
+      let rc;
+      try { rc = await rugCheck(m, size, parseFloat(p.priceUsd)); } catch (e) { flow.push({p, st: "Rug-Check nicht erreichbar", c: "var(--a)"}); continue; }
+      if (!rc.ok) {
+        flow.push({p, st: "✗ " + rc.fails[0], c: "var(--r)"});
+        if (!filteredAt[m] || Date.now() - filteredAt[m] > 600000) { filteredAt[m] = Date.now(); S.stats.fil++; log("FILTER", p.baseToken.symbol, `${sig.join(", ")} – aber: ${rc.fails.join("; ")}`); }
+        continue;
+      }
+      S.stats.rug++; flow.push({p, st: "✓ gekauft", c: "var(--g)"});
+      agentNote.size = `${usd(size)} (${C.sizePct}%${S.streak >= 2 ? ", halbiert nach 2 Verlusten" : ""})`;
+      buy(p, size, rc, sig);
+    }
+    S.eq.push([Date.now(), Math.round(equity() * 100) / 100]);
+    setPhase(S.paused ? "Pause – Tageslimit erreicht" : S.pos.length ? `beobachtet ${S.pos.length} Position${S.pos.length > 1 ? "en" : ""}` : "wartet auf Signal");
+    $("#lastScan").textContent = "letzter Scan " + hhmm(Date.now());
+    save();
+  } catch (e) { log("INFO", "–", "Fehler im Durchlauf: " + e.message + " – nächster Versuch gleich"); }
+  busy = false; render();
+}
+
+// Takt über einen Worker (läuft auch im Hintergrund-Tab zuverlässiger)
+let worker = null;
+function startLoop() {
+  const src = "let t=null;onmessage=e=>{if(e.data==='go'){clearInterval(t);t=setInterval(()=>postMessage('tick'),20000);postMessage('tick')}else clearInterval(t)}";
+  try { worker = new Worker(URL.createObjectURL(new Blob([src], {type: "text/javascript"}))); worker.onmessage = () => cycle(); worker.postMessage("go"); }
+  catch (e) { worker = {postMessage(){ clearInterval(this.t); }, t: setInterval(cycle, 20000)}; cycle(); }
+}
+
+// ---------------- Anzeige
+function setPhase(t) { $("#phase").textContent = t; }
+function render() {
+  const eq = equity();
+  $("#kBal").textContent = usd(eq); $("#kBal").className = "num " + (eq >= S.startBal ? "up" : "down");
+  $("#kTr").textContent = S.trades.length; $("#kW").textContent = S.wins; $("#kL").textContent = S.losses;
+  const st = $("#status"); st.className = "status" + (running ? " on" : "");
+  const age = Date.now() - S.start, h = Math.floor(age / 3600000), m = Math.floor(age / 60000) % 60;
+  st.innerHTML = `<span class="dot"></span>${running ? "läuft" : "gestoppt"} · ${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")} seit Start`;
+  const A = [
+    ["S", "SCANNER", "neue Paare, Volumen-Spikes, Kaufdruck, Holder-Wachstum", agentNote.scan || "–", "#5ea8ff"],
+    ["R", "RUG-CHECK", "nichts wird gekauft ohne PASS", agentNote.rug || "–", "#ff5c7a"],
+    ["Σ", "SIZER", "Größe aus Kontostand, nie fester Betrag", agentNote.size || `${C.sizePct}% je Trade`, "#a78bfa"],
+    ["E", "EXECUTOR", `Stufen ${C.tp1}×/${C.tp2}×, Stop −${C.stop}%, Zeit ${C.timeStopMin} Min.`, S.pos.length ? `${S.pos.length} offen` : "flat · wartet", "#2ee59d"],
+    ["L", "LOGGER", "jede Entscheidung mit Grund", `${S.log.length} Zeilen`, "#ffb547"],
+    ["$", "EQUITY", "Kontostand bei jedem Schließen", usd(eq), "#38d6e0"],
+  ];
+  $("#agents").innerHTML = A.map(([i, n, d, now, c]) => `<div class="agent ${running ? "act" : ""}"><i style="background:${c}22;color:${c}">${i}</i><div><b>${n}</b><p>${esc(d)}</p><em>${esc(now)}</em></div><span class="tag">${running ? "aktiv" : "aus"}</span></div>`).join("");
+  $("#flow").innerHTML = flow.length ? flow.slice(0, 12).map(f => `<div class="cand"><b>$${esc(f.p.baseToken.symbol)}</b><div class="mut">${usd(f.p.liquidity?.usd || 0, 0)} Liq · ${pct(f.p.priceChange?.h1 || 0)} 1h</div><div class="st" style="color:${f.c}">${esc(f.st)}</div></div>`).join("")
+    : `<div class="note">${running ? "Gerade kein Coin mit genug Signalen – der Scanner sucht weiter." : "Starte den Bot – dann siehst du hier, welche Coins gerade geprüft werden."}</div>`;
+  $("#pScan").textContent = S.stats.scan; $("#pSig").textContent = S.stats.sig; $("#pRug").textContent = S.stats.rug; $("#pFil").textContent = S.stats.fil;
+  $("#posN").textContent = S.pos.length;
+  $("#positions").innerHTML = S.pos.length ? S.pos.map(p => { const v = p.qty * (p.last || p.entry) + p.got, r = (v / p.cost - 1) * 100;
+    return `<div class="pos"><div class="row"><b>$${esc(p.sym)}</b><b class="${r >= 0 ? "up" : "down"}">${pct(r)}</b></div>
+      <div class="row mut"><span>Einstieg $${px(p.entry)} · jetzt $${px(p.last)}</span><span>${Math.round((Date.now() - p.t0) / 60000)} Min.</span></div>
+      <div class="row mut"><span>Einsatz ${usd(p.cost)} · Wert ${usd(v)}</span><span>Stop $${px(p.entry * (1 - C.stop / 100))}${p.tp1 ? " · Trailing aktiv" : ""}</span></div>
+      <div class="row"><a href="${esc(p.url)}" target="_blank" rel="noopener">Chart ansehen ↗</a><span class="mut">${p.tp1 ? "Stufe 1 ✓" : ""}${p.tp2 ? " · Stufe 2 ✓" : ""}</span></div></div>`; }).join("")
+    : `<div class="note">Keine offene Position – flat.</div>`;
+  const mx = Math.max(S.startBal, eq);
+  $("#rStart").textContent = usd(S.startBal); $("#rNow").textContent = usd(eq); $("#rNow").className = "num " + (eq >= S.startBal ? "up" : "down");
+  $("#barS").style.width = (S.startBal / mx * 100) + "%"; $("#barN").style.width = (eq / mx * 100) + "%"; $("#barN").style.background = eq >= S.startBal ? "var(--g)" : "var(--r)";
+  $("#since").textContent = "seit " + new Date(S.start).toLocaleString("de-DE", {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"});
+  drawEq();
+  const L = S.log.slice(-200).reverse();
+  $("#logN").textContent = S.log.length + " Zeilen";
+  $("#log").innerHTML = L.map(l => `<div><span class="mut">${hhmm(l.t)}</span><span class="lt ${l.type}">${l.type === "FILTER" ? "FILTERED" : l.type}</span><span>${l.sym && l.sym !== "–" ? "<b>$" + esc(l.sym) + "</b> " : ""}${esc(l.text)}</span><span class="${String(l.val).startsWith("−") ? "down" : "up"}">${esc(l.val)}</span></div>`).join("") || `<div class="note" style="display:block">Noch keine Einträge.</div>`;
+}
+function drawEq() {
+  const box = $("#eqFig"), svg = box.querySelector("svg"), W = box.clientWidth, H = box.clientHeight, E = S.eq;
+  if (E.length < 2) { svg.innerHTML = `<text x="8" y="20" fill="#5a6470" font-size="12">Kurve erscheint nach dem ersten Durchlauf</text>`; return; }
+  const v = E.map(e => e[1]); let lo = Math.min(...v, S.startBal), hi = Math.max(...v, S.startBal); const pad = (hi - lo) * .1 || 1; lo -= pad; hi += pad;
+  const X = i => 4 + i / (E.length - 1) * (W - 60), Y = x => 10 + (1 - (x - lo) / (hi - lo)) * (H - 24);
+  const d = v.map((x, i) => `${i ? "L" : "M"}${X(i).toFixed(1)} ${Y(x).toFixed(1)}`).join("");
+  const col = v[v.length - 1] >= S.startBal ? "#2ee59d" : "#ff5c7a";
+  svg.innerHTML = `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".3"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    <line x1="4" x2="${W - 56}" y1="${Y(S.startBal)}" y2="${Y(S.startBal)}" stroke="#5a6470" stroke-dasharray="4 4"/>
+    <text x="${W - 2}" y="${Y(S.startBal) + 4}" fill="#5a6470" font-size="10" text-anchor="end">Start</text>
+    <path d="${d} L${X(v.length - 1)} ${H - 14} L${X(0)} ${H - 14}Z" fill="url(#g)"/><path d="${d}" fill="none" stroke="${col}" stroke-width="2"/>
+    <text x="${W - 2}" y="${Y(v[v.length - 1]) + 4}" fill="${col}" font-size="11" text-anchor="end" font-weight="700">${usd(v[v.length - 1])}</text>`;
+}
+function renderSettings() {
+  $("#settings").innerHTML = Object.keys(DEF).map(k => `<label>${LABEL[k]}<input data-k="${k}" type="${k === "ntfy" ? "text" : "number"}" step="any" value="${esc(C[k])}"></label>`).join("");
+}
+
+// ---------------- Bedienung
+$("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render(); };
+$("#stop").onclick = () => { running = false; if (worker) worker.postMessage("stop"); $("#start").hidden = false; $("#stop").hidden = true; log("INFO", "–", "Bot gestoppt"); save(); render(); setPhase("gestoppt"); };
+$("#reset").onclick = () => { const b = $("#reset"); if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = "Wirklich zurücksetzen?"; setTimeout(() => { b.dataset.sure = ""; b.textContent = "Testgeld zurücksetzen"; }, 4000); return; }
+  b.dataset.sure = ""; b.textContent = "Testgeld zurücksetzen"; S = fresh(); save(); render(); };
+$("#recap").onclick = () => {
+  const eq = equity(), best = [...S.trades].sort((a, b) => b.ret - a.ret)[0], worst = [...S.trades].sort((a, b) => a.ret - b.ret)[0];
+  const by = {}; S.trades.forEach(t => by[t.sym] = (by[t.sym] || 0) + (t.got - t.cost));
+  const top3 = Object.entries(by).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  log("INFO", "–", `ZUSAMMENFASSUNG: Start ${usd(S.startBal)} → jetzt ${usd(eq)} (${pct((eq / S.startBal - 1) * 100)}) · ${S.trades.length} Trades, ${S.wins} Gewinne / ${S.losses} Verluste` +
+    (best ? ` · bester $${best.sym} ${pct(best.ret)} · schlechtester $${worst.sym} ${pct(worst.ret)}` : "") + (top3.length ? ` · Top: ${top3.map(([s, v]) => "$" + s + " " + usd(v)).join(", ")}` : ""));
+  render(); $("#log").scrollTop = 0;
+};
+document.addEventListener("change", e => { const k = e.target.dataset.k; if (!k) return; C[k] = k === "ntfy" ? e.target.value.trim() : parseFloat(e.target.value); store.set("cfg", C); render(); });
+new ResizeObserver(() => drawEq()).observe($("#eqFig"));
+renderSettings(); render();
+}
+</script>
+</body>
+</html>
