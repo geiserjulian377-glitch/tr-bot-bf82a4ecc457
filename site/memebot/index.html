@@ -376,7 +376,8 @@ function situation(pairs, mk) {
   const avgM5 = all.length ? all.reduce((a, p) => a + clip((p.priceChange?.m5 || 0) / 10), 0) / all.length : 0;
   const recent = [...S.trades.slice(-6), ...S.shadow.filter(x => x.done).slice(-10).map(x => ({ret: x.ret}))];
   const form = recent.length >= 4 ? recent.filter(t => t.ret > 0).length / recent.length - 0.5 : 0;
-  const score = clip(mk.h1 / 2) * 0.35 + (breadth - 0.5) * 2 * 0.35 + avgM5 * 0.15 + form * 2 * 0.15;
+  const raw = clip(mk.h1 / 2) * 0.35 + (breadth - 0.5) * 2 * 0.35 + avgM5 * 0.15 + form * 2 * 0.15;
+  const score = S.lageS = S.lageS == null ? raw : S.lageS * 0.8 + raw * 0.2;   // geglättet: kein nervöses Hin und Her
   const name = score >= 0.25 ? "heiß" : score >= -0.1 ? "normal" : score >= -0.35 ? "kalt" : "gefährlich";
   return {score, name, breadth, form, mult: {heiß: 1, normal: 0.85, kalt: 0.5, gefährlich: 0}[name], probAdd: {heiß: -2, normal: 0, kalt: 5, gefährlich: 99}[name]};
 }
@@ -808,7 +809,7 @@ $("#recap").onclick = () => {
 };
 document.addEventListener("change", e => { const k = e.target.dataset.k; if (!k) return; C[k] = k === "ntfy" ? e.target.value.trim() : parseFloat(e.target.value); store.set("cfg", C); render(); });
 new ResizeObserver(() => drawEq()).observe($("#eqFig"));
-window.__memebot = {rugCheck, filterReason, signals, manage, get S(){ return S; }, C};   // für Tests
+window.__memebot = {think: f => think(f), train: (f, w) => train(f, w), FEAT, rugCheck, filterReason, signals, manage, get S(){ return S; }, C};   // für Tests
 renderSettings(); render();
 }
 </script>
