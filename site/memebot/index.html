@@ -92,7 +92,7 @@ a{color:var(--b)}
   <div class="head">
     <div class="logo" aria-hidden="true"></div>
     <div>
-      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v4 · test</span></div>
+      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v5 · test</span></div>
       <div class="status" id="status"><span class="dot"></span>gestoppt</div>
       <div class="chip" id="phase">bereit</div>
     </div>
@@ -153,6 +153,7 @@ a{color:var(--b)}
     <p class="note"><b>1 Scanner:</b> holt alle 20 Sek. Solana-Coins aus 7 Listen (DexScreener + Jupiter-Trending), reichert jeden mit Jupiter-Daten an (Echtheits-Score gegen Fake-/Bot-Handel, Netto-Käufer, echte Käufer, Kauf-/Verkaufsvolumen, Liquiditätsverlauf) und prüft Website/Socials. Kauft nur bei mind. 3 Signalen und nicht, wenn der Gesamtmarkt (SOL) gerade fällt. Quellen: DexScreener und sucht Signale: Volumen-Spike, Kaufdruck, Rücksetzer im Aufwärtstrend, Holder-Wachstum, Trending. Kauft <b>nicht</b> in eine gerade laufende Explosion (über +12&nbsp;% in 5 Min.), sondern wartet auf den Rücksetzer. Mindestens 20 Min. alt, genug Liquidität im Verhältnis zum Marktwert.<br>
     <b>2 Rug-Check:</b> keine Mint-/Freeze-Rechte, keine Gefahren-Warnung, kein Insider-Netzwerk, größter Einzelhalter max. 10&nbsp;%, Top-10 unter Grenze, Entwickler-Anteil klein, Liquidität gesperrt, genug Halter, echter Verkaufs-Test über Jupiter.<br>
     <b>Chart + Schatten:</b> vor jedem Kauf werden 1-Min.-Kerzen (GeckoTerminal) geprüft: Kurs über der Trendlinie, Aufwärtstrend, nicht überdehnt, nicht zu wild. Stop und Trailing passen sich der Schwankung des Coins an. Jedes gültige Setup wird als Schatten-Trade weiterverfolgt, auch wenn nicht gekauft wird – so lernt der Bot viel schneller, welche Setups wirklich Geld bringen.<br>
+    <b>Doppelte Absicherung:</b> Preise werden zwischen DexScreener und Jupiter abgeglichen (Datenfehler = kein Kauf), RugCheck-Risiko-Score, versteckte Transfer-Gebühren, Serien-Launcher, Halter-Abwanderung, 1- und 5-Min.-Chart, Volumen auf grünen Kerzen, und jedes Setup muss in 2 Scans hintereinander bestehen. Offene Positionen bewacht ein Wächter: verkauft der Entwickler oder der größte Halter, oder kippt der Käuferstrom, steigt der Bot aus.<br>
     <b>3 Sizer:</b> Größe aus dem Kontostand, angepasst an das, was der Bot gelernt hat (Setups mit schlechter Bilanz werden gesperrt, gute bekommen etwas mehr). Nach 2 Verlusten in Folge halbe Größe, max. 4 Käufe pro Stunde.<br>
     <b>4 Executor – ruhig, nicht panisch:</b> prüft offene Positionen alle 5 Sek. Bei +35&nbsp;% wird die Hälfte verkauft und der Stop auf den Einstieg gezogen (aus Gewinn wird kein Verlust). Danach Trailing-Stop 20&nbsp;% unter dem Hoch. Ein Stop löst erst aus, wenn der Kurs ~10 Sek. darunter bleibt – kurze Ausreißer werden ignoriert. Nur bei echtem Absturz (−25&nbsp;%) oder abgezogener Liquidität sofort raus. Steigt der Verkaufsdruck stark, sichert er Gewinne vorher.<br>
     <b>5 Logger, 6 Equity, 7 Lernen:</b> jede Entscheidung mit Grund, Kontostand-Kurve, Tageslimit, Lernstatistik je Setup, Sperrliste für Coins, die Verlust gebracht haben – und auf Wunsch alles als Notizen in deine Obsidian-Vault.</p>
@@ -177,7 +178,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const DEF = {startBal: 70, minAgeMin: 20, maxAgeH: 24, minLiq: 15000, minVolH1: 20000, minLiqMc: 8, minHolders: 300, buyRatio: 60, spikeX: 2.5,
   noChase5m: 12, maxH1: 300, sizePct: 20, maxOpen: 2, maxBuysH: 4, top1Max: 10, top10Max: 35, devMax: 5, lpMin: 90, maxImpact: 8,
   tp1: 35, tp1Pct: 50, tp2: 100, tp2Pct: 25, trail: 20, stop: 12, crash: 25, confirmSec: 10, sellPressure: 1.6, liqDrop: 20,
-  timeStopMin: 40, ddLimit: 25, fee: 0.5, cooldownH: 6, minOrganic: 15, minNetBuyers: 3, needSocials: 1, solDrop: 1.5, estLiq: 150000, estOrganic: 60, maxAtr: 9, atrStop: 3, shadowMin: 30, ntfy: ""};
+  timeStopMin: 40, ddLimit: 25, fee: 0.5, cooldownH: 6, minOrganic: 15, minNetBuyers: 3, needSocials: 1, solDrop: 1.5, estLiq: 150000, estOrganic: 60, maxAtr: 9, atrStop: 3, shadowMin: 30, maxRugScore: 60, maxPriceDiff: 5, confirmScans: 2, dayLock: 15, ntfy: ""};
 const LABEL = {startBal: "Startkapital ($)", minAgeMin: "Min. Alter (Min.)", maxAgeH: "Max. Alter (Std.)", minLiq: "Min. Liquidität ($)",
   minVolH1: "Min. Volumen 1 Std. ($)", minLiqMc: "Liquidität/Marktwert min. (%)", minHolders: "Min. Halter", buyRatio: "Kaufdruck min. (%)",
   spikeX: "Volumen-Spike (×)", noChase5m: "Nicht kaufen über (+% in 5 Min.)", maxH1: "Nicht jagen über (+% 1 Std.)", sizePct: "Größe je Trade (% Konto)",
@@ -186,7 +187,7 @@ const LABEL = {startBal: "Startkapital ($)", minAgeMin: "Min. Alter (Min.)", max
   tp1: "Gewinn sichern ab (+%)", tp1Pct: "dann verkaufen (%)", tp2: "2. Stufe ab (+%)", tp2Pct: "dann verkaufen (% vom Start)",
   trail: "Trailing-Stop (% unter Hoch)", stop: "Stop-Loss (−%)", crash: "Sofort raus bei Absturz (−%)", confirmSec: "Stop bestätigen nach (Sek.)",
   sellPressure: "Verkaufsdruck-Ausstieg (Verk./Käufe)", liqDrop: "Raus bei Liquiditätsverlust (%)", timeStopMin: "Zeit-Stop (Min.)",
-  ddLimit: "Tageslimit (−% vom Hoch)", fee: "Gebühren je Seite (%)", cooldownH: "Sperre nach Verlust (Std.)", minOrganic: "Echtheits-Score min. (0–100)", minNetBuyers: "Netto-Käufer 5 Min. min.", needSocials: "Website/Socials Pflicht (1=ja)", solDrop: "Pause wenn SOL fällt (−% 1 Std.)", estLiq: "Etablierte Coins: Liquidität min. ($)", estOrganic: "Etablierte Coins: Echtheit min.", maxAtr: "Max. Schwankung je Minute (%)", atrStop: "Stop = Schwankung × (dynamisch)", shadowMin: "Schatten-Trade auswerten nach (Min.)", ntfy: "ntfy-Thema (Push)"};
+  ddLimit: "Tageslimit (−% vom Hoch)", fee: "Gebühren je Seite (%)", cooldownH: "Sperre nach Verlust (Std.)", minOrganic: "Echtheits-Score min. (0–100)", minNetBuyers: "Netto-Käufer 5 Min. min.", needSocials: "Website/Socials Pflicht (1=ja)", solDrop: "Pause wenn SOL fällt (−% 1 Std.)", estLiq: "Etablierte Coins: Liquidität min. ($)", estOrganic: "Etablierte Coins: Echtheit min.", maxAtr: "Max. Schwankung je Minute (%)", atrStop: "Stop = Schwankung × (dynamisch)", shadowMin: "Schatten-Trade auswerten nach (Min.)", maxRugScore: "RugCheck-Risiko max. (0–100)", maxPriceDiff: "Max. Preisabweichung der Quellen (%)", confirmScans: "Bestätigung über Scans", dayLock: "Ab Tagesgewinn (+%) halbe Größe", ntfy: "ntfy-Thema (Push)"};
 let C = {...DEF, ...store.get("cfg", {})};
 if (store.get("cfgVer", 1) < 3) {   // v2: neue, ruhigere Ausstiegsregeln übernehmen
   const keep = {startBal: C.startBal, ntfy: C.ntfy};
@@ -198,7 +199,8 @@ function fresh() { return {bal: C.startBal, start: Date.now(), startBal: C.start
   wins: 0, losses: 0, streak: 0, peak: C.startBal, day: new Date().toDateString(), dayPeak: C.startBal, paused: false,
   stats: {scan: 0, sig: 0, rug: 0, fil: 0}, holders: {}, block: {}, learn: {}, buys: [], shadow: [], slearn: {}}; }
 let S = store.get("state", null) || fresh();
-S.block = S.block || {}; S.learn = S.learn || {}; S.buys = S.buys || []; S.shadow = S.shadow || []; S.slearn = S.slearn || {};
+S.dayPeak0 = S.dayPeak0 || S.startBal; S.block = S.block || {}; S.learn = S.learn || {}; S.buys = S.buys || []; S.shadow = S.shadow || []; S.slearn = S.slearn || {};
+let confirmSeen = {}, guardAt = 0;
 let running = false, busy = false, fastBusy = false, rugCache = {}, filteredAt = {}, flow = [], agentNote = {}, vaultQueue = [];
 const save = () => { S.log = S.log.slice(-800); S.eq = S.eq.slice(-4000); S.trades = S.trades.slice(-500); store.set("state", S); };
 
@@ -271,6 +273,7 @@ function signals(p, boosted, j, jupTrend) {
   if (jupTrend && jupTrend.has(p.baseToken.address)) sig.push({k: "trend", t: "Trending bei Jupiter"});
   if (j && j.stats5m) { const s5 = j.stats5m;
     if ((s5.numNetBuyers || 0) >= 10 && (s5.buyVolume || 0) >= 1.2 * (s5.sellVolume || 0)) sig.push({k: "netbuy", t: `${s5.numNetBuyers} Netto-Käufer, Kaufvol. ${((s5.buyVolume || 0) / Math.max(s5.sellVolume || 1, 1)).toFixed(1)}× Verkauf`});
+    if ((j.stats1h?.holderChange || 0) >= 5) sig.push({k: "holders", t: `Halter +${j.stats1h.holderChange.toFixed(0)}% in 1 Std.`});
     if ((j.organicScore || 0) >= 50 && (s5.numOrganicBuyers || 0) >= 15) sig.push({k: "organic", t: `echter Handel (Score ${Math.round(j.organicScore)}, ${s5.numOrganicBuyers} echte Käufer)`}); }
   return sig;
 }
@@ -295,6 +298,10 @@ function filterReason(p, j) {
     if ((s5.sellVolume || 0) > 1.5 * (s5.buyVolume || 0) && (s5.sellVolume || 0) > 2000) return `Verkaufsdruck: ${usd(s5.sellVolume, 0)} Verkauf vs. ${usd(s5.buyVolume || 0, 0)} Kauf`;
     if ((j.stats1h?.liquidityChange || 0) < -15) return `Liquidität fällt: ${pct(j.stats1h.liquidityChange)} in 1 Std.`;
     if (j.audit?.devMints > 30) return `Entwickler hat ${j.audit.devMints} Coins erstellt (Serien-Launcher)`;
+    if ((j.audit?.devBalancePercentage || 0) > C.devMax) return `Entwickler hält ${j.audit.devBalancePercentage.toFixed(1)}% (Jupiter)`;
+    if ((j.stats1h?.holderChange ?? 0) < -3) return `Halter springen ab: ${pct(j.stats1h.holderChange)} in 1 Std.`;
+    const dp = parseFloat(p.priceUsd), jp = j.usdPrice || 0;
+    if (dp && jp && Math.abs(dp / jp - 1) * 100 > C.maxPriceDiff) return `Daten widersprüchlich: Preis weicht ${(Math.abs(dp / jp - 1) * 100).toFixed(0)}% zwischen Quellen ab`;
   }
   return null;
 }
@@ -310,7 +317,12 @@ async function chart(pair) {
   const tr = k.slice(-14).map((x, i, arr) => { const pc = i ? arr[i - 1][4] : x[1]; return Math.max(x[2] - x[3], Math.abs(x[2] - pc), Math.abs(x[3] - pc)) / x[4] * 100; });
   const last = k[k.length - 1][4], hi30 = Math.max(...k.slice(-30).map(x => x[2]));
   const lows = k.slice(-15).map(x => x[3]), higherLow = Math.min(...lows.slice(-5)) > Math.min(...lows.slice(0, 10));
-  const v = {ema9: ema(9), ema21: ema(21), atr: tr.reduce((a, b) => a + b, 0) / tr.length, last, hi30, higherLow, fromHi: (last / hi30 - 1) * 100};
+  const r5 = k.slice(-6), upVol = r5.filter(x => x[4] >= x[1]).reduce((a, x) => a + x[5], 0), dnVol = r5.filter(x => x[4] < x[1]).reduce((a, x) => a + x[5], 0);
+  let t5 = null;
+  try { const j5 = await getJSON(`https://api.geckoterminal.com/api/v2/networks/solana/pools/${pair}/ohlcv/minute?aggregate=5&limit=40`);
+    const k5 = (j5?.data?.attributes?.ohlcv_list || []).slice().reverse();
+    if (k5.length >= 8) { const a = 2 / 13; let e = k5[0][4]; k5.forEach(x => e = x[4] * a + e * (1 - a)); t5 = k5[k5.length - 1][4] >= e; } } catch (e) {}
+  const v = {ema9: ema(9), ema21: ema(21), atr: tr.reduce((a, b) => a + b, 0) / tr.length, last, hi30, higherLow, fromHi: (last / hi30 - 1) * 100, volUp: upVol / Math.max(dnVol, 1e-9), t5};
   candleCache[pair] = {t: Date.now(), v}; return v;
 }
 function chartReason(ch, sig) {
@@ -318,6 +330,8 @@ function chartReason(ch, sig) {
   if (ch.atr > C.maxAtr) return `zu wild: ${ch.atr.toFixed(1)}% Schwankung je Minute`;
   if (ch.last < ch.ema21) return "Chart: unter der Trendlinie (EMA21)";
   if (ch.ema9 < ch.ema21 && !sig.some(s => s.k === "pullback")) return "Chart: kein Aufwärtstrend (EMA9 < EMA21)";
+  if (ch.t5 === false) return "Chart: 5-Min.-Trend zeigt nach unten";
+  if (ch.volUp < 1) return `Chart: mehr Volumen auf roten Kerzen (${ch.volUp.toFixed(1)}×)`;
   if (ch.last > ch.ema21 * (1 + 3 * ch.atr / 100)) return `Chart: überdehnt (${pct((ch.last / ch.ema21 - 1) * 100)} über Trendlinie) – warte`;
   return null;
 }
@@ -377,6 +391,9 @@ async function rugCheck(mint, sizeUsd, price, dexId) {
   if (rep.launchpad?.platform === "pump_fun" && dexId === "pumpswap" && !(rep.markets || []).length) lp = 100;   // Pump.fun-Migration: vom Protokoll verwaltet
   if (lp < C.lpMin) fails.push(`Liquidität nur ${lp.toFixed(0)}% gesperrt`);
   if ((rep.totalHolders || 0) < C.minHolders) fails.push(`nur ${rep.totalHolders || 0} Halter`);
+  if ((rep.score_normalised || 0) > C.maxRugScore) fails.push(`RugCheck-Risiko ${rep.score_normalised}/100`);
+  if ((rep.creatorTokens || []).length > 20) fails.push(`Entwickler hat ${(rep.creatorTokens || []).length} weitere Coins gestartet`);
+  if (rep.transferFee?.pct > 0) fails.push(`Transfer-Gebühr ${rep.transferFee.pct}% (versteckte Steuer)`);
   let impact = 0;
   if (!fails.length) {   // Honeypot-Schutz: lässt sich die geplante Menge wirklich verkaufen?
     const dec = rep.token?.decimals ?? 6;
@@ -385,7 +402,7 @@ async function rugCheck(mint, sizeUsd, price, dexId) {
     if (!q || !q.outAmount) fails.push("Verkaufs-Test fehlgeschlagen (mögliche Honeypot)");
     else { impact = parseFloat(q.priceImpactPct) * 100; if (impact > C.maxImpact) fails.push(`Verkauf würde ${impact.toFixed(1)}% Kurs kosten`); }
   }
-  return {ok: !fails.length, fails, top10, top1, dev, lp, holders: rep.totalHolders || 0, impact};
+  return {ok: !fails.length, fails, top10, top1, dev, lp, holders: rep.totalHolders || 0, impact, creatorBal: rep.creatorBalance || 0, top1Addr: top[0]?.address, top1Amt: top[0]?.amount || 0};
 }
 
 // ---------------- 3 SIZER (mit Gelerntem)
@@ -401,6 +418,7 @@ function sizeFor(key) {
   if (L && L.n >= 5 && L.avg > 3 && L.wr >= 50) { s *= 1.3; note += ` ×1,3 (Setup im Schnitt ${pct(L.avg)})`; }
   else if (!L || L.n < 3) { s *= 0.75; note += " ×0,75 (Setup noch unerprobt)"; }
   if (S.streak >= 2) { s *= 0.5; note += " ×0,5 (2 Verluste in Folge)"; }
+  if (equity() >= S.dayPeak0 * (1 + C.dayLock / 100)) { s *= 0.5; note += ` ×0,5 (Tagesgewinn über +${C.dayLock}% wird geschützt)`; }
   return {size: Math.min(s, S.bal * 0.98, equity() * 0.3), note};
 }
 function setupBlocked(key) { const L = learned(key); return L && L.n >= 6 && (L.wr < 30 || L.avg < -2) ? L : null; }
@@ -414,7 +432,7 @@ function buy(p, sz, rc, sig, ch) {
     cost: sz.size, t0: Date.now(), peak: price, last: price, liq0: p.liquidity?.usd || 0, tp1: false, tp2: false, got: 0,
     stopPct: ch ? Math.min(18, Math.max(8, ch.atr * C.atrStop)) : C.stop, trailPct: ch ? Math.min(30, Math.max(15, ch.atr * C.atrStop * 1.4)) : C.trail,
     stopAt: fill * (1 - (ch ? Math.min(18, Math.max(8, ch.atr * C.atrStop)) : C.stop) / 100),
-    below: 0, key, sig: sig.map(s => s.t)});
+    below: 0, key, sig: sig.map(s => s.t), creatorBal: rc.creatorBal, top1Addr: rc.top1Addr, top1Amt: rc.top1Amt});
   log("ENTER", p.baseToken.symbol, `Kauf ${usd(sz.size)} zu $${px(fill)} · Setup „${key}“ · ${sig.map(s => s.t).join(", ")} · Stop −${S.pos[S.pos.length - 1].stopPct.toFixed(0)}% / Trailing ${S.pos[S.pos.length - 1].trailPct.toFixed(0)}% (an Schwankung angepasst) · Rug-Check ok (größter Halter ${rc.top1.toFixed(0)}%, Top10 ${rc.top10.toFixed(0)}%, ${rc.holders} Halter, Echtheit ${Math.round(rc.org || 0)})`, "Größe " + sz.note);
   push(`KAUF ${p.baseToken.symbol}`, `${usd(sz.size)} zu $${px(fill)} | ${sig.map(s => s.t).join(", ")}`);
 }
@@ -469,6 +487,29 @@ function manage(pairs) {
   }
 }
 
+// ---------------- Wächter (alle 60 Sek.): verkauft Entwickler oder größter Halter? kippt der Käuferstrom?
+async function guard() {
+  if (!S.pos.length || Date.now() - guardAt < 60000) return; guardAt = Date.now();
+  const jup = await jupFor(S.pos.map(p => p.mint)).catch(() => ({}));
+  for (const pos of [...S.pos]) {
+    try {
+      delete rugCache[pos.mint];
+      const rep = await getJSON(`https://api.rugcheck.xyz/v1/tokens/${pos.mint}/report`); rugCache[pos.mint] = {t: Date.now(), r: rep};
+      const price = pos.last || pos.entry;
+      if (pos.creatorBal > 0 && (rep.creatorBalance || 0) < pos.creatorBal * 0.5) { sell(pos, 1, price, "Entwickler verkauft seine Coins – sofort raus", "crash"); continue; }
+      const t1 = (rep.topHolders || []).find(x => x.address === pos.top1Addr);
+      if (pos.top1Amt > 0 && t1 && t1.amount < pos.top1Amt * 0.5) { sell(pos, 1, price, "Größter Halter verkauft – raus, bevor der Kurs kippt"); continue; }
+      if (rep.rugged || rep.mintAuthority) { sell(pos, 1, price, "RugCheck schlägt Alarm", "crash"); continue; }
+    } catch (e) {}
+    const j = jup[pos.mint];
+    if (j && j.stats5m && S.pos.includes(pos)) {
+      const s5 = j.stats5m, gain = ((pos.last || pos.entry) / pos.entry - 1) * 100;
+      if (pos.tp1 && (s5.numNetBuyers || 0) < -5 && (s5.sellVolume || 0) > 1.5 * (s5.buyVolume || 0) && pos.last < pos.peak * 0.92) sell(pos, 1, pos.last, `Käufer drehen weg (${s5.numNetBuyers} Netto-Käufer) – Gewinn gesichert`);
+      else if (!pos.tp1 && gain > 3 && (s5.numNetBuyers || 0) < -10 && (s5.sellVolume || 0) > 2 * (s5.buyVolume || 0)) sell(pos, 1, pos.last, `starker Verkaufsstrom bei ${pct(gain)} – kleiner Gewinn mitgenommen`);
+    }
+  }
+}
+
 // ---------------- Schnelle Positions-Überwachung (alle 5 Sek.)
 async function fast() {
   if (fastBusy || !S.pos.length) return; fastBusy = true;
@@ -481,7 +522,7 @@ async function cycle() {
   if (busy) return; busy = true;
   try {
     const today = new Date().toDateString();
-    if (S.day !== today) { vaultDaily(); S.day = today; S.dayPeak = equity(); if (S.paused) { S.paused = false; log("INFO", "–", "Neuer Tag – Tageslimit zurückgesetzt"); } }
+    if (S.day !== today) { vaultDaily(); S.day = today; S.dayPeak = equity(); S.dayPeak0 = equity(); if (S.paused) { S.paused = false; log("INFO", "–", "Neuer Tag – Tageslimit zurückgesetzt"); } }
     setPhase("Scanner sucht frische Coins …");
     const [{pairs, boosted, jup, jupTrend}, mk] = await Promise.all([universe(), market()]);
     const weak = mk.h1 <= -C.solDrop || mk.m5 <= -0.8;
@@ -489,6 +530,7 @@ async function cycle() {
     const eq = equity(); S.peak = Math.max(S.peak, eq); S.dayPeak = Math.max(S.dayPeak, eq);
     if (!S.paused && eq < S.dayPeak * (1 - C.ddLimit / 100)) { S.paused = true; log("RISK", "–", `Tageslimit −${C.ddLimit}% vom Tageshoch – keine neuen Käufe bis morgen`); push("Bot pausiert", `Tageslimit -${C.ddLimit}% erreicht`); }
     await shadowUpdate(pairs);
+    await guard().catch(() => {});
     flow = [];
     const list = Object.values(pairs).filter(p => !S.pos.some(x => x.mint === p.baseToken.address));
     S.stats.scan += list.length; agentNote.scan = `${list.length} Paare geprüft`;
@@ -526,6 +568,8 @@ async function cycle() {
         if (!filteredAt[m] || Date.now() - filteredAt[m] > 600000) { filteredAt[m] = Date.now(); S.stats.fil++; log("FILTER", p.baseToken.symbol, `${sig.map(s => s.t).join(", ")} – aber: ${rc.fails.join("; ")}`); }
         continue;
       }
+      const cf = confirmSeen[m] = (confirmSeen[m] && Date.now() - confirmSeen[m].t < 70000) ? {n: confirmSeen[m].n + 1, t: Date.now()} : {n: 1, t: Date.now()};
+      if (cf.n < C.confirmScans) { flow.push({p, st: `✓ sicher – warte auf Bestätigung (Scan ${cf.n}/${C.confirmScans})`, c: "var(--a)"}); continue; }
       shadowAdd(p, key, ch?.atr);   // jedes sichere, gültige Setup wird verfolgt – gekauft oder nicht
       if (S.paused) { flow.push({p, st: "Pause (Tageslimit)", c: "var(--a)"}); continue; }
       if (weak) { flow.push({p, st: `Markt schwach (SOL ${pct(mk.h1)} 1h) – kein Kauf`, c: "var(--a)"}); continue; }
@@ -639,6 +683,7 @@ function render(light) {
     ["$", "EQUITY", "Kontostand + Tageslimit", usd(eq), "#38d6e0"],
     ["◎", "MARKT", "SOL-Trend + Jupiter-Echtheit", agentNote.market || "–", "#facc15"],
     ["📈", "CHART", "1-Min.-Kerzen: Trend, Schwankung, Überdehnung", "dynamischer Stop", "#60a5fa"],
+    ["🛡", "WÄCHTER", "Entwickler-/Großhalter-Verkauf, Käuferstrom", S.pos.length ? "bewacht " + S.pos.length : "bereit", "#34d399"],
     ["👻", "SCHATTEN", "verfolgt nicht gekaufte Setups → lernt schneller", `${(S.shadow || []).filter(x => !x.done).length} laufen`, "#94a3b8"],
     ["🧠", "LERNEN", "Setup-Statistik, Sperrliste", `${Object.keys(S.learn).length} Setups · ${Object.keys(S.block).length} gesperrt`, "#f472b6"],
   ];
