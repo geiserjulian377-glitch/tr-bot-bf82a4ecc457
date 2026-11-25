@@ -137,6 +137,93 @@ def fetch_analyst(ticker):
     }
 
 
+# ---------------------------------------------------------------- Nachrichten (Yahoo Finance Suche)
+def fetch_news(query, n=5):
+    url = ("https://query2.finance.yahoo.com/v1/finance/search?"
+           + urllib.parse.urlencode({"q": query, "quotesCount": 0, "newsCount": n, "enableFuzzyQuery": "false"}))
+    op, _ = _yahoo_session()
+    try:
+        if op:
+            data = json.load(op.open(url, timeout=20))
+        else:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            data = json.load(urllib.request.urlopen(req, timeout=20))
+    except Exception:
+        return []
+    out = []
+    for it in data.get("news", [])[:n]:
+        link = it.get("link") or ""
+        if not link.startswith("https://"):
+            continue
+        out.append({"t": (it.get("title") or "")[:160], "p": it.get("publisher") or "",
+                    "u": link, "ts": int(it.get("providerPublishTime") or 0)})
+    return out
+
+
+DEMO_HEADLINES = [
+    "Zinsentscheid der Notenbank sorgt für Nervosität an den Märkten",
+    "Quartalszahlen über den Erwartungen, Ausblick vorsichtig",
+    "Analyst senkt Kursziel nach Branchenschwäche",
+    "Handelsstreit: Neue Zölle belasten Exportwerte",
+    "Ölpreis steigt nach Förderkürzung",
+]
+
+
+def demo_news(seed, n=3):
+    rnd = random.Random(seed * 13)
+    now = int(time.time())
+    return [{"t": rnd.choice(DEMO_HEADLINES), "p": "Testquelle", "u": "https://finance.yahoo.com/",
+             "ts": now - rnd.randint(600, 86400)} for _ in range(n)]
+
+
+def trading_time(r):
+    t = r["ticker"]
+    if r["region"] == "Krypto":
+        return "Rund um die Uhr handelbar – Limit-Order jederzeit möglich."
+    if t.endswith((".HK", ".T", ".KS")):
+        return "Heimatbörse handelt nachts. Bei Trade Republic 7:30–23:00 Uhr, aber nur mit Limit-Order (Kurse schwanken stärker)."
+    if "." in t or t.endswith("=F"):
+        return "Europa: Am besten ab 9:30 Uhr (nach der unruhigen ersten halben Stunde) mit Limit-Order."
+    return "USA: Am besten ab 16:00 Uhr – 30 Min. nach US-Börsenstart (15:30) ist der Kurs fairer. Limit-Order nutzen."
+
+
+def find_dips(results, cfg):
+    """Qualitäts-Aktien, die kurzfristig stark gefallen sind."""
+    out = []
+    for r in results:
+        ind, an = r["ind"], r.get("analyst")
+        d1, d5 = ind.get("r1d") or 0, ind.get("r5d") or 0
+        drop = min(d1, d5)
+        if drop > -4 and not (d1 <= -2.5 and ind["rsi"] < 35):
+            continue
+        long_up = ind["dist200"] is not None and ind["dist200"] > -6 and (ind.get("r1y") or 0) > 0
+        bull = bool(an and an.get("rec_mean") and an["rec_mean"] <= 2.3 and an["upside"] >= 15)
+        if not (long_up or bull) or r["region"] == "Rohstoffe":
+            continue
+        score = 40 + min(25, -drop * 2.5) + (15 if long_up else 0) + (12 if bull else 0) \
+            + (8 if ind["rsi"] < 35 else 4 if ind["rsi"] < 45 else 0) - (10 if ind["vol"] > 60 else 0)
+        price = r["price"]
+        sup = price * (1 + ind["sup_pct"] / 100) if ind.get("sup_pct") is not None else None
+        limit = sup * 1.005 if sup and sup > price * 0.95 and sup < price else price * 0.985
+        stop = max(limit * (1 - cfg["stop_loss_pct"] / 100), min(limit * 0.94, (sup or limit) * 0.97))
+        targets = [x for x in [r["fast_now"], r["slow_now"]] if x and x > limit * 1.02]
+        rebound = min(targets) if targets else limit * 1.08
+        reasons = [f"Minus {abs(d1):.1f} % heute".replace(".", ",") if d1 <= -2 else f"Minus {abs(d5):.1f} % in 5 Tagen".replace(".", ",")]
+        if long_up:
+            reasons.append("langfristig im Aufwärtstrend – Rücksetzer statt Absturz")
+        if bull:
+            reasons.append(f"Analysten: „{an['label']}“, Ø Ziel {an['upside']:+.0f} %".replace(".", ","))
+        if ind["rsi"] < 35:
+            reasons.append(f"RSI {ind['rsi']:.0f}: überverkauft – Gegenbewegung wahrscheinlicher")
+        out.append({
+            "id": r["id"], "score": int(min(99, score)), "drop": drop, "limit": limit, "stop": stop,
+            "rebound": rebound, "target": an["mean"] if an else None,
+            "rr": (rebound - limit) / (limit - stop) if limit > stop else None,
+            "reasons": reasons, "when": trading_time(r),
+        })
+    return sorted(out, key=lambda x: -x["score"])[:12]
+
+
 def demo_analyst(seed, price):
     rnd = random.Random(seed * 7)
     if rnd.random() < 0.15:
@@ -331,7 +418,7 @@ def analyse(item, prices, cur, fx, cfg, analyst=None):
         "dist200": (price / s200[-1] - 1) * 100 if s200[-1] else None,
         "slope50": (slow[-1] / slow[-21] - 1) * 100 if len(slow) > 21 and slow[-21] else None,
         "gap": (fast[-1] / slow[-1] - 1) * 100,
-        "r1d": ret(closes, 1), "r1m": ret(closes, 21), "r3m": ret(closes, 63), "r1y": ret(closes, 252),
+        "r1d": ret(closes, 1), "r5d": ret(closes, 5), "r1m": ret(closes, 21), "r3m": ret(closes, 63), "r1y": ret(closes, 252),
         "vol": vol,
         "dd1y": max_drawdown(year),
         "from_high": (price / max(year) - 1) * 100,
@@ -466,7 +553,7 @@ def analyse(item, prices, cur, fx, cfg, analyst=None):
         "cur": cur, "eur_rate": 1 / rate, "price": price, "date": str(today),
         "status": status, "score": score, "parts": parts, "parts_max": maxes, "analyst": an,
         "ind": {**ind, "sup_pct": (sup / price - 1) * 100, "res_pct": (resi / price - 1) * 100 if resi else None},
-        "stats": st, "rec": rec, "why": why, "spark": spark,
+        "stats": st, "rec": rec, "why": why, "spark": spark, "fast_now": fast[-1], "slow_now": slow[-1],
         "_detail": {"chart": chart, "trades": trades[-10:][::-1]},
     }
 
@@ -531,6 +618,29 @@ def main():
             failed.append(it["name"])
 
     print(f"Analysten-Daten für {n_an} Werte geladen.")
+    dips = find_dips(results, cfg)
+    by = {r["id"]: r for r in results}
+    movers = sorted(results, key=lambda r: -abs(r["ind"].get("r1d") or 0))[:8]
+    news_ids = list(dict.fromkeys([d["id"] for d in dips] + [m["id"] for m in movers]))
+    for k, nid in enumerate(news_ids):
+        r = by[nid]
+        q = r["ticker"] if not r["ticker"].endswith(("-EUR", "=F")) else r["name"]
+        r["news"] = demo_news(k) if demo else fetch_news(q, 4)
+        if not demo:
+            time.sleep(0.2)
+    world = []
+    if demo:
+        world = demo_news(99, 6)
+    else:
+        seen = set()
+        for q in ("stock market today", "Börse DAX", "Wall Street", "Fed interest rates"):
+            for n in fetch_news(q, 5):
+                if n["u"] not in seen and n["t"]:
+                    seen.add(n["u"])
+                    world.append(n)
+        world = sorted(world, key=lambda n: -n["ts"])[:10]
+    print(f"Chancen: {len(dips)} · Nachrichten: {sum(len(by[i].get('news', [])) for i in news_ids)} + {len(world)} Markt")
+
     above = [r for r in results if r["ind"]["dist200"] is not None]
     breadth = 100 * sum(r["ind"]["dist200"] > 0 for r in above) / len(above) if above else 0
     counts = {k: sum(r["status"] == k for r in results) for k in ("BUY", "SELL", "HOLD", "WAIT")}
@@ -541,6 +651,8 @@ def main():
         "market": {"breadth": breadth, "avg_score": sum(r["score"] for r in results) / len(results),
                    "counts": counts, "total": len(items), "failed": failed},
         "items": results,
+        "chances": dips,
+        "world": world,
     }
     os.makedirs(os.path.join(HERE, "site", "d"), exist_ok=True)
     for r in results:
@@ -557,6 +669,9 @@ def main():
         lines.append(f"{'🟢' if r['status'] == 'BUY' else '🔴'} {verb}: {r['name']} {fmt(r['price'], r['cur'])} · Score {r['score']}")
     if not sig:
         lines.append("Heute keine neuen Kauf- oder Verkaufssignale.")
+    for d in dips[:3]:
+        r = by[d["id"]]
+        lines.append(f"💡 Dip-Chance: {r['name']} ({format(d['drop'], '+.1f').replace('.', ',')} %) · Limit {fmt(d['limit'], r['cur'])}")
     lines.append(f"Halten: {len(hold)} · Marktbreite {breadth:.0f} % über 200-Tage-Linie")
     msg = "\n".join(lines)
     print(msg)
@@ -568,13 +683,20 @@ def main():
               f"stop={p.get('stop') or 0:.2f} d200={r['ind']['dist200'] if r['ind']['dist200'] is None else round(r['ind']['dist200'], 1)} "
               f"rsi={r['ind']['rsi']:.0f} r3m={r['ind']['r3m'] if r['ind']['r3m'] is None else round(r['ind']['r3m'], 1)}")
 
+    hour = datetime.now(timezone.utc).hour
+    run_kind = "morgen" if hour < 11 else "us" if hour < 17 else "abend"
+    run_label = {"morgen": "Signal-Radar am Morgen", "us": "Signal-Radar zur US-Eröffnung", "abend": "Signal-Radar"}[run_kind]
+    data["run"] = run_kind
+    with open(os.path.join(HERE, "site", "data.json"), "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
     app = cfg["app_url"]
     nb = sum(r["status"] == "BUY" for r in sig)
     push = {
-        "send": bool(sig) or not cfg.get("only_send_on_signal"),
-        "title": f"Signal-Radar: {nb}× Kaufsignal, {len(sig) - nb}× Trend gekippt" if sig else "Signal-Radar: Tagesupdate",
+        "send": bool(sig or dips) if run_kind != "abend" else (bool(sig) or not cfg.get("only_send_on_signal")),
+        "title": (f"{run_label}: {len(dips)} Dip-Chance{'n' if len(dips) != 1 else ''}" if dips and not sig else
+                  f"{run_label}: {nb}× Kaufsignal, {len(sig) - nb}× Trend gekippt" if sig else f"{run_label}: Tagesupdate"),
         "message": msg,
-        "click": f"{app}#{sig[0]['id']}" if sig else app,
+        "click": f"{app}#{sig[0]['id']}" if sig else (f"{app}#chancen" if dips else app),
         "priority": "high" if sig else "low",
         "tags": "rotating_light" if sig else "bar_chart",
         "actions": f"view, App öffnen, {app}",
