@@ -1,12 +1,19 @@
 name: Signal-Radar
 
+# Taktgeber: Jeder Lauf startet am Ende selbst den nächsten (Kette).
+# Börsenzeit Mo–Fr 6–21 Uhr UTC: alle ~10 Minuten, sonst stündlich.
+# Die Zeitpläne unten sind nur Reserve, falls die Kette einmal abreißt.
 on:
   schedule:
-    # Zeiten in UTC (Winterzeit +1 Std., Sommerzeit +2 Std.)
-    - cron: "*/10 6-20 * * 1-5"  # Live: ca. alle 10 Min. von 7 bis 22 Uhr (schnell, Analysten aus Cache)
-    - cron: "20 7 * * 1-5"       # Voll-Lauf am Morgen (Analysten neu)
-    - cron: "7 18 * * 1-5"       # Voll-Lauf am Abend mit Tagesbericht
-  workflow_dispatch: {}
+    - cron: "*/10 6-20 * * 1-5"
+    - cron: "20 7 * * 1-5"
+    - cron: "7 18 * * 1-5"
+    - cron: "0 * * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "quick oder full"
+        default: "quick"
   push:
     branches: [main]
     paths: ["config.json", "presets.json", "bot.py", "learn.py", "site/**", ".github/workflows/**"]
@@ -15,13 +22,11 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: write
 
 concurrency:
   group: signal-radar
   cancel-in-progress: false
-
-# Ein Lauf darf nie länger als 9 Minuten dauern, sonst stauen sich die 10-Minuten-Läufe
-
 
 jobs:
   analyse:
@@ -34,7 +39,7 @@ jobs:
           python-version: "3.12"
       - name: Kurse laden und analysieren
         env:
-          RUN_MODE: ${{ github.event.schedule == '*/10 6-20 * * 1-5' && 'quick' || 'full' }}
+          RUN_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || (github.event.schedule == '*/10 6-20 * * 1-5' || github.event.schedule == '0 * * * *') && 'quick' || 'full' }}
         run: python bot.py --no-push
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -66,3 +71,24 @@ jobs:
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: python bot.py --notify
+
+  naechster-lauf:
+    needs: [analyse, app-aktualisieren, push-senden]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - name: Warten und nächsten Lauf starten
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          now=$(date -u +%s); dow=$(date -u +%u); hour=$(date -u +%H | sed 's/^0//')
+          if [ "$dow" -le 5 ] && [ "${hour:-0}" -ge 6 ] && [ "${hour:-0}" -le 20 ]; then wait=480; else wait=3300; fi
+          echo "Warte ${wait}s bis zum nächsten Lauf"
+          sleep "$wait"
+          h=$(date -u +%H); m=$(date -u +%M)
+          mode=quick
+          if { [ "$h" = "07" ] || [ "$h" = "18" ]; } && [ "${m#0}" -lt 12 ]; then mode=full; fi
+          gh workflow run signal-bot.yml --ref main -f mode="$mode"
+          echo "Nächster Lauf gestartet ($mode)"
