@@ -204,7 +204,7 @@ function fresh() { return {bal: C.startBal, start: Date.now(), startBal: C.start
   stats: {scan: 0, sig: 0, rug: 0, fil: 0}, holders: {}, block: {}, learn: {}, buys: [], shadow: [], slearn: {}}; }
 let S = store.get("state", null) || fresh();
 S.dayPeak0 = S.dayPeak0 || S.startBal; S.block = S.block || {}; S.learn = S.learn || {}; S.buys = S.buys || []; S.shadow = S.shadow || []; S.slearn = S.slearn || {}; S.brain = S.brain || null; S.pretrainBusy = false;
-let confirmSeen = {}, guardAt = 0;
+let confirmSeen = {}, guardAt = 0, lastPairs = {};
 let running = false, busy = false, fastBusy = false, rugCache = {}, filteredAt = {}, flow = [], agentNote = {}, vaultQueue = [];
 const save = () => { S.log = S.log.slice(-800); S.eq = S.eq.slice(-4000); S.trades = S.trades.slice(-500); store.set("state", S); };
 
@@ -234,6 +234,8 @@ async function universe() {
   const jupUrls = ["https://lite-api.jup.ag/tokens/v2/toptrending/5m?limit=50", "https://lite-api.jup.ag/tokens/v2/toporganicscore/5m?limit=50", "https://lite-api.jup.ag/tokens/v2/toptraded/5m?limit=50"];
   const [lists, jl] = await Promise.all([Promise.all(urls.map(u => getJSON(u).catch(() => []))), Promise.all(jupUrls.map(u => getJSON(u).catch(() => [])))]);
   const boosted = new Set([...(lists[1] || []), ...(lists[2] || [])].filter(x => x.chainId === "solana").map(x => x.tokenAddress));
+  jl.forEach((l, i) => { if (!Array.isArray(l)) jl[i] = []; });   // Jupiter bremst manchmal: dann leere Liste statt Absturz
+  lists.forEach((l, i) => { if (!Array.isArray(l)) lists[i] = []; });
   const jupTrend = new Set((jl[0] || []).map(x => x.id));
   const addrs = [...new Set([...lists.flat().filter(x => x && x.chainId === "solana").map(x => x.tokenAddress), ...jl.flat().filter(x => x && x.id).map(x => x.id)])].filter(m => m !== SOL && m !== USDC);
   const [pairs, jup] = await Promise.all([pairsFor(addrs), jupFor(addrs)]);
@@ -389,9 +391,10 @@ async function pretrain(manual) {
   if (S.pretrainBusy) return; S.pretrainBusy = true;
   try {
     setPhase("Vortraining: lade Verlaufsdaten …");
-    const lists = await Promise.all(["toptrending/1h", "toptraded/1h", "toporganicscore/1h", "toptrending/6h"].map(x => getJSON(`https://lite-api.jup.ag/tokens/v2/${x}?limit=50`).catch(() => [])));
-    const mints = [...new Set(lists.flat().map(t => t && t.id).filter(Boolean))].filter(m => m !== SOL && m !== USDC);
-    const pairs = Object.values(await pairsFor(mints)).filter(p => (p.liquidity?.usd || 0) >= C.minLiq).sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0)).slice(0, 24);
+    const lists = [];
+    for (const x of ["toptrending/1h", "toptraded/1h", "toptrending/6h"]) { await sleep(1500); const r = await getJSON(`https://lite-api.jup.ag/tokens/v2/${x}?limit=50`).catch(() => []); if (Array.isArray(r)) lists.push(...r); }
+    const mints = [...new Set([...lists.map(t => t && t.id), ...Object.keys(lastPairs)].filter(Boolean))].filter(m => m !== SOL && m !== USDC);
+    const pairs = Object.values({...(await pairsFor(mints)), ...lastPairs}).filter(p => (p.liquidity?.usd || 0) >= C.minLiq).sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0)).slice(0, 24);
     let n = 0, wins = 0, sum = 0, pools = 0;
     for (const p of pairs) {
       await sleep(2200);   // GeckoTerminal-Limit einhalten
@@ -425,6 +428,7 @@ async function pretrain(manual) {
         train(f, r > 0, 0.5); n++; per++; wins += r > 0 ? 1 : 0; sum += r; last = t;
       }
     }
+    if (!n) { log("INFO", "–", "Vortraining: Datenquellen gerade überlastet – neuer Versuch in 5 Min."); S.pretrainBusy = false; setTimeout(() => pretrain(false), 300000); return; }
     S.pretrained = {t: Date.now(), n, pools, wr: n ? wins / n * 100 : 0, avg: n ? sum / n : 0};
     log("INFO", "–", `Vortraining fertig: ${n} Lernbeispiele aus ${pools} Coins (letzte 5 Std.) · ${n ? Math.round(wins / n * 100) : 0}% wären Gewinner gewesen, Ø ${pct(n ? sum / n : 0)} – Gehirn angepasst`);
     vaultQueue.push({path: "MemeBot/Lernen.md", append: false, text: learnMarkdown()});
@@ -637,6 +641,7 @@ async function cycle() {
     setPhase("Scanner sucht frische Coins …");
     const [{pairs, boosted, jup, jupTrend}, mk] = await Promise.all([universe(), market()]);
     const weak = mk.h1 <= -C.solDrop || mk.m5 <= -0.8;
+    lastPairs = Object.fromEntries(Object.entries(pairs).filter(([, p]) => (p.liquidity?.usd || 0) >= C.minLiq));
     const lage = situation(pairs, mk); S.lage = {name: lage.name, score: lage.score, breadth: lage.breadth};
     agentNote.market = `Lage: ${lage.name} · SOL ${pct(mk.h1)} 1h · ${Math.round(lage.breadth * 100)}% der Coins steigen`;
     if (S.lastLage !== lage.name) { if (S.lastLage) log("INFO", "–", `Marktlage wechselt: ${S.lastLage} → ${lage.name} (${lage.name === "gefährlich" ? "keine Käufe" : lage.name === "kalt" ? "halbe Größe, strengere Auswahl" : "normaler Betrieb"})`); S.lastLage = lage.name; }
