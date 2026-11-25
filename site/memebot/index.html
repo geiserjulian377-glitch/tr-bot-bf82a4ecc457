@@ -92,7 +92,7 @@ a{color:var(--b)}
   <div class="head">
     <div class="logo" aria-hidden="true"></div>
     <div>
-      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v7 · test</span></div>
+      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v8 · test</span></div>
       <div class="status" id="status"><span class="dot"></span>gestoppt</div>
       <div class="chip" id="phase">bereit</div>
     </div>
@@ -182,7 +182,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const DEF = {startBal: 70, minAgeMin: 20, maxAgeH: 24, minLiq: 15000, minVolH1: 20000, minLiqMc: 8, minHolders: 300, buyRatio: 60, spikeX: 2.5,
   noChase5m: 12, maxH1: 300, sizePct: 20, maxOpen: 2, maxBuysH: 4, top1Max: 10, top10Max: 35, devMax: 5, lpMin: 90, maxImpact: 8,
   tp1: 35, tp1Pct: 50, tp2: 100, tp2Pct: 25, trail: 20, stop: 12, crash: 25, confirmSec: 10, sellPressure: 1.6, liqDrop: 20,
-  timeStopMin: 40, ddLimit: 25, fee: 0.5, cooldownH: 6, minOrganic: 15, minNetBuyers: 3, needSocials: 1, solDrop: 1.5, estLiq: 150000, estOrganic: 60, maxAtr: 9, atrStop: 3, shadowMin: 30, maxRugScore: 60, maxPriceDiff: 5, confirmScans: 2, dayLock: 15, minProb: 58, scanSec: 15, ntfy: ""};
+  timeStopMin: 40, ddLimit: 25, fee: 0.5, cooldownH: 6, minOrganic: 15, minNetBuyers: 3, needSocials: 1, solDrop: 1.5, estLiq: 150000, estOrganic: 60, maxAtr: 9, atrStop: 3, shadowMin: 30, maxRugScore: 60, maxPriceDiff: 5, confirmScans: 2, dayLock: 15, minProb: 58, scanSec: 15, explore: 1, exploreProb: 35, exploreSize: 8, exploreMaxH: 4, ntfy: ""};
 const LABEL = {startBal: "Startkapital ($)", minAgeMin: "Min. Alter (Min.)", maxAgeH: "Max. Alter (Std.)", minLiq: "Min. Liquidität ($)",
   minVolH1: "Min. Volumen 1 Std. ($)", minLiqMc: "Liquidität/Marktwert min. (%)", minHolders: "Min. Halter", buyRatio: "Kaufdruck min. (%)",
   spikeX: "Volumen-Spike (×)", noChase5m: "Nicht kaufen über (+% in 5 Min.)", maxH1: "Nicht jagen über (+% 1 Std.)", sizePct: "Größe je Trade (% Konto)",
@@ -191,7 +191,7 @@ const LABEL = {startBal: "Startkapital ($)", minAgeMin: "Min. Alter (Min.)", max
   tp1: "Gewinn sichern ab (+%)", tp1Pct: "dann verkaufen (%)", tp2: "2. Stufe ab (+%)", tp2Pct: "dann verkaufen (% vom Start)",
   trail: "Trailing-Stop (% unter Hoch)", stop: "Stop-Loss (−%)", crash: "Sofort raus bei Absturz (−%)", confirmSec: "Stop bestätigen nach (Sek.)",
   sellPressure: "Verkaufsdruck-Ausstieg (Verk./Käufe)", liqDrop: "Raus bei Liquiditätsverlust (%)", timeStopMin: "Zeit-Stop (Min.)",
-  ddLimit: "Tageslimit (−% vom Hoch)", fee: "Gebühren je Seite (%)", cooldownH: "Sperre nach Verlust (Std.)", minOrganic: "Echtheits-Score min. (0–100)", minNetBuyers: "Netto-Käufer 5 Min. min.", needSocials: "Website/Socials Pflicht (1=ja)", solDrop: "Pause wenn SOL fällt (−% 1 Std.)", estLiq: "Etablierte Coins: Liquidität min. ($)", estOrganic: "Etablierte Coins: Echtheit min.", maxAtr: "Max. Schwankung je Minute (%)", atrStop: "Stop = Schwankung × (dynamisch)", shadowMin: "Schatten-Trade auswerten nach (Min.)", maxRugScore: "RugCheck-Risiko max. (0–100)", maxPriceDiff: "Max. Preisabweichung der Quellen (%)", confirmScans: "Bestätigung über Scans", dayLock: "Ab Tagesgewinn (+%) halbe Größe", minProb: "Gehirn: Gewinnchance min. (%)", scanSec: "Scan alle (Sek.)", ntfy: "ntfy-Thema (Push)"};
+  ddLimit: "Tageslimit (−% vom Hoch)", fee: "Gebühren je Seite (%)", cooldownH: "Sperre nach Verlust (Std.)", minOrganic: "Echtheits-Score min. (0–100)", minNetBuyers: "Netto-Käufer 5 Min. min.", needSocials: "Website/Socials Pflicht (1=ja)", solDrop: "Pause wenn SOL fällt (−% 1 Std.)", estLiq: "Etablierte Coins: Liquidität min. ($)", estOrganic: "Etablierte Coins: Echtheit min.", maxAtr: "Max. Schwankung je Minute (%)", atrStop: "Stop = Schwankung × (dynamisch)", shadowMin: "Schatten-Trade auswerten nach (Min.)", maxRugScore: "RugCheck-Risiko max. (0–100)", maxPriceDiff: "Max. Preisabweichung der Quellen (%)", confirmScans: "Bestätigung über Scans", dayLock: "Ab Tagesgewinn (+%) halbe Größe", minProb: "Gehirn: Gewinnchance min. (%)", scanSec: "Scan alle (Sek.)", explore: "Lern-Trades im Testmodus (1=an)", exploreProb: "Lern-Trade ab Chance (%)", exploreSize: "Lern-Trade Größe (% Konto)", exploreMaxH: "Max. Lern-Trades pro Std.", ntfy: "ntfy-Thema (Push)"};
 let C = {...DEF, ...store.get("cfg", {})};
 if (store.get("cfgVer", 1) < 3) {   // v2: neue, ruhigere Ausstiegsregeln übernehmen
   const keep = {startBal: C.startBal, ntfy: C.ntfy};
@@ -203,7 +203,7 @@ function fresh() { return {bal: C.startBal, start: Date.now(), startBal: C.start
   wins: 0, losses: 0, streak: 0, peak: C.startBal, day: new Date().toDateString(), dayPeak: C.startBal, paused: false,
   stats: {scan: 0, sig: 0, rug: 0, fil: 0}, holders: {}, block: {}, learn: {}, buys: [], shadow: [], slearn: {}}; }
 let S = store.get("state", null) || fresh();
-S.dayPeak0 = S.dayPeak0 || S.startBal; S.block = S.block || {}; S.learn = S.learn || {}; S.buys = S.buys || []; S.shadow = S.shadow || []; S.slearn = S.slearn || {}; S.brain = S.brain || null; S.pretrainBusy = false;
+S.dayPeak0 = S.dayPeak0 || S.startBal; S.block = S.block || {}; S.learn = S.learn || {}; S.buys = S.buys || []; S.shadow = S.shadow || []; S.slearn = S.slearn || {}; S.brain = S.brain || null; S.pretrainBusy = false; S.rej = S.rej || {}; S.explores = S.explores || [];
 let confirmSeen = {}, guardAt = 0, lastPairs = {};
 let running = false, busy = false, fastBusy = false, rugCache = {}, filteredAt = {}, flow = [], agentNote = {}, vaultQueue = [];
 const save = () => { S.log = S.log.slice(-800); S.eq = S.eq.slice(-4000); S.trades = S.trades.slice(-500); store.set("state", S); };
@@ -446,12 +446,12 @@ async function pretrain(manual) {
 $("#pretrain").onclick = () => pretrain(true);
 
 // ---------------- SCHATTEN-TRADES: verfolgt Setups, die nicht gekauft wurden, und lernt daraus
-function shadowAdd(p, key, atr, f, prob) {
+function shadowAdd(p, key, atr, f, prob, reason) {
   const m = p.baseToken.address;
   if (S.shadow.some(x => x.mint === m) || S.pos.some(x => x.mint === m)) return;
   const stop = Math.min(18, Math.max(8, (atr || 4) * C.atrStop));
-  S.shadow.push({mint: m, sym: p.baseToken.symbol, key, p0: parseFloat(p.priceUsd), t0: Date.now(), stop, hi: 0, done: false, f, prob});
-  S.shadow = S.shadow.slice(-120);
+  S.shadow.push({mint: m, sym: p.baseToken.symbol, key, p0: parseFloat(p.priceUsd), t0: Date.now(), stop, hi: 0, done: false, f, prob, reason: reason || null});
+  S.shadow = S.shadow.slice(-200);
 }
 async function shadowUpdate(pairs) {
   const open = S.shadow.filter(x => !x.done); if (!open.length) return;
@@ -470,7 +470,9 @@ async function shadowUpdate(pairs) {
     const L = S.slearn[x.key] = S.slearn[x.key] || {n: 0, w: 0, sum: 0};
     L.n++; L.w += r > 0 ? 1 : 0; L.sum += r;
     train(x.f, r > 0, 1);
-    log("INFO", x.sym, `Schatten-Trade ausgewertet: wäre ${pct(r)} gewesen (Setup „${x.key}“${x.prob != null ? `, Gehirn schätzte ${Math.round(x.prob * 100)}%` : ""}) – Gehirn lernt daraus`);
+    const rk = x.reason ? x.reason.replace(/[0-9][0-9.,]*/g, "#").slice(0, 70) : "bestanden (nicht gekauft)";
+    const R = S.rej[rk] = S.rej[rk] || {n: 0, w: 0, sum: 0}; R.n++; R.w += r > 0 ? 1 : 0; R.sum += r;
+    log("INFO", x.sym, `Schatten-Trade ausgewertet: wäre ${pct(r)} gewesen (${x.reason ? "aussortiert wegen " + x.reason + ", " : ""}Setup „${x.key}“${x.prob != null ? `, Gehirn schätzte ${Math.round(x.prob * 100)}%` : ""}) – Gehirn lernt daraus`);
   }
   S.shadow = S.shadow.filter(x => !x.done || Date.now() - x.t0 < 3 * 3600000);
 }
@@ -481,38 +483,41 @@ async function rugCheck(mint, sizeUsd, price, dexId) {
   let rep = c && Date.now() - c.t < 180000 ? c.r : null;
   if (!rep) { rep = await getJSON(`https://api.rugcheck.xyz/v1/tokens/${mint}/report`); rugCache[mint] = {t: Date.now(), r: rep}; }
   const h = S.holders[mint] || {}; if (rep.totalHolders && rep.totalHolders !== h.n) S.holders[mint] = {prev: h.n || rep.totalHolders, n: rep.totalHolders, t: Date.now()};
-  const fails = [];
-  if (rep.rugged) fails.push("als „rugged“ markiert");
-  if (rep.mintAuthority) fails.push("Mint-Recht offen (neue Coins druckbar)");
-  if (rep.freezeAuthority) fails.push("Freeze-Recht offen (Guthaben einfrierbar)");
-  const danger = (rep.risks || []).filter(r => r.level === "danger");
-  if (danger.length) fails.push("Gefahr: " + danger.map(r => r.name).join(", "));
-  if ((rep.insiderNetworks || []).length || (rep.graphInsidersDetected || 0) > 0) fails.push("Insider-Netzwerk erkannt");
+  const hard = [], soft = [];   // hart = niemals kaufen · weich = senkt die Bewertung
+  if (rep.rugged) hard.push("als „rugged“ markiert");
+  if (rep.mintAuthority) hard.push("Mint-Recht offen (neue Coins druckbar)");
+  if (rep.freezeAuthority) hard.push("Freeze-Recht offen (Guthaben einfrierbar)");
+  (rep.risks || []).filter(r => r.level === "danger").forEach(r => (/rug|mint auth|freeze|honeypot|permanent|creator history/i.test(r.name) ? hard : soft).push("Gefahr: " + r.name));
+  if ((rep.insiderNetworks || []).length || (rep.graphInsidersDetected || 0) > 0) soft.push("Insider-Netzwerk erkannt");
   const known = rep.knownAccounts || {};
   const pools = new Set((rep.markets || []).flatMap(m => [m.pubkey, m.liquidityA, m.liquidityB, m.liquidityAAccount, m.liquidityBAccount]).filter(Boolean));
   const top = (rep.topHolders || []).filter(x => !known[x.owner] && !known[x.address] && !pools.has(x.address) && !pools.has(x.owner)).slice(0, 10);
   const top10 = top.reduce((a, x) => a + (x.pct || 0), 0), top1 = top[0]?.pct || 0;
-  if (top1 > C.top1Max) fails.push(`größter Halter besitzt ${top1.toFixed(0)}%`);
-  if (top10 > C.top10Max) fails.push(`Top-10-Halter ${top10.toFixed(0)}% > ${C.top10Max}%`);
+  if (top1 > 30) hard.push(`größter Halter besitzt ${top1.toFixed(0)}%`); else if (top1 > C.top1Max) soft.push(`größter Halter besitzt ${top1.toFixed(0)}%`);
+  if (top10 > 60) hard.push(`Top-10-Halter ${top10.toFixed(0)}%`); else if (top10 > C.top10Max) soft.push(`Top-10-Halter ${top10.toFixed(0)}% > ${C.top10Max}%`);
   const supply = rep.token?.supply || 0;
   const dev = supply ? (rep.creatorBalance || 0) / supply * 100 : 0;
-  if (dev > C.devMax) fails.push(`Entwickler hält ${dev.toFixed(1)}%`);
+  if (dev > 15) hard.push(`Entwickler hält ${dev.toFixed(1)}%`); else if (dev > C.devMax) soft.push(`Entwickler hält ${dev.toFixed(1)}%`);
   let lp = Math.max(0, ...(rep.markets || []).map(m => m.lp?.lpLockedPct || 0));
   if (rep.launchpad?.platform === "pump_fun" && dexId === "pumpswap" && !(rep.markets || []).length) lp = 100;   // Pump.fun-Migration: vom Protokoll verwaltet
-  if (lp < C.lpMin) fails.push(`Liquidität nur ${lp.toFixed(0)}% gesperrt`);
-  if ((rep.totalHolders || 0) < C.minHolders) fails.push(`nur ${rep.totalHolders || 0} Halter`);
-  if ((rep.score_normalised || 0) > C.maxRugScore) fails.push(`RugCheck-Risiko ${rep.score_normalised}/100`);
-  if ((rep.creatorTokens || []).length > 20) fails.push(`Entwickler hat ${(rep.creatorTokens || []).length} weitere Coins gestartet`);
-  if (rep.transferFee?.pct > 0) fails.push(`Transfer-Gebühr ${rep.transferFee.pct}% (versteckte Steuer)`);
+  if (lp < 50) hard.push(`Liquidität nur ${lp.toFixed(0)}% gesperrt`); else if (lp < C.lpMin) soft.push(`Liquidität nur ${lp.toFixed(0)}% gesperrt`);
+  const hn = rep.totalHolders || 0;
+  if (hn < 100) hard.push(`nur ${hn} Halter`); else if (hn < C.minHolders) soft.push(`nur ${hn} Halter`);
+  const rs = rep.score_normalised || 0;
+  if (rs > 85) hard.push(`RugCheck-Risiko ${rs}/100`); else if (rs > C.maxRugScore) soft.push(`RugCheck-Risiko ${rs}/100`);
+  const ct = (rep.creatorTokens || []).length;
+  if (ct > 100) hard.push(`Entwickler hat ${ct} weitere Coins gestartet`); else if (ct > 20) soft.push(`Entwickler hat ${ct} weitere Coins gestartet`);
+  if (rep.transferFee?.pct > 0) hard.push(`Transfer-Gebühr ${rep.transferFee.pct}% (versteckte Steuer)`);
   let impact = 0;
-  if (!fails.length) {   // Honeypot-Schutz: lässt sich die geplante Menge wirklich verkaufen?
+  if (!hard.length) {   // Honeypot-Schutz: lässt sich die geplante Menge wirklich verkaufen?
     const dec = rep.token?.decimals ?? 6;
     const amt = BigInt(Math.max(1, Math.floor(sizeUsd / price * 10 ** dec)));
     const q = await getJSON(`https://lite-api.jup.ag/swap/v1/quote?inputMint=${mint}&outputMint=${SOL}&amount=${amt}&slippageBps=300`).catch(() => null);
-    if (!q || !q.outAmount) fails.push("Verkaufs-Test fehlgeschlagen (mögliche Honeypot)");
-    else { impact = parseFloat(q.priceImpactPct) * 100; if (impact > C.maxImpact) fails.push(`Verkauf würde ${impact.toFixed(1)}% Kurs kosten`); }
+    if (!q || !q.outAmount) hard.push("Verkaufs-Test fehlgeschlagen (mögliche Honeypot)");
+    else { impact = parseFloat(q.priceImpactPct) * 100; if (impact > C.maxImpact) hard.push(`Verkauf würde ${impact.toFixed(1)}% Kurs kosten`); }
   }
-  return {ok: !fails.length, fails, top10, top1, dev, lp, holders: rep.totalHolders || 0, impact, creatorBal: rep.creatorBalance || 0, top1Addr: top[0]?.address, top1Amt: top[0]?.amount || 0};
+  const fails = [...hard, ...soft];
+  return {ok: !hard.length, clean: !fails.length, hard, soft, fails, top10, top1, dev, lp, holders: rep.totalHolders || 0, impact, creatorBal: rep.creatorBalance || 0, top1Addr: top[0]?.address, top1Amt: top[0]?.amount || 0};
 }
 
 // ---------------- 3 SIZER (mit Gelerntem)
@@ -542,7 +547,7 @@ function sizeFor(key, prob, lage) {
 function setupBlocked(key) { const L = learned(key); return L && L.n >= 6 && (L.wr < 30 || L.avg < -2) ? L : null; }
 
 // ---------------- 4 EXECUTOR (Testmodus: simulierte Ausführung mit Live-Kursen)
-function buy(p, sz, rc, sig, ch, f, prob) {
+function buy(p, sz, rc, sig, ch, f, prob, mode) {
   const price = parseFloat(p.priceUsd), slip = Math.max(rc.impact, 0.5) / 100, fee = C.fee / 100;
   const fill = price * (1 + slip), qty = sz.size * (1 - fee) / fill, key = setupKey(sig);
   S.bal -= sz.size; S.buys.push(Date.now());
@@ -550,8 +555,9 @@ function buy(p, sz, rc, sig, ch, f, prob) {
     cost: sz.size, t0: Date.now(), peak: price, last: price, liq0: p.liquidity?.usd || 0, tp1: false, tp2: false, got: 0,
     stopPct: ch ? Math.min(18, Math.max(8, ch.atr * C.atrStop)) : C.stop, trailPct: ch ? Math.min(30, Math.max(15, ch.atr * C.atrStop * 1.4)) : C.trail,
     stopAt: fill * (1 - (ch ? Math.min(18, Math.max(8, ch.atr * C.atrStop)) : C.stop) / 100),
-    below: 0, key, sig: sig.map(s => s.t), creatorBal: rc.creatorBal, top1Addr: rc.top1Addr, top1Amt: rc.top1Amt, f, prob});
-  log("ENTER", p.baseToken.symbol, `Kauf ${usd(sz.size)} zu $${px(fill)} · Setup „${key}“ · ${sig.map(s => s.t).join(", ")} · Stop −${S.pos[S.pos.length - 1].stopPct.toFixed(0)}% / Trailing ${S.pos[S.pos.length - 1].trailPct.toFixed(0)}% (an Schwankung angepasst) · Rug-Check ok (größter Halter ${rc.top1.toFixed(0)}%, Top10 ${rc.top10.toFixed(0)}%, ${rc.holders} Halter, Echtheit ${Math.round(rc.org || 0)})`, "Größe " + sz.note);
+    below: 0, key, sig: sig.map(s => s.t), creatorBal: rc.creatorBal, top1Addr: rc.top1Addr, top1Amt: rc.top1Amt, f, prob, mode: mode || "normal"});
+  if (mode === "lern") S.explores.push(Date.now());
+  log("ENTER", p.baseToken.symbol, `${mode === "lern" ? "LERN-TRADE (klein, zum Dazulernen) – " : ""}Kauf ${usd(sz.size)} zu $${px(fill)} · Setup „${key}“ · ${sig.map(s => s.t).join(", ")} · Stop −${S.pos[S.pos.length - 1].stopPct.toFixed(0)}% / Trailing ${S.pos[S.pos.length - 1].trailPct.toFixed(0)}% (an Schwankung angepasst) · Rug-Check ok (größter Halter ${rc.top1.toFixed(0)}%, Top10 ${rc.top10.toFixed(0)}%, ${rc.holders} Halter, Echtheit ${Math.round(rc.org || 0)})`, "Größe " + sz.note);
   push(`KAUF ${p.baseToken.symbol}`, `${usd(sz.size)} zu $${px(fill)} | ${sig.map(s => s.t).join(", ")}`);
 }
 function sell(pos, share, price, why, type) {
@@ -563,7 +569,7 @@ function sell(pos, share, price, why, type) {
   log("EXIT", pos.sym, `${done ? "Verkauf Rest" : "Teilverkauf " + Math.round(share * 100) + "%"} zu $${px(price)} – ${why}`, done ? pct((pos.got / pos.cost - 1) * 100) : "");
   if (!done) return;
   const r = (pos.got / pos.cost - 1) * 100, win = pos.got > pos.cost;
-  S.trades.push({sym: pos.sym, name: pos.name, mint: pos.mint, cost: pos.cost, got: pos.got, ret: r, t0: pos.t0, t1: Date.now(), why, key: pos.key, sig: pos.sig, prob: pos.prob});
+  S.trades.push({sym: pos.sym, name: pos.name, mint: pos.mint, cost: pos.cost, got: pos.got, ret: r, t0: pos.t0, t1: Date.now(), why, key: pos.key, sig: pos.sig, prob: pos.prob, mode: pos.mode});
   train(pos.f, win, 2);   // echte Trades zählen doppelt
   if (win) { S.wins++; S.streak = 0; } else { S.losses++; S.streak++; }
   const L = S.learn[pos.key] = S.learn[pos.key] || {n: 0, w: 0, pnl: 0, best: -999, worst: 999};
@@ -677,39 +683,47 @@ async function cycle() {
     cands.forEach(c => c.score = think(features(c.p, c.j, null, c.sig, null, lage.score)));   // Vorsortierung durch das Gehirn
     cands.sort((a, b) => b.score - a.score);
     S.buys = S.buys.filter(t => Date.now() - t < 3600000);
+    S.explores = S.explores.filter(t => Date.now() - t < 3600000);
     for (const {p, sig, j} of cands.slice(0, 8)) {
       const m = p.baseToken.address, key = setupKey(sig);
       let ch = null;
       try { ch = await chart(p.pairAddress); } catch (e) {}
-      const cr = chartReason(ch, sig);
-      if (cr) { flow.push({p, st: "✗ " + cr, c: "var(--mut)"}); continue; }
+      const cr = chartReason(ch, sig), hardChart = !!cr && /zu wild|überdehnt/.test(cr);
       let sz = sizeFor(key);
       setPhase(`Rug-Check ${p.baseToken.symbol} …`); agentNote.rug = `prüft ${p.baseToken.symbol}`;
       let rc;
       try { rc = await rugCheck(m, Math.max(sz.size, 3), parseFloat(p.priceUsd), p.dexId); } catch (e) { flow.push({p, st: "Rug-Check nicht erreichbar", c: "var(--a)"}); continue; }
-      if (!rc.ok) {
-        flow.push({p, st: "✗ " + rc.fails[0], c: "var(--r)"});
-        if (!filteredAt[m] || Date.now() - filteredAt[m] > 600000) { filteredAt[m] = Date.now(); S.stats.fil++; log("FILTER", p.baseToken.symbol, `${sig.map(s => s.t).join(", ")} – aber: ${rc.fails.join("; ")}`); }
-        continue;
-      }
-      const cf = confirmSeen[m] = (confirmSeen[m] && Date.now() - confirmSeen[m].t < 70000) ? {n: confirmSeen[m].n + 1, t: Date.now()} : {n: 1, t: Date.now()};
-      if (cf.n < C.confirmScans) { flow.push({p, st: `✓ sicher – warte auf Bestätigung (Scan ${cf.n}/${C.confirmScans})`, c: "var(--a)"}); continue; }
-      const f = features(p, j, ch, sig, rc, lage.score), prob = think(f), need = (C.minProb + lage.probAdd) / 100;
-      shadowAdd(p, key, ch?.atr, f, prob);   // jedes sichere Setup wird verfolgt – das Gehirn lernt aus allen
-      if (prob < need) { flow.push({p, st: `🧠 Chance ${Math.round(prob * 100)}% < ${Math.round(need * 100)}% (${brainWhy(f)})`, c: "var(--mut)"}); continue; }
-      if (sig.length < 3) { flow.push({p, st: `🧠 ${Math.round(prob * 100)}%, aber nur ${sig.length} Signale`, c: "var(--mut)"}); continue; }
-      if (lage.name === "gefährlich") { flow.push({p, st: "Markt gefährlich – kein Kauf", c: "var(--r)"}); continue; }
-      sz = sizeFor(key, prob, lage);
-      if (S.paused) { flow.push({p, st: "Pause (Tageslimit)", c: "var(--a)"}); continue; }
-      if (weak) { flow.push({p, st: `Markt schwach (SOL ${pct(mk.h1)} 1h) – kein Kauf`, c: "var(--a)"}); continue; }
-      if (S.pos.length >= C.maxOpen) { flow.push({p, st: "max. Positionen offen", c: "var(--a)"}); continue; }
-      if (S.buys.length >= C.maxBuysH) { flow.push({p, st: `max. ${C.maxBuysH} Käufe/Std.`, c: "var(--a)"}); continue; }
-      const bl = setupBlocked(key);
-      if (bl) { flow.push({p, st: `Setup „${key}“ gesperrt (gelernt)`, c: "var(--r)"}); continue; }
-      if (sz.size < 1) { flow.push({p, st: "zu wenig Guthaben", c: "var(--a)"}); continue; }
-      S.stats.rug++; flow.push({p, st: "✓ gekauft", c: "var(--g)"}); agentNote.size = `${usd(sz.size)} (${sz.note})`;
-      rc.org = j?.organicScore || 0; buy(p, sz, rc, sig, ch, f, prob);
-      log("INFO", p.baseToken.symbol, `Gehirn: Gewinnchance ${Math.round(prob * 100)}% – wichtigste Gründe: ${brainWhy(f)} · Markt ${lage.name}`);
+      const f = features(p, j, ch, sig, rc, lage.score), soft = [...rc.soft, ...(cr && !hardChart ? [cr] : [])];
+      const prob = Math.max(0, think(f) - 0.06 * soft.length), need = (C.minProb + lage.probAdd) / 100;
+      const reason = !rc.ok ? "hart: " + rc.hard[0] : hardChart ? cr : soft.length ? soft[0] : null;
+      let bought = false;
+      const decide = () => {
+        if (!rc.ok) {
+          flow.push({p, st: "✗ " + rc.hard[0], c: "var(--r)"});
+          if (!filteredAt[m] || Date.now() - filteredAt[m] > 600000) { filteredAt[m] = Date.now(); S.stats.fil++; log("FILTER", p.baseToken.symbol, `${sig.map(s => s.t).join(", ")} – aber (hart): ${rc.hard.join("; ")}`); }
+          return;
+        }
+        if (hardChart) { flow.push({p, st: "✗ " + cr, c: "var(--mut)"}); return; }
+        const cf = confirmSeen[m] = (confirmSeen[m] && Date.now() - confirmSeen[m].t < 70000) ? {n: confirmSeen[m].n + 1, t: Date.now()} : {n: 1, t: Date.now()};
+        if (cf.n < C.confirmScans) { flow.push({p, st: `✓ sicher – warte auf Bestätigung (Scan ${cf.n}/${C.confirmScans})`, c: "var(--a)"}); return; }
+        if (S.paused) { flow.push({p, st: "Pause (Tageslimit)", c: "var(--a)"}); return; }
+        if (lage.name === "gefährlich") { flow.push({p, st: "Markt gefährlich – kein Kauf", c: "var(--r)"}); return; }
+        if (S.pos.length >= C.maxOpen) { flow.push({p, st: "max. Positionen offen", c: "var(--a)"}); return; }
+        if (S.buys.length >= C.maxBuysH) { flow.push({p, st: `max. ${C.maxBuysH} Käufe/Std.`, c: "var(--a)"}); return; }
+        const bl = setupBlocked(key);
+        if (bl) { flow.push({p, st: `Setup „${key}“ gesperrt (gelernt)`, c: "var(--r)"}); return; }
+        let mode = null;
+        if (prob >= need && sig.length >= 3 && !weak) mode = "normal";
+        else if (C.explore && prob >= C.exploreProb / 100 && S.explores.length < C.exploreMaxH && !S.pos.some(x => x.mode === "lern")) mode = "lern";
+        if (!mode) { flow.push({p, st: `🧠 Chance ${Math.round(prob * 100)}% < ${Math.round(need * 100)}%${soft.length ? " · " + soft[0] : ""} (${brainWhy(f)})`, c: "var(--mut)"}); return; }
+        sz = mode === "normal" ? sizeFor(key, prob, lage) : {size: Math.min(equity() * C.exploreSize / 100, S.bal * 0.98), note: `${C.exploreSize}% Lern-Trade (Chance ${Math.round(prob * 100)}%)`};
+        if (sz.size < 0.5) { flow.push({p, st: "zu wenig Guthaben", c: "var(--a)"}); return; }
+        S.stats.rug++; flow.push({p, st: mode === "lern" ? "✓ Lern-Trade gekauft" : "✓ gekauft", c: "var(--g)"}); agentNote.size = `${usd(sz.size)} (${sz.note})`;
+        rc.org = j?.organicScore || 0; buy(p, sz, rc, sig, ch, f, prob, mode); bought = true;
+        log("INFO", p.baseToken.symbol, `Gehirn: Gewinnchance ${Math.round(prob * 100)}%${soft.length ? ` (Abzug für: ${soft.join("; ")})` : ""} – Gründe: ${brainWhy(f)} · Markt ${lage.name}`);
+      };
+      decide();
+      if (!bought) shadowAdd(p, key, ch?.atr, f, prob, reason);   // alles verfolgen – auch Aussortiertes
     }
     S.eq.push([Date.now(), Math.round(equity() * 100) / 100]);
     setPhase(S.paused ? "Pause – Tageslimit erreicht" : S.pos.length ? `überwacht ${S.pos.length} Position${S.pos.length > 1 ? "en" : ""} alle 5 Sek.` : "wartet auf ein sauberes Setup");
@@ -878,8 +892,10 @@ function render(light) {
     <div class="mut" style="margin-top:6px">Phantom-Bereitschaft: ${(() => { const R = liveReadiness(); return R.checks.map(([ok, t]) => `<span class="${ok ? "up" : "down"}">${ok ? "✓" : "✗"} ${esc(t)}</span>`).join(" · "); })()}</div>
     <div class="mut" style="margin-top:6px">Achtet am stärksten auf: ${top.map(([n, w]) => `<b class="${w > 0 ? "up" : "down"}">${w > 0 ? "▲" : "▼"} ${esc(n)}</b>`).join(" · ")}</div>`;
   $("#learnN").textContent = `${S.trades.length} echte + ${Object.values(S.slearn || {}).reduce((a, x) => a + x.n, 0)} Schatten-Trades · ${sh} laufen`;
-  if (keys.length) $("#learn").innerHTML = `<div class="log" style="height:auto;max-height:220px">${keys.map(([k, L]) => { const bl = setupBlocked(k);
-    return `<div style="grid-template-columns:minmax(0,1fr) 110px 80px 110px"><span><b>${esc(k)}</b></span><span>${L.real} echt · ${L.shadow} Schatten</span><span class="${L.wr >= 50 ? "up" : "down"}">${L.wr.toFixed(0)}% Treffer</span><span class="${L.avg >= 0 ? "up" : "down"}">Ø ${pct(L.avg)}${bl ? " · gesperrt" : ""}</span></div>`; }).join("")}</div>`;
+  const RJ = Object.entries(S.rej || {}).filter(([, R]) => R.n >= 2).sort((a, b) => b[1].n - a[1].n).slice(0, 8);
+  const rjHtml = RJ.length ? `<div class="mut" style="margin-top:8px"><b>Filter-Prüfung (Schatten):</b> ${RJ.map(([k, R]) => { const avg = R.sum / R.n; return `${esc(k)}: ${R.n}× Ø <span class="${avg >= 0 ? "up" : "down"}">${pct(avg)}</span> ${avg < 0 ? "→ schützt" : "→ kostet Chancen"}`; }).join(" · ")}</div>` : "";
+  if (keys.length || rjHtml) $("#learn").innerHTML = rjHtml + (keys.length ? `<div class="log" style="height:auto;max-height:220px">${keys.map(([k, L]) => { const bl = setupBlocked(k);
+    return `<div style="grid-template-columns:minmax(0,1fr) 110px 80px 110px"><span><b>${esc(k)}</b></span><span>${L.real} echt · ${L.shadow} Schatten</span><span class="${L.wr >= 50 ? "up" : "down"}">${L.wr.toFixed(0)}% Treffer</span><span class="${L.avg >= 0 ? "up" : "down"}">Ø ${pct(L.avg)}${bl ? " · gesperrt" : ""}</span></div>`; }).join("")}</div>` : "");
   const L = S.log.slice(-250).reverse();
   $("#logN").textContent = S.log.length + " Zeilen";
   $("#log").innerHTML = L.map(l => `<div><span class="mut">${hhmm(l.t)}</span><span class="lt ${l.type}">${l.type === "FILTER" ? "FILTERED" : l.type}</span><span>${l.sym && l.sym !== "–" ? "<b>$" + esc(l.sym) + "</b> " : ""}${esc(l.text)}</span><span class="${String(l.val).startsWith("−") ? "down" : "up"}">${esc(l.val)}</span></div>`).join("") || `<div class="note" style="display:block">Noch keine Einträge.</div>`;
@@ -902,7 +918,7 @@ function renderSettings() {
 }
 
 // ---------------- Bedienung
-$("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus, v7)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render();
+$("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus, v8)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render();
   if (!S.pretrained || Date.now() - S.pretrained.t > 2 * 3600000) setTimeout(() => pretrain(false), 3000);
   clearInterval(window.__ptI); window.__ptI = setInterval(() => { if (running) pretrain(false); }, 2 * 3600000); };
 $("#stop").onclick = () => { running = false; if (worker) worker.postMessage("stop"); $("#start").hidden = false; $("#stop").hidden = true; log("INFO", "–", "Bot gestoppt"); save(); render(); setPhase("gestoppt"); };
