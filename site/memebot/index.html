@@ -170,7 +170,7 @@ const store = {get(k, d){ try { const v = localStorage.getItem("mb_" + k); retur
 const SOL = "So11111111111111111111111111111111111111112";
 
 // ---------------- Einstellungen (wie im Video, anpassbar)
-const DEF = {startBal: 70, maxAgeH: 6, minLiq: 40000, minVolH1: 25000, minHolders: 300, buyRatio: 65, spikeX: 2.5,
+const DEF = {startBal: 70, maxAgeH: 24, minLiq: 15000, minVolH1: 20000, minHolders: 300, buyRatio: 65, spikeX: 2.5,
   maxH1: 300, sizePct: 25, maxOpen: 2, top10Max: 35, devMax: 5, lpMin: 90, maxImpact: 10,
   tp1: 2, tp1Pct: 40, tp2: 4, tp2Pct: 30, trail: 25, stop: 12, timeStopMin: 25, ddLimit: 30, fee: 0.5, ntfy: ""};
 const LABEL = {startBal: "Startkapital ($)", maxAgeH: "Max. Alter (Std.)", minLiq: "Min. Liquidität ($)", minVolH1: "Min. Volumen 1 Std. ($)",
@@ -180,6 +180,7 @@ const LABEL = {startBal: "Startkapital ($)", maxAgeH: "Max. Alter (Std.)", minLi
   tp2: "Gewinnstufe 2 (×)", tp2Pct: "verkaufen bei Stufe 2 (%)", trail: "Trailing-Stop (%)", stop: "Harter Stop (−%)",
   timeStopMin: "Zeit-Stop (Min.)", ddLimit: "Tageslimit (−% vom Hoch)", fee: "Gebühren je Seite (%)", ntfy: "ntfy-Thema (Push)"};
 let C = {...DEF, ...store.get("cfg", {})};
+if (store.get("cfgVer", 1) < 2) { C = {...C, maxAgeH: 24, minLiq: 15000, minVolH1: 20000}; store.set("cfg", C); store.set("cfgVer", 2); }
 
 // ---------------- Zustand
 function fresh() { return {bal: C.startBal, start: Date.now(), startBal: C.startBal, pos: [], trades: [], log: [], eq: [[Date.now(), C.startBal]],
@@ -239,6 +240,7 @@ function signals(p, boosted) {
 function filterReason(p) {
   const age = (Date.now() - (p.pairCreatedAt || 0)) / 3600000;
   if (!p.pairCreatedAt || age > C.maxAgeH) return `älter als ${C.maxAgeH} Std.`;
+  if (p.dexId === "pumpfun" && !(p.liquidity?.usd)) return "noch in der Pump.fun-Startphase (zu früh, höchstes Risiko)";
   if ((p.liquidity?.usd || 0) < C.minLiq) return `Liquidität ${usd(p.liquidity?.usd || 0, 0)} < ${usd(C.minLiq, 0)}`;
   if ((p.volume?.h1 || 0) < C.minVolH1) return `Volumen 1 Std. ${usd(p.volume?.h1 || 0, 0)} zu klein`;
   if ((p.priceChange?.h1 || 0) > C.maxH1 && (p.priceChange?.m5 || 0) > 0) return `schon ${pct(p.priceChange.h1)} in 1 Std. ohne Rücksetzer – nicht jagen`;
@@ -345,13 +347,18 @@ async function cycle() {
     flow = [];
     const list = Object.values(pairs).filter(p => !S.pos.some(x => x.mint === p.baseToken.address));
     S.stats.scan += list.length; agentNote.scan = `${list.length} Paare geprüft`;
-    const cands = [];
+    const cands = [], tally = {};
     for (const p of list) {
       const why = filterReason(p);
-      if (why) { S.stats.fil++; continue; }
+      if (why) { S.stats.fil++; const k = why.replace(/[\d$.,%+−]+/g, "#").replace(/ +/g, " "); tally[k] = (tally[k] || 0) + 1; continue; }
       const sig = signals(p, boosted);
       if (sig.length < 2) { flow.push({p, st: `${sig.length} Signal – zu wenig`, c: "var(--mut)"}); continue; }
       S.stats.sig++; cands.push({p, sig});
+    }
+    if (!S.lastTally || Date.now() - S.lastTally > 300000) {
+      S.lastTally = Date.now();
+      const parts = Object.entries(tally).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${n}× ${k.replace(/#/g, "…")}`);
+      log("INFO", "–", `Scan: ${list.length} frische Coins · ${cands.length} mit ≥2 Signalen` + (parts.length ? ` · aussortiert: ${parts.join(" · ")}` : ""));
     }
     cands.sort((a, b) => b.sig.length - a.sig.length || (b.p.volume?.m5 || 0) - (a.p.volume?.m5 || 0));
     for (const {p, sig} of cands.slice(0, 6)) {
