@@ -633,7 +633,7 @@ def main():
         world = demo_news(99, 6)
     else:
         seen = set()
-        for q in ("stock market today", "Börse DAX", "Wall Street", "Fed interest rates"):
+        for q in ("SPY", "^GSPC", "QQQ", "^GDAXI", "GLD", "^TNX", "stock market"):
             for n in fetch_news(q, 5):
                 if n["u"] not in seen and n["t"]:
                     seen.add(n["u"])
