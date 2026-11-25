@@ -794,7 +794,7 @@ function renderSettings() {
 }
 
 // ---------------- Bedienung
-$("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus, v2)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render(); };
+$("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus, v6)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render(); };
 $("#stop").onclick = () => { running = false; if (worker) worker.postMessage("stop"); $("#start").hidden = false; $("#stop").hidden = true; log("INFO", "–", "Bot gestoppt"); save(); render(); setPhase("gestoppt"); };
 $("#reset").onclick = () => { const b = $("#reset"); if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = "Wirklich zurücksetzen?"; setTimeout(() => { b.dataset.sure = ""; b.textContent = "Testgeld zurücksetzen"; }, 4000); return; }
   b.dataset.sure = ""; b.textContent = "Testgeld zurücksetzen"; const keepLearn = S.learn, keepBlock = S.block; S = fresh(); S.learn = keepLearn; S.block = keepBlock; log("INFO", "–", "Testgeld zurückgesetzt – Gelerntes und Sperrliste bleiben erhalten"); save(); render(); };
