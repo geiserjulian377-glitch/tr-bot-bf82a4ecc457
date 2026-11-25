@@ -354,6 +354,8 @@ body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
     <div class="panel" id="depHistP" hidden><h4>Entwicklung deiner Positionen <div class="seg" id="dhr"><button data-dh="21">1M</button><button data-dh="63" class="on">3M</button><button data-dh="130">6M</button><button data-dh="260">1J</button></div></h4>
       <div class="dh" id="depHist"><svg></svg><div class="tip" id="dhTip"></div></div>
       <p class="note">Wert deiner heutigen Stückzahlen zu früheren Kursen (in €, aktueller Wechselkurs). Gestrichelt: dein investierter Betrag.</p></div>
+    <div class="panel" id="depMonthP" hidden><h4>Gewinn/Verlust je Monat <small>ohne Ein-/Auszahlungen</small></h4><div id="depMonth"></div>
+      <p class="note">Ohne eingetragene Käufe rechnet die App mit deinem heutigen Bestand. Trag deine Käufe mit Datum ein, dann stimmt jeder Monat genau.</p></div>
     <div class="panel" id="depMixP" hidden><h4>Aufteilung <div class="seg" id="mixm"><button data-mix="pos" class="on">Positionen</button><button data-mix="region">Regionen</button><button data-mix="sector">Branchen</button></div></h4><div id="depMix"></div></div>
   </section>
 
@@ -385,6 +387,11 @@ body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
     <div class="panel"><h4>Positionsrechner-Einstellungen</h4><div class="set">
       <label>Depotgröße für Neukäufe (€)<input id="setDepot" type="number" inputmode="decimal" min="0" step="100"></label>
       <label>Max. Risiko je Trade (% vom Depot)<input id="setRisk" type="number" inputmode="decimal" min="0.1" max="10" step="0.1"></label></div></div>
+    <div class="panel"><h4>Push-Alarme für dein Depot</h4>
+      <p class="note" style="margin:0 0 10px">Die App schickt dir dann eine eigene Nachricht, sobald bei <b>deinen</b> Aktien etwas passiert: Verkaufssignal, Fall unter die 200-Tage-Linie, −5 % an einem Tag, neue Analysten-Einstufung oder eine Dip-Chance zum Nachkaufen. Dafür einmal deine Kürzel als geheimes „Secret“ bei GitHub hinterlegen (sie bleiben unsichtbar):</p>
+      <div class="er" style="grid-template-columns:minmax(0,1fr);border:0;padding:0"><label>Wert für das Secret <b>DEPOT</b><input id="depCodeIds" type="text" readonly></label></div>
+      <div class="er" style="grid-template-columns:repeat(2,minmax(0,1fr));border:0"><button class="edit" data-act="copyIds" style="min-height:44px">Kopieren</button><a class="edit" style="min-height:44px;display:grid;place-items:center;text-decoration:none;color:var(--ink)" href="https://github.com/geiserjulian377-glitch/tr-bot-bf82a4ecc457/settings/secrets/actions/new" rel="noopener">Secret anlegen ›</a></div>
+      <p class="note" id="idsMsg" style="margin:4px 0 0">Name: <b>DEPOT</b> · Wert: den kopierten Text einfügen · speichern. Ändert sich dein Depot, das Secret einfach aktualisieren.</p></div>
     <div class="panel"><h4>Depot sichern / übertragen</h4><p class="note" style="margin:0 0 10px">Dein Depot ist nur auf diesem Gerät gespeichert. Mit dem Code bringst du es in die Home-Bildschirm-App oder auf ein anderes Handy.</p>
       <button class="addb" data-act="edit" style="margin:0">Depot bearbeiten / Code</button></div>
     <details open>
@@ -441,8 +448,22 @@ function spark(v, color) {
 const PAL = ["#5ea8ff","#2ee59d","#ffb547","#a78bfa","#38d6e0","#ff5c7a","#f472b6","#94a3b8"];
 let depot = store.get("positions", []);
 const saveDepot = () => store.set("positions", depot);
+// Käufe/Verkäufe: h.tx = [{t:"buy"|"sell", d:"JJJJ-MM-TT", q:Stück, p:Kurs €, f:Gebühr €}]
+function syncPos(h) {
+  if (!h.tx || !h.tx.length) return h;
+  let sh = 0, cost = 0, real = 0;
+  [...h.tx].sort((a, b) => a.d < b.d ? -1 : 1).forEach(t => {
+    if (t.t === "buy") { sh += t.q; cost += t.q * t.p + (t.f || 0); }
+    else if (sh > 0) { const q = Math.min(t.q, sh), avg = cost / sh; real += q * t.p - (t.f || 0) - avg * q; cost -= avg * q; sh -= q; }
+  });
+  h.shares = Math.max(0, sh); h.cost = Math.max(0, cost); h.realized = real;
+  return h;
+}
+depot.forEach(syncPos);
+const sharesAt = (h, d) => !h.tx || !h.tx.length ? h.shares : h.tx.reduce((a, t) => t.d <= d ? a + (t.t === "buy" ? t.q : -t.q) : a, 0);
+const flowsIn = (h, a, b) => (h.tx || []).filter(t => t.d > a && t.d <= b).reduce((s, t) => s + (t.t === "buy" ? t.q * t.p + (t.f || 0) : -(t.q * t.p - (t.f || 0))), 0);
 const eurPrice = r => r.price * r.eur_rate;
-const held = id => depot.find(h => h.id === id);
+const held = id => depot.find(h => h.id === id && h.shares > 1e-9);
 function parseCode(code) {
   const out = [];
   String(code).trim().replace(/^.*#depot=/, "").split(/[,;\s]+/).forEach(part => {
@@ -493,7 +514,8 @@ function view(r) {
 }
 
 function renderDepot() {
-  const hs = depot.filter(h => byId[h.id]);
+  const hs = depot.filter(h => byId[h.id] && h.shares > 1e-9);
+  const realized = depot.reduce((a, h) => a + (h.realized || 0), 0);
   if (!hs.length) {
     $("#depSub").textContent = "";
     $("#depot").innerHTML = `<div class="empty"><b>Noch keine Positionen.</b> Trag deine Aktien ein oder füge deinen Depot-Code ein, dann bekommst du für jede eine eigene Empfehlung.<button class="addb" data-act="edit">Positionen eintragen / Code einfügen</button></div>`;
@@ -520,6 +542,9 @@ function renderDepot() {
     <div class="dstats"><div><span>Heute</span><b class="num ${cls(day)}">${day >= 0 ? "+" : "−"}${nf(Math.abs(day), 2)}\u202f€</b></div>
       <div><span>Depot-Score</span><b class="num" style="color:${scoreColor(wScore)}">${Math.round(wScore)}</b></div>
       <div><span>Schwankung</span><b class="num">${nf(wVol, 0)}\u202f%</b></div></div>
+    <div class="dstats" style="margin-top:8px"><div><span>Dividenden / Jahr</span><b class="num">${(dv => dv ? nf(dv, 2) + "\u202f€" : "–")(rows.reduce((a, x) => a + x.h.shares * (x.r.ind.div_ttm || 0) * x.r.eur_rate, 0))}</b></div>
+      <div><span>Realisiert</span><b class="num ${cls(realized)}">${realized ? (realized >= 0 ? "+" : "−") + nf(Math.abs(realized), 2) + "\u202f€" : "–"}</b></div>
+      <div><span>Investiert</span><b class="num">${nf(cost, 0)}\u202f€</b></div></div>
     ${warns.map(w => `<div class="warn"><i>!</i><span>${w}</span></div>`).join("")}
     ${rows.map(x => { const [t, txt] = advice(x.r); return `<div class="hrow" data-id="${esc(x.r.id)}">
       <div><div class="n">${esc(x.r.name)}</div><div class="s">${(v => `<span class="tag" style="background:color-mix(in srgb,${v.color} 22%,transparent);color:${v.color}">${v.label}</span>`)(view(x.r))}Score ${x.r.score}</div></div>
@@ -527,14 +552,22 @@ function renderDepot() {
       <div class="adv t-${t}"><i>${t === "p" ? "✓" : "!"}</i><span>${esc(txt)}</span></div></div>`; }).join("")}
   </div>`;
 }
+let openTx = -1;
 function openSheet() {
   const opts = [...DATA.items].sort((a, b) => a.name.localeCompare(b.name, "de")).map(r => `<option value="${esc(r.id)}">${esc(r.name)} (${esc(r.ticker)})</option>`).join("");
   $("#sh").innerHTML = `<h3>Depot bearbeiten <button class="edit" data-act="close">Fertig</button></h3>
     <p>Trag pro Position ein, wie viel du investiert hast und was sie laut Trade Republic gerade wert ist. Die Daten bleiben nur auf diesem Gerät.</p>
-    ${depot.filter(h => byId[h.id]).map((h, i) => { const r = byId[h.id]; return `<div class="er"><div class="nm">${esc(r.name)}</div>
-      <label>Investiert €<input type="number" inputmode="decimal" step="0.01" data-ed="cost" data-i="${i}" value="${h.cost.toFixed(2)}"></label>
-      <label>Wert jetzt €<input type="number" inputmode="decimal" step="0.01" data-ed="value" data-i="${i}" value="${(h.shares * eurPrice(r)).toFixed(2)}"></label>
-      <button class="x" data-del="${i}" aria-label="Entfernen">✕</button></div>`; }).join("")}
+    ${depot.map((h, i) => { const r = byId[h.id]; if (!r) return ""; const tx = h.tx || [];
+      return `<div class="er"><div class="nm">${esc(r.name)}<br><button class="edit" data-txo="${i}" style="margin-top:6px;min-height:32px;padding:4px 10px;font-size:12px">Käufe/Verkäufe (${tx.length})</button></div>
+      <label>Investiert €<input type="number" inputmode="decimal" step="0.01" data-ed="cost" data-i="${i}" value="${h.cost.toFixed(2)}" ${tx.length ? "disabled" : ""}></label>
+      <label>Wert jetzt €<input type="number" inputmode="decimal" step="0.01" data-ed="value" data-i="${i}" value="${(h.shares * eurPrice(r)).toFixed(2)}" ${tx.length ? "disabled" : ""}></label>
+      <button class="x" data-del="${i}" aria-label="Entfernen">✕</button></div>
+      ${openTx === i ? `<div class="panel" style="margin:4px 0 10px;background:#0b0f15">
+        ${tx.length ? `<table class="trades" style="margin:0">${[...tx].map((t, j) => ({t, j})).sort((a, b) => a.t.d < b.t.d ? 1 : -1).map(({t, j}) => `<tr><td><b class="${t.t === "buy" ? "buy" : "sell"}">${t.t === "buy" ? "Kauf" : "Verkauf"}</b> ${fmtDate(t.d)}<br><span class="wait" style="font-size:12px">${nf(t.q, 4)} Stk. × ${nf(t.p, 2)} € + ${nf(t.f || 0, 2)} € Gebühr</span></td><td><button class="x" data-txdel="${i}:${j}" style="width:36px;height:36px">✕</button></td></tr>`).join("")}</table>`
+          : `<p class="note" style="margin:0">Noch keine Käufe eingetragen. Sobald du den ersten Kauf einträgst, ersetzt er die Schätzung oben: Bestand, Einstiegskurs und Gewinn werden dann exakt aus allen Käufen und Verkäufen berechnet – trag also alle Käufe dieser Aktie ein.</p>`}
+        <div class="er" style="grid-template-columns:repeat(2,minmax(0,1fr))"><label>Art<select id="txT"><option value="buy">Kauf</option><option value="sell">Verkauf</option></select></label><label>Datum<input id="txD" type="date" value="${new Date().toISOString().slice(0, 10)}"></label></div>
+        <div class="er" style="grid-template-columns:repeat(3,minmax(0,1fr))"><label>Stück<input id="txQ" type="number" inputmode="decimal" step="any" placeholder="1,5"></label><label>Kurs je Stück €<input id="txP" type="number" inputmode="decimal" step="any" value="${eurPrice(r).toFixed(2)}"></label><label>Gebühr €<input id="txF" type="number" inputmode="decimal" step="any" value="1"></label></div>
+        <button class="addb" data-txadd="${i}">Eintragen</button></div>` : ""}`; }).join("")}
     <div class="er" style="grid-template-columns:minmax(0,1fr)"><label>Neue Position<select id="newId">${opts}</select></label></div>
     <div class="er" style="grid-template-columns:repeat(2,minmax(0,1fr))"><label>Investiert €<input id="newCost" type="number" inputmode="decimal" step="0.01" placeholder="100"></label>
       <label>Wert jetzt €<input id="newVal" type="number" inputmode="decimal" step="0.01" placeholder="95"></label></div>
@@ -610,7 +643,7 @@ function showView(v) {
 
 // ---------- Start: Mini-Depot + Karussells
 function depotRows() {
-  return depot.filter(h => byId[h.id]).map((h, i) => { const r = byId[h.id], v = h.shares * eurPrice(r); return {h, r, v, pl: v - h.cost, c: PAL[i % PAL.length]}; }).sort((a, b) => b.v - a.v);
+  return depot.filter(h => byId[h.id] && h.shares > 1e-9).map((h, i) => { const r = byId[h.id], v = h.shares * eurPrice(r); return {h, r, v, pl: v - h.cost, c: PAL[i % PAL.length]}; }).sort((a, b) => b.v - a.v);
 }
 function renderMini() {
   const rows = depotRows();
@@ -655,9 +688,25 @@ function drawDepotHistory() {
   const rows = depotRows().filter(x => x.r.detail && x.r.detail.chart);
   if (!rows.length) return;
   const dates = [...new Set(rows.flatMap(x => x.r.detail.chart.d))].sort().slice(-dhRange);
-  const series = dates.map(d => rows.reduce((sum, x) => { const ch = x.r.detail.chart; let i = ch.d.indexOf(d);
+  const valueAt = d => rows.reduce((sum, x) => { const ch = x.r.detail.chart; let i = ch.d.indexOf(d);
     if (i < 0) { i = ch.d.findIndex(z => z > d) - 1; if (i < -1) i = ch.d.length - 1; } const c = i >= 0 ? ch.c[i] : null;
-    return sum + (c == null ? x.v : x.h.shares * c * x.r.eur_rate); }, 0));
+    return sum + (c == null ? x.v : sharesAt(x.h, d) * c * x.r.eur_rate); }, 0);
+  const series = dates.map(valueAt);
+  // Gewinn/Verlust je Monat (Kursveränderung, ohne Ein- und Auszahlungen)
+  const all = [...new Set(rows.flatMap(x => x.r.detail.chart.d))].sort(), months = {};
+  all.forEach(d => { const k = d.slice(0, 7); (months[k] = months[k] || []).push(d); });
+  const mk = Object.keys(months).sort(); const mrows = [];
+  for (let i = 1; i < mk.length; i++) {
+    const a = months[mk[i - 1]].slice(-1)[0], b = months[mk[i]].slice(-1)[0];
+    const va = valueAt(a), vb = valueAt(b), fl = rows.reduce((s, x) => s + flowsIn(x.h, a, b), 0);
+    mrows.push({m: mk[i], g: vb - va - fl, p: va > 0 ? (vb - va - fl) / va * 100 : null});
+  }
+  const mx = Math.max(1, ...mrows.map(x => Math.abs(x.g)));
+  $("#depMonth").innerHTML = mrows.slice(-12).reverse().map(x => { const [y, m] = x.m.split("-");
+    return `<div class="bar" style="grid-template-columns:70px minmax(0,1fr) 110px"><span>${["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"][+m - 1]} ${y.slice(2)}</span>
+      <div class="tr" style="background:none;display:flex;justify-content:${x.g >= 0 ? "flex-start" : "flex-end"}"><i style="width:${Math.abs(x.g) / mx * 100}%;background:${x.g >= 0 ? "var(--buy)" : "var(--sell)"}"></i></div>
+      <span class="num ${cls(x.g)}">${x.g >= 0 ? "+" : "−"}${nf(Math.abs(x.g), 2)}\u202f€</span></div>`; }).join("") || `<p class="wait">Noch zu wenig Daten.</p>`;
+  $("#depMonthP").hidden = !mrows.length;
   const cost = rows.reduce((a, x) => a + x.h.cost, 0);
   const W = box.clientWidth, H = box.clientHeight, svg = box.querySelector("svg");
   let lo = Math.min(...series, cost), hi = Math.max(...series, cost); const pad = (hi - lo) * .1 || 1; lo -= pad; hi += pad;
@@ -734,7 +783,7 @@ function renderChances() {
   $("#world").innerHTML = newsList(DATA.world, 10) || `<li class="wait" style="padding:8px 0">Gerade keine Schlagzeilen geladen.</li>`;
 }
 
-function renderAll() { renderChances(); renderHero(); renderDepot(); renderMini(); renderCarousels(); renderTodo(); renderList(); if (currentView === "depot") loadDepotHistory(); }
+function renderAll() { const ids = $("#depCodeIds"); if (ids) ids.value = depot.filter(h => byId[h.id] && h.shares > 1e-9).map(h => h.id).join(","); renderChances(); renderHero(); renderDepot(); renderMini(); renderCarousels(); renderTodo(); renderList(); if (currentView === "depot") loadDepotHistory(); }
 function filtered() {
   let xs = DATA.items;
   if (state.status) xs = xs.filter(r => view(r).k === state.status);
@@ -927,7 +976,8 @@ function openDetail(id, push=true) {
     ["Trefferquote", nf(st.win_rate,0) + " %"],
     ["Ø Gewinn je Trade", `<span class="${cls(st.avg_pct)}">${pct(st.avg_pct)}</span>`],
   ];
-  const partsHtml = Object.entries(r.parts).map(([n,v]) => `<div class="bar"><span>${n}</span><div class="tr"><i style="width:${v/r.parts_max[n]*100}%"></i></div><span class="num">${v}/${r.parts_max[n]}</span></div>`).join("");
+  const DT = r.detail || {}, WHY = DT.why || [], PARTS = DT.parts || {}, PMAX = DT.parts_max || {};
+  const partsHtml = Object.keys(PARTS).length ? Object.entries(PARTS).map(([n,v]) => `<div class="bar"><span>${n}</span><div class="tr"><i style="width:${v/PMAX[n]*100}%"></i></div><span class="num">${v}/${PMAX[n]}</span></div>`).join("") : `<p class="wait">lädt …</p>`;
   const tone = {"+":"p","-":"m","~":"n"}, icon = {"+":"+","-":"−","~":"·"};
   const rsiPos = Math.max(0, Math.min(100, ind.rsi));
   const indHtml = [
@@ -939,6 +989,8 @@ function openDetail(id, push=true) {
     ["Max. Rückgang 1 J.", pct(ind.dd1y), "vom Hoch zum Tief", ""],
     ["Abstand 52-W-Hoch", pct(ind.from_high), "", ""],
     ["Rendite 1 Jahr", pct(ind.r1y), "", ""],
+    ["Dividendenrendite", ind.div_yield ? nf(ind.div_yield, 2) + "\u202f%" : "keine", ind.div_ttm ? `${money(ind.div_ttm, r.cur)} je Aktie / 12 Mon.` : "letzte 12 Monate", ""],
+    ["Letzte Dividende", ind.div_last ? fmtDate(ind.div_last) : "–", ind.div_last_amt ? money(ind.div_last_amt, r.cur) + " je Aktie" : "", ""],
   ].map(([a,b,c,x]) => `<div class="ind"><span>${a}</span><b class="num">${b}</b>${c?`<em>${c}</em>`:""}${x}</div>`).join("");
   const vsRow = (label, a, b, inv=false) => {
     const m = Math.max(Math.abs(a), Math.abs(b), 1), w = v => Math.max(8, Math.abs(v) / m * 100);
@@ -972,11 +1024,11 @@ function openDetail(id, push=true) {
       <div class="panel" id="j-chart">
         <h4>Chart <div class="seg" id="rng">${[[21,"1M"],[63,"3M"],[130,"6M"],[260,"1J"],["5y","5J"]].map(([v,l])=>`<button data-r="${v}" class="${v==chartRange?"on":""}">${l}</button>`).join("")}</div></h4>
         <div class="ctl"><div class="seg" id="ctype"><button data-ct="line" class="${ctype==="line"?"on":""}">Linie</button><button data-ct="candle" class="${ctype==="candle"?"on":""}">Kerzen</button></div>
-          <div class="chips" style="padding:0">${[["sma","SMA 20/50"],["l200","SMA 200"],["lv","Unterst./Widerst."],["tgt","Kursziel"],["mine","Mein Einstieg"],["vol","Volumen"]].filter(([k])=>k!=="mine"||held(r.id)).filter(([k])=>k!=="tgt"||r.analyst).map(([k,l])=>`<button class="chip ${ovl[k]?"on":""}" data-ov="${k}">${l}</button>`).join("")}</div></div>
+          <div class="chips" style="padding:0">${[["sma",`SMA ${r.strat ? r.strat.fast : 20}/${r.strat ? r.strat.slow : 50}`],["l200","SMA 200"],["lv","Unterst./Widerst."],["tgt","Kursziel"],["mine","Mein Einstieg"],["vol","Volumen"]].filter(([k])=>k!=="mine"||held(r.id)).filter(([k])=>k!=="tgt"||r.analyst).map(([k,l])=>`<button class="chip ${ovl[k]?"on":""}" data-ov="${k}">${l}</button>`).join("")}</div></div>
         ${r.detail && r.detail.chart ? `<div class="fig" id="fig" style="height:300px"><svg></svg><div class="tip" id="tip"></div></div>
         <div class="sublbl">RSI (14) <span>über 70 überkauft · unter 30 überverkauft</span></div><div class="fig sub" id="rsiFig"><svg></svg></div>
         <div class="sublbl">MACD-Histogramm <span>grün = Momentum steigt</span></div><div class="fig sub" id="macdFig" style="height:56px"><svg></svg></div>
-        <div class="legend"><span><i style="background:#eef2f7"></i>Kurs</span><span><i style="background:#5ea8ff"></i>SMA ${DATA.params.fast_sma}</span><span><i style="background:#a78bfa"></i>SMA ${DATA.params.slow_sma}</span><span><i style="background:repeating-linear-gradient(90deg,#a78bfa 0 2px,transparent 2px 5px)"></i>SMA 200</span><span><b class="buy">▲</b> Kauf <b class="sell">▼</b> Verkauf</span></div>` : `<div class="load" style="padding:40px 0">Chart wird geladen …</div>`}
+        <div class="legend"><span><i style="background:#eef2f7"></i>Kurs</span><span><i style="background:#5ea8ff"></i>SMA ${r.strat ? r.strat.fast : 20}</span><span><i style="background:#a78bfa"></i>SMA ${r.strat ? r.strat.slow : 50}</span><span><i style="background:repeating-linear-gradient(90deg,#a78bfa 0 2px,transparent 2px 5px)"></i>SMA 200</span><span><b class="buy">▲</b> Kauf <b class="sell">▼</b> Verkauf</span></div>` : `<div class="load" style="padding:40px 0">Chart wird geladen …</div>`}
       </div>
       ${r.detail && r.detail.chart ? `<div class="panel"><h4>Wichtige Kursmarken <small>Abstand zum Kurs</small></h4>${levelsHtml(r)}</div>` : ""}
 
@@ -1003,7 +1055,7 @@ function openDetail(id, push=true) {
             <div class="lo">Tiefstes Ziel ${a.low ? money(a.low, r.cur) : "–"}</div><div class="hi">Höchstes ${a.high ? money(a.high, r.cur) : "–"}</div></div>
           <p class="note">Kursziele sind Prognosen, keine Garantie. Analysten passen sie oft erst nach Kursbewegungen an. Deshalb zeigt die App beides: was der Kurs gerade tut (Chart) und was Analysten erwarten.</p></div>`; })() : ""}
       ${r.news && r.news.length ? `<div class="panel"><h4>Nachrichten <small>Yahoo Finance</small></h4><ul class="news" style="margin:0">${newsList(r.news, 4)}</ul></div>` : ""}
-      <div class="panel" id="j-why"><h4>Warum?</h4><ul class="why">${r.why.map(w=>`<li class="${tone[w.t]}"><i>${icon[w.t]}</i><span>${esc(w.x)}</span></li>`).join("")}</ul></div>
+      <div class="panel" id="j-why"><h4>Warum?</h4><ul class="why">${(WHY.length ? WHY : [{t:"~", x:"Analyse wird geladen …"}]).map(w=>`<li class="${tone[w.t]}"><i>${icon[w.t]}</i><span>${esc(w.x)}</span></li>`).join("")}</ul></div>
 
       <div class="panel"><h4>Indikatoren</h4><div class="inds">${indHtml}</div></div>
 
@@ -1015,6 +1067,15 @@ function openDetail(id, push=true) {
           <div class="ind"><span>Ø Gewinner</span><b class="num up">${pct(st.avg_win)}</b></div>
           <div class="ind"><span>Ø Verlierer</span><b class="num down">${pct(st.avg_loss)}</b></div>
         </div>
+        ${(() => { const S = r.strat || {}; if (S.oos == null) return `<p class="note">${esc(S.note || "")}</p>`;
+          const T = S.tested || {};
+          return `<h4 style="margin-top:16px">Strategie für ${esc(r.name)} <small>${S.adopted ? "optimiert" : "Standard"}</small></h4>
+          <div class="inds"><div class="ind"><span>Aktive Regel</span><b>SMA ${S.fast}/${S.slow}</b><em>Stop ${S.stop}\u202f%${S.filt ? " · nur über 200-Tage-Linie" : ""}</em></div>
+          <div class="ind"><span>Bester Kandidat (Training)</span><b>SMA ${T.fast}/${T.slow}</b><em>Stop ${T.stop}\u202f%${T.filt ? " · Trendfilter" : ""}</em></div></div>
+          <div class="nlbl">Test auf ${nf(S.oos_years, 1)} Jahren ungesehener Daten</div>
+          <div class="vs" style="margin-top:6px">${[["Optimiert", S.oos], ["Standard", S.oos_default], ["Halten", S.oos_bh]].map(([l, v]) => { const m = Math.max(Math.abs(S.oos), Math.abs(S.oos_default), Math.abs(S.oos_bh), 1);
+            return `<div class="r"><span class="wait">${l}</span><div class="bars"><div style="width:${Math.max(8, Math.abs(v) / m * 100)}%;background:${v >= 0 ? "#2ee59d33" : "#ff5c7a33"};color:${v >= 0 ? "var(--buy)" : "var(--sell)"}">${pct(v, 0)}</div></div></div>`; }).join("")}</div>
+          <p class="note">${esc(S.note)}. So wird verhindert, dass sich die Regel nur zufällig an alte Kurse anpasst.</p>`; })()}
         <h4 style="margin-top:16px">Letzte Trades</h4>${trades}</div>
 
       <div class="links"><a href="https://app.traderepublic.com" rel="noopener">Trade Republic</a><a href="https://finance.yahoo.com/quote/${encodeURIComponent(r.ticker)}" rel="noopener">Yahoo Finance</a></div>
@@ -1034,14 +1095,23 @@ function closeDetail(push=true) {
 // ---------- Ereignisse
 document.addEventListener("click", e => {
   if (e.target.id === "sheet") { $("#sheet").classList.remove("open"); return renderAll(); }
-  const t = e.target.closest("[data-view],[data-jump],[data-dh],[data-mix],[data-act],[data-del],[data-ct],[data-ov],[data-id],[data-tab],[data-rg],[data-st],[data-r],#back,#more"); if (!t) return;
+  const t = e.target.closest("[data-txo],[data-txdel],[data-txadd],[data-view],[data-jump],[data-dh],[data-mix],[data-act],[data-del],[data-ct],[data-ov],[data-id],[data-tab],[data-rg],[data-st],[data-r],#back,#more"); if (!t) return;
   if (t.dataset.view) return showView(t.dataset.view);
   if (t.dataset.jump) { const el = document.getElementById(t.dataset.jump), dt = $("#detail"); if (el) dt.scrollTo({top: el.offsetTop - 120, behavior: "smooth"}); return; }
   if (t.dataset.dh) { dhRange = +t.dataset.dh; store.set("dhr", dhRange); document.querySelectorAll("#dhr button").forEach(b => b.classList.toggle("on", b === t)); return drawDepotHistory(); }
   if (t.dataset.mix) { mixMode = t.dataset.mix; document.querySelectorAll("#mixm button").forEach(b => b.classList.toggle("on", b === t)); return renderMix(); }
+  if (t.dataset.act === "copyIds") { const v = $("#depCodeIds").value; (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => $("#idsMsg").textContent = "Kopiert – jetzt bei GitHub als Secret DEPOT einfügen.").catch(() => { $("#depCodeIds").select(); }); return; }
   if (t.dataset.act === "edit") return openSheet();
   if (t.dataset.act === "close") { $("#sheet").classList.remove("open"); return renderAll(); }
-  if (t.dataset.del != null) { depot.splice(+t.dataset.del, 1); saveDepot(); return openSheet(); }
+  if (t.dataset.del != null) { depot.splice(+t.dataset.del, 1); openTx = -1; saveDepot(); return openSheet(); }
+  if (t.dataset.txo != null) { openTx = openTx === +t.dataset.txo ? -1 : +t.dataset.txo; return openSheet(); }
+  if (t.dataset.txdel) { const [i, j] = t.dataset.txdel.split(":").map(Number); depot[i].tx.splice(j, 1); if (!depot[i].tx.length) { delete depot[i].tx; } else syncPos(depot[i]); saveDepot(); return openSheet(); }
+  if (t.dataset.txadd != null) {
+    const h = depot[+t.dataset.txadd], q = parseFloat($("#txQ").value), p = parseFloat($("#txP").value), f = parseFloat($("#txF").value) || 0, d = $("#txD").value, typ = $("#txT").value;
+    if (!(q > 0) || !(p > 0) || !d) return;
+    if (!h.tx) h.tx = [];
+    h.tx.push({t: typ, d, q, p, f}); syncPos(h); saveDepot(); return openSheet();
+  }
   if (t.dataset.act === "copy") { const v = $("#code").value; (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => $("#codeMsg").textContent = "Kopiert.").catch(() => { $("#code").select(); $("#codeMsg").textContent = "Code markiert – jetzt kopieren."; }); return; }
   if (t.dataset.act === "import") { const out = parseCode($("#code").value); if (!out.length) { $("#codeMsg").textContent = "Code nicht erkannt."; return; } depot = out; saveDepot(); openSheet(); $("#codeMsg").textContent = `${out.length} Positionen übernommen.`; return; }
   if (t.dataset.act === "add") {

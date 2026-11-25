@@ -32,7 +32,7 @@ from datetime import datetime, timedelta, timezone
 import learn
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-REGION = {"usa": "USA", "europa": "Europa", "deutschland": "Deutschland", "asien": "Asien",
+REGION = {"sp500": "USA", "usa": "USA", "europa": "Europa", "deutschland": "Deutschland", "asien": "Asien",
           "etfs": "ETFs", "krypto": "Krypto", "rohstoffe": "Rohstoffe"}
 
 
@@ -62,7 +62,7 @@ def fetch_prices(ticker, years=5):
     data, err = None, None
     for attempt, host in enumerate(["query1", "query2", "query1"]):
         url = (f"https://{host}.finance.yahoo.com/v8/finance/chart/"
-               f"{urllib.parse.quote(ticker)}?range={years}y&interval=1d")
+               f"{urllib.parse.quote(ticker)}?range={years}y&interval=1d&events=div")
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(req, timeout=30) as r:
@@ -85,7 +85,13 @@ def fetch_prices(ticker, years=5):
         rows.append((datetime.fromtimestamp(ts, tz=timezone.utc).date(), float(c),
                      float(o if o is not None else c), float(h if h is not None else c),
                      float(l if l is not None else c), int(v or 0)))
-    return rows, res["meta"].get("currency") or "EUR"
+    divs = []
+    for v in (res.get("events", {}).get("dividends") or {}).values():
+        try:
+            divs.append((datetime.fromtimestamp(int(v["date"]), tz=timezone.utc).date(), float(v["amount"])))
+        except Exception:
+            pass
+    return rows, res["meta"].get("currency") or "EUR", sorted(divs)
 
 
 # ---------------------------------------------------------------- Analysten (Yahoo quoteSummary)
@@ -259,7 +265,8 @@ def demo_prices(seed, days=1260):
         hi = max(prev, price) * (1 + abs(rnd.gauss(0, 0.006)))
         lo = min(prev, price) * (1 - abs(rnd.gauss(0, 0.006)))
         out.append((d, price, prev, hi, lo, int(rnd.uniform(5e5, 3e6))))
-    return out, rnd.choice(["EUR", "EUR", "USD", "CHF", "GBp"])
+    divs = [] if rnd.random() < 0.4 else [(out[i][0], out[i][1] * 0.006) for i in range(len(out) - 1, 0, -63)][:8]
+    return out, rnd.choice(["EUR", "EUR", "USD", "CHF", "GBp"]), sorted(divs)
 
 
 def fx_rates(currencies, demo):
@@ -348,7 +355,7 @@ def max_drawdown(v):
 
 
 # ---------------------------------------------------------------- Strategie + Backtest
-def simulate(dates, closes, fast, slow, cfg):
+def simulate(dates, closes, fast, slow, cfg, s200=None):
     stop_pct = cfg["stop_loss_pct"] / 100
     fee_frac = 2 * cfg["fee_per_order_eur"] / cfg["position_size_eur"]
     start = cfg["slow_sma"]
@@ -357,7 +364,7 @@ def simulate(dates, closes, fast, slow, cfg):
         c, d = closes[i], dates[i]
         up = fast[i - 1] <= slow[i - 1] and fast[i] > slow[i]
         dn = fast[i - 1] >= slow[i - 1] and fast[i] < slow[i]
-        if pos is None and up:
+        if pos is None and up and (not cfg.get("trend_filter") or (s200 and s200[i] and c > s200[i])):
             pos = {"entry_date": d, "entry_price": c, "stop": c * (1 - stop_pct), "i": i}
             events.append({"i": i, "date": d, "type": "BUY", "price": c})
         elif pos is not None:
@@ -395,7 +402,65 @@ def simulate(dates, closes, fast, slow, cfg):
         "buy_hold_maxdd": max_drawdown(closes[start:]),
         "years": years,
     }
+    stats["_curve"] = curve
+    stats["_start"] = start
     return trades, events, pos, stats
+
+
+# ---------------------------------------------------------------- Strategie je Aktie optimieren
+PAIRS = [(10, 30), (20, 50), (30, 100), (50, 200)]
+STOPS = [6, 8, 12]
+
+
+def _window_ret(st, closes, a, b):
+    """Rendite der Strategie zwischen Tag a und b (aus der Equity-Kurve)."""
+    curve, start = st["_curve"], st["_start"]
+    ia, ib = max(a - start, 0), min(b - start, len(curve) - 1)
+    if ib <= ia:
+        return None
+    return (curve[ib] / curve[ia] - 1) * 100
+
+
+def optimize(dates, closes, s200, cfg):
+    """Sucht die beste Einstellung auf 70 % der Daten und prüft sie auf den letzten 30 % (ungesehen)."""
+    default = {"fast": cfg["fast_sma"], "slow": cfg["slow_sma"], "stop": cfg["stop_loss_pct"], "filt": False}
+    n = len(closes)
+    if n < 700:
+        return {**default, "adopted": False, "note": "zu kurze Kursgeschichte – Standard-Einstellung"}
+    split = int(n * 0.7)
+    smas = {p: sma(closes, p) for pair in PAIRS for p in pair}
+    def run(f, s, stop, filt):
+        c2 = {**cfg, "fast_sma": f, "slow_sma": s, "stop_loss_pct": stop, "trend_filter": filt}
+        return simulate(dates, closes, smas[f], smas[s], c2, s200)[3]
+    best, best_score = None, -1e9
+    for f, s in PAIRS:
+        for stop in STOPS:
+            for filt in (False, True):
+                st = run(f, s, stop, filt)
+                r = _window_ret(st, closes, 0, split)
+                if r is None:
+                    continue
+                score = r / (1 + abs(min(0, learn_dd(st["_curve"][:max(1, split - st["_start"])]))) / 25)
+                if score > best_score:
+                    best, best_score = (f, s, stop, filt, st), score
+    if not best:
+        return {**default, "adopted": False, "note": "Optimierung nicht möglich – Standard-Einstellung"}
+    f, s, stop, filt, st = best
+    oos = _window_ret(st, closes, split, n - 1)
+    dst = run(default["fast"], default["slow"], default["stop"], False)
+    oos_def = _window_ret(dst, closes, split, n - 1)
+    oos_bh = (closes[-1] / closes[split] - 1) * 100
+    adopted = oos is not None and oos_def is not None and oos > oos_def and oos > 0
+    years_oos = (dates[-1] - dates[split]).days / 365.25
+    chosen = {"fast": f, "slow": s, "stop": stop, "filt": filt} if adopted else default
+    return {**chosen, "adopted": adopted, "oos": oos, "oos_default": oos_def, "oos_bh": oos_bh,
+            "oos_years": years_oos, "tested": {"fast": f, "slow": s, "stop": stop, "filt": filt},
+            "note": ("Optimierte Einstellung – auch auf ungesehenen Daten besser als Standard" if adopted
+                     else "Optimierung brachte auf ungesehenen Daten keinen Vorteil – Standard-Einstellung")}
+
+
+def learn_dd(curve):
+    return max_drawdown(curve) if curve else 0
 
 
 # ---------------------------------------------------------------- Analyse eines Werts
@@ -403,12 +468,16 @@ def clamp(x, lo=0.0, hi=1.0):
     return max(lo, min(hi, x))
 
 
-def analyse(item, prices, cur, fx, cfg, analyst=None):
+def analyse(item, prices, cur, fx, cfg, analyst=None, strat=None, divs=None):
     dates = [p[0] for p in prices]
     closes = [p[1] for p in prices]
-    fast, slow = sma(closes, cfg["fast_sma"]), sma(closes, cfg["slow_sma"])
     s200 = sma(closes, 200)
-    trades, events, pos, st = simulate(dates, closes, fast, slow, cfg)
+    strat = strat or optimize(dates, closes, s200, cfg)
+    cfg = {**cfg, "fast_sma": strat["fast"], "slow_sma": strat["slow"], "stop_loss_pct": strat["stop"],
+           "trend_filter": strat["filt"]}
+    fast, slow = sma(closes, cfg["fast_sma"]), sma(closes, cfg["slow_sma"])
+    trades, events, pos, st = simulate(dates, closes, fast, slow, cfg, s200)
+    st.pop("_curve"); st.pop("_start")
     today, price = dates[-1], closes[-1]
     flags = learn.validate(dates, closes, item["region"])
     if analyst and analyst.get("mean") and not (0.25 < analyst["mean"] / price < 4):
@@ -427,6 +496,8 @@ def analyse(item, prices, cur, fx, cfg, analyst=None):
     logrets = [math.log(closes[i] / closes[i - 1]) for i in range(max(1, len(closes) - 63), len(closes))]
     vol = statistics.pstdev(logrets) * math.sqrt(252) * 100 if len(logrets) > 2 else 0
     year = closes[-252:]
+    div_ttm = sum(a for d, a in (divs or []) if (dates[-1] - d).days <= 365)
+    last_div = max(divs, key=lambda x: x[0]) if divs else None
     ind = {
         "rsi": rsi(closes[-300:]),
         "macd_hist_pct": macd_hist / price * 100,
@@ -437,6 +508,8 @@ def analyse(item, prices, cur, fx, cfg, analyst=None):
         "vol": vol,
         "dd1y": max_drawdown(year),
         "from_high": (price / max(year) - 1) * 100,
+        "div_ttm": div_ttm or None, "div_yield": (div_ttm / price * 100) if div_ttm else None,
+        "div_last": str(last_div[0]) if last_div else None, "div_last_amt": last_div[1] if last_div else None,
     }
 
     # ---- Score 0–100: Trend 40, Momentum 25, RSI 15, Backtest 15, Risiko 5
@@ -510,6 +583,12 @@ def analyse(item, prices, cur, fx, cfg, analyst=None):
         else:
             add("~", f"Analysten: „{label}“, Ø Kursziel {de(analyst['mean'], '.2f')} {cur} ({de(up, '+.0f')} %).")
 
+    if strat.get("adopted"):
+        add("+", f"Für {item['name']} optimierte Regel: SMA {strat['fast']}/{strat['slow']}, Stop {strat['stop']} %"
+                 + (", nur über der 200-Tage-Linie" if strat["filt"] else "")
+                 + f". Auf {strat['oos_years']:.1f} Jahren ungesehener Daten: {strat['oos']:+.0f} % statt {strat['oos_default']:+.0f} % mit Standard.")
+    elif strat.get("oos") is not None:
+        add("~", f"Standard-Regel (SMA {strat['fast']}/{strat['slow']}): Eine Optimierung brachte auf ungesehenen Daten keinen Vorteil.")
     for fl in flags:
         why.insert(0, {"t": "-", "x": f"Datenprüfung: {fl}. Deshalb keine Empfehlung für diesen Wert."})
 
@@ -576,14 +655,15 @@ def analyse(item, prices, cur, fx, cfg, analyst=None):
     return {
         **item, "id": re.sub(r"[^A-Za-z0-9]+", "-", item["ticker"]).strip("-"),
         "cur": cur, "eur_rate": 1 / rate, "price": price, "date": str(today),
-        "status": status, "score": score, "parts": parts, "parts_max": maxes, "analyst": an,
+        "status": status, "score": score, "analyst": an,
         "ind": {**ind, "sup_pct": (sup / price - 1) * 100, "res_pct": (resi / price - 1) * 100 if resi else None},
-        "stats": st, "rec": rec, "why": why, "spark": spark, "flags": flags,
+        "stats": st, "rec": rec, "spark": spark, "flags": flags,
+        "strat": {k: (round(v, 2) if isinstance(v, float) else v) for k, v in strat.items()},
         "dip_stats": learn.summarize(dip_samples),
         "_samples": dip_samples,
         "_series": {"dates": dates, "closes": closes, "highs": highs, "lows": lows, "s200": s200,
                     "sma20": sma20, "rsis": rsis},
-        "_detail": {"chart": chart, "trades": trades[-10:][::-1]},
+        "_detail": {"chart": chart, "trades": trades[-10:][::-1], "why": why, "parts": parts, "parts_max": maxes},
     }
 
 
@@ -604,6 +684,17 @@ def fmt(x, cur):
 
 
 # ---------------------------------------------------------------- Hauptprogramm
+def rsig(o, sig=4):
+    """Zahlen auf sinnvolle Stellen runden (kleinere Datei, gleiche Aussage)."""
+    if isinstance(o, float):
+        return float(f"{o:.{sig}g}")
+    if isinstance(o, dict):
+        return {k: rsig(v, sig) for k, v in o.items()}
+    if isinstance(o, list):
+        return [rsig(v, sig) for v in o]
+    return o
+
+
 def fetch_prev(app_url):
     """Letzten veröffentlichten Stand der App laden (für Vergleich, Analysten-Cache und Protokoll)."""
     def get(name):
@@ -644,10 +735,10 @@ def main():
     def load(k_it):
         k, it = k_it
         try:
-            prices, cur = demo_prices(k) if demo else fetch_prices(it["ticker"], cfg.get("history_years", 5))
+            prices, cur, divs = demo_prices(k) if demo else fetch_prices(it["ticker"], cfg.get("history_years", 5))
             if len(prices) < cfg["slow_sma"] + 15:
                 raise ValueError(f"nur {len(prices)} Kurstage")
-            return it, prices, cur, None
+            return it, (prices, divs), cur, None
         except Exception as e:
             return it, None, None, e
     raw, failed = [], []
@@ -662,7 +753,7 @@ def main():
         raise SystemExit(f"Nur {len(raw)} von {len(items)} Werten geladen – Abbruch, alte Daten bleiben sichtbar.")
     print(f"Kurse: {len(raw)}/{len(items)} in {time.time() - t0:.0f}s")
     if demo:
-        learn.TODAY = max(p[-1][0] for _, p, _ in raw)
+        learn.TODAY = max(p[0][-1][0] for _, p, _ in raw)
 
     # ---- Analysten: im Voll-Lauf neu, im 10-Minuten-Lauf aus dem letzten Stand
     fx = fx_rates({cur for _, _, cur in raw}, demo)
@@ -679,16 +770,22 @@ def main():
     if not demo and (mode != "quick" or not prev):
         _yahoo_session()
     with ThreadPoolExecutor(max_workers=1 if demo else 6) as ex:
-        ans = list(ex.map(lambda a: analyst_for(*a), [(k, it, p) for k, (it, p, _) in enumerate(raw)]))
+        ans = list(ex.map(lambda a: analyst_for(*a), [(k, it, p[0]) for k, (it, p, _) in enumerate(raw)]))
     print(f"Analysten-Daten für {sum(a is not None for a in ans)} Werte ({'aus Cache' if mode == 'quick' and prev else 'neu geladen'}).")
 
     results = []
+    t1 = time.time()
     for (it, prices, cur), an in zip(raw, ans):
         try:
-            results.append(analyse(it, prices, cur, fx, cfg, an))
+            rid = re.sub(r"[^A-Za-z0-9]+", "-", it["ticker"]).strip("-")
+            old = prev_items.get(rid, {}).get("strat")
+            strat = old if (mode == "quick" and old and "fast" in old) else None
+            results.append(analyse(it, prices[0], cur, fx, cfg, an, strat, prices[1]))
         except Exception as e:
             print(f"FEHLER Analyse {it['name']}: {e}")
             failed.append(it["name"])
+    print(f"Analyse in {time.time() - t1:.0f}s · optimierte Regel übernommen bei "
+          f"{sum(1 for r in results if r['strat'].get('adopted'))} von {len(results)} Werten")
     flagged = [r["name"] for r in results if r["flags"]]
     if flagged:
         print("Datenprüfung – ausgeschlossen:", ", ".join(flagged))
@@ -760,6 +857,14 @@ def main():
     for r in results:
         with open(os.path.join(HERE, "site", "d", f"{r['id']}.json"), "w", encoding="utf-8") as f:
             json.dump(r.pop("_detail"), f, ensure_ascii=False, separators=(",", ":"))
+    for r in results:
+        for key in ("ind", "stats", "dip_stats", "strat"):
+            r[key] = rsig(r[key], 4)
+        if r.get("analyst"):
+            r["analyst"] = {k: (rsig(v, 4) if k in ("upside", "rec_mean", "buy_share") else v) for k, v in r["analyst"].items()}
+        r["eur_rate"] = rsig(r["eur_rate"], 6)
+    data["model"] = rsig(data["model"], 4)
+    data["chances"] = rsig(data["chances"], 6)
     with open(os.path.join(HERE, "site", "data.json"), "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
     with open(os.path.join(HERE, "site", "journal.json"), "w", encoding="utf-8") as f:
@@ -802,6 +907,32 @@ def main():
         "tags": "rotating_light" if show_sig else ("bulb" if show_ch else "bar_chart"),
         "actions": f"view, App öffnen, {app}",
     }
+    # Ereignisse je Aktie – der Push-Schritt filtert sie auf dein Depot (Secret DEPOT)
+    events = []
+    chance_ids = {d["id"] for d in dips}
+    for r in results:
+        p = prev_items.get(r["id"])
+        if not p:
+            continue
+        name, ind, pind = r["name"], r["ind"], p.get("ind", {})
+        if r["status"] == "SELL" and p.get("status") != "SELL":
+            events.append((r["id"], f"🔴 {name}: Verkaufssignal ({r['rec'].get('reason', 'Trendwende')})"))
+        if r["status"] == "BUY" and p.get("status") != "BUY":
+            events.append((r["id"], f"🟢 {name}: neues Kaufsignal (Nachkauf möglich)"))
+        if (pind.get("dist200") or 0) > 0 and ind.get("dist200") is not None and ind["dist200"] <= 0:
+            events.append((r["id"], f"⚠️ {name}: fällt unter die 200-Tage-Linie – langfristiger Trend kippt"))
+        if (ind.get("r1d") or 0) <= -5 and ((pind.get("r1d") or 0) > -5 or p.get("date") != r["date"]):
+            events.append((r["id"], f"📉 {name}: {format(ind['r1d'], '.1f').replace('.', ',')} % heute"))
+        if (ind.get("r1d") or 0) >= 6 and ((pind.get("r1d") or 0) < 6 or p.get("date") != r["date"]):
+            events.append((r["id"], f"📈 {name}: +{format(ind['r1d'], '.1f').replace('.', ',')} % heute"))
+        pa, na = p.get("analyst") or {}, r.get("analyst") or {}
+        if pa.get("label") and na.get("label") and pa["label"] != na["label"]:
+            events.append((r["id"], f"🧭 {name}: Analysten jetzt „{na['label']}“ (vorher „{pa['label']}“)"))
+        if r["id"] in chance_ids and r["id"] not in prev_ch:
+            events.append((r["id"], f"💡 {name}: Dip-Chance zum Nachkaufen"))
+        if r["flags"] and not p.get("flags"):
+            events.append((r["id"], f"❔ {name}: Datenproblem – Empfehlung pausiert"))
+    push["events"] = [{"id": i, "text": t} for i, t in events]
     with open(os.path.join(HERE, "push.json"), "w", encoding="utf-8") as f:
         json.dump(push, f, ensure_ascii=False)
     print(f"Fertig in {time.time() - t0:.0f}s ({mode}).")
@@ -817,6 +948,18 @@ def notify(path):
     if not topic:
         print("WARNUNG: Secret NTFY_TOPIC fehlt – keine Push-Nachricht (siehe ANLEITUNG.md).")
         return
+    # Depot-Alarme: nur für Werte aus dem Secret DEPOT (wird nirgends gespeichert oder ausgegeben)
+    mine = {re.sub(r"[^A-Za-z0-9]+", "-", x.strip()).strip("-").upper()
+            for x in os.environ.get("DEPOT", "").split(",") if x.strip()}
+    hits = [e for e in p.get("events", []) if e["id"].upper() in mine]
+    if hits:
+        app = p["click"].split("#")[0]
+        ntfy(topic, f"Dein Depot: {len(hits)} Hinweis{'e' if len(hits) > 1 else ''}",
+             "\n".join(e["text"] for e in hits), click=f"{app}#{hits[0]['id']}", priority="high",
+             tags="briefcase", actions=f"view, App öffnen, {app}")
+        print(f"Depot-Alarm gesendet ({len(hits)}).")
+    elif mine:
+        print("Depot: keine neuen Hinweise.")
     if not p["send"]:
         print("Kein neues Signal – keine Push-Nachricht.")
         return

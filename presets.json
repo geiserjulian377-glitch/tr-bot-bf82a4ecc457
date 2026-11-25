@@ -1307,5 +1307,2092 @@
    "HG=F",
    "Rohstoff"
   ]
+ ],
+ "sp500": [
+  [
+   "3M",
+   "MMM",
+   "Industrie"
+  ],
+  [
+   "A. O. Smith",
+   "AOS",
+   "Industrie"
+  ],
+  [
+   "Accenture",
+   "ACN",
+   "Technologie"
+  ],
+  [
+   "AES",
+   "AES",
+   "Versorger"
+  ],
+  [
+   "Aflac",
+   "AFL",
+   "Finanzen"
+  ],
+  [
+   "Agilent Technologies",
+   "A",
+   "Gesundheit"
+  ],
+  [
+   "Air Products",
+   "APD",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Akamai Technologies",
+   "AKAM",
+   "Technologie"
+  ],
+  [
+   "Albemarle",
+   "ALB",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Alexandria Real Estate Equities",
+   "ARE",
+   "Immobilien"
+  ],
+  [
+   "Align Technology",
+   "ALGN",
+   "Gesundheit"
+  ],
+  [
+   "Allegion",
+   "ALLE",
+   "Industrie"
+  ],
+  [
+   "Alliant Energy",
+   "LNT",
+   "Versorger"
+  ],
+  [
+   "Allstate",
+   "ALL",
+   "Finanzen"
+  ],
+  [
+   "Altria",
+   "MO",
+   "Basiskonsum"
+  ],
+  [
+   "Amcor",
+   "AMCR",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Ameren",
+   "AEE",
+   "Versorger"
+  ],
+  [
+   "American Electric Power",
+   "AEP",
+   "Versorger"
+  ],
+  [
+   "American International Group",
+   "AIG",
+   "Finanzen"
+  ],
+  [
+   "American Tower",
+   "AMT",
+   "Immobilien"
+  ],
+  [
+   "American Water Works",
+   "AWK",
+   "Versorger"
+  ],
+  [
+   "Ameriprise Financial",
+   "AMP",
+   "Finanzen"
+  ],
+  [
+   "Ametek",
+   "AME",
+   "Industrie"
+  ],
+  [
+   "Amphenol",
+   "APH",
+   "Technologie"
+  ],
+  [
+   "Analog Devices",
+   "ADI",
+   "Technologie"
+  ],
+  [
+   "Aon",
+   "AON",
+   "Finanzen"
+  ],
+  [
+   "APA",
+   "APA",
+   "Energie"
+  ],
+  [
+   "Apollo Global Management",
+   "APO",
+   "Finanzen"
+  ],
+  [
+   "AppLovin",
+   "APP",
+   "Medien & Telekom"
+  ],
+  [
+   "Aptiv",
+   "APTV",
+   "Konsum"
+  ],
+  [
+   "Arch Capital Group",
+   "ACGL",
+   "Finanzen"
+  ],
+  [
+   "Archer Daniels Midland",
+   "ADM",
+   "Basiskonsum"
+  ],
+  [
+   "Ares Management",
+   "ARES",
+   "Finanzen"
+  ],
+  [
+   "Arista Networks",
+   "ANET",
+   "Technologie"
+  ],
+  [
+   "Arthur J. Gallagher & Co.",
+   "AJG",
+   "Finanzen"
+  ],
+  [
+   "Assurant",
+   "AIZ",
+   "Finanzen"
+  ],
+  [
+   "Atmos Energy",
+   "ATO",
+   "Versorger"
+  ],
+  [
+   "Autodesk",
+   "ADSK",
+   "Technologie"
+  ],
+  [
+   "Automatic Data Processing",
+   "ADP",
+   "Industrie"
+  ],
+  [
+   "AutoZone",
+   "AZO",
+   "Konsum"
+  ],
+  [
+   "Avery Dennison",
+   "AVY",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Axon Enterprise",
+   "AXON",
+   "Industrie"
+  ],
+  [
+   "Baker Hughes",
+   "BKR",
+   "Energie"
+  ],
+  [
+   "Ball",
+   "BALL",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Baxter International",
+   "BAX",
+   "Gesundheit"
+  ],
+  [
+   "Becton Dickinson",
+   "BDX",
+   "Gesundheit"
+  ],
+  [
+   "Best Buy",
+   "BBY",
+   "Konsum"
+  ],
+  [
+   "Bio-Techne",
+   "TECH",
+   "Gesundheit"
+  ],
+  [
+   "Biogen",
+   "BIIB",
+   "Gesundheit"
+  ],
+  [
+   "Blackstone",
+   "BX",
+   "Finanzen"
+  ],
+  [
+   "Block,",
+   "XYZ",
+   "Finanzen"
+  ],
+  [
+   "Bloom Energy",
+   "BE",
+   "Industrie"
+  ],
+  [
+   "BNY Mellon",
+   "BNY",
+   "Finanzen"
+  ],
+  [
+   "Boston Scientific",
+   "BSX",
+   "Gesundheit"
+  ],
+  [
+   "Bristol Myers Squibb",
+   "BMY",
+   "Gesundheit"
+  ],
+  [
+   "Broadridge Financial Solutions",
+   "BR",
+   "Industrie"
+  ],
+  [
+   "Brown & Brown",
+   "BRO",
+   "Finanzen"
+  ],
+  [
+   "Brown–Forman",
+   "BF-B",
+   "Basiskonsum"
+  ],
+  [
+   "Bunge Global",
+   "BG",
+   "Basiskonsum"
+  ],
+  [
+   "BXP,",
+   "BXP",
+   "Immobilien"
+  ],
+  [
+   "C.H. Robinson",
+   "CHRW",
+   "Industrie"
+  ],
+  [
+   "Cadence Design Systems",
+   "CDNS",
+   "Technologie"
+  ],
+  [
+   "Camden Property Trust",
+   "CPT",
+   "Immobilien"
+  ],
+  [
+   "Capital One",
+   "COF",
+   "Finanzen"
+  ],
+  [
+   "Cardinal Health",
+   "CAH",
+   "Gesundheit"
+  ],
+  [
+   "Carnival",
+   "CCL",
+   "Konsum"
+  ],
+  [
+   "Carrier Global",
+   "CARR",
+   "Industrie"
+  ],
+  [
+   "Carvana",
+   "CVNA",
+   "Konsum"
+  ],
+  [
+   "Casey's",
+   "CASY",
+   "Basiskonsum"
+  ],
+  [
+   "Cboe Global Markets",
+   "CBOE",
+   "Finanzen"
+  ],
+  [
+   "CBRE Group",
+   "CBRE",
+   "Immobilien"
+  ],
+  [
+   "CDW",
+   "CDW",
+   "Technologie"
+  ],
+  [
+   "Cencora",
+   "COR",
+   "Gesundheit"
+  ],
+  [
+   "Centene",
+   "CNC",
+   "Gesundheit"
+  ],
+  [
+   "CenterPoint Energy",
+   "CNP",
+   "Versorger"
+  ],
+  [
+   "CF Industries",
+   "CF",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Charles River Laboratories",
+   "CRL",
+   "Gesundheit"
+  ],
+  [
+   "Charles Schwab",
+   "SCHW",
+   "Finanzen"
+  ],
+  [
+   "Charter Communications",
+   "CHTR",
+   "Medien & Telekom"
+  ],
+  [
+   "Chipotle Mexican Grill",
+   "CMG",
+   "Konsum"
+  ],
+  [
+   "Chubb Limited",
+   "CB",
+   "Finanzen"
+  ],
+  [
+   "Church & Dwight",
+   "CHD",
+   "Basiskonsum"
+  ],
+  [
+   "Ciena",
+   "CIEN",
+   "Technologie"
+  ],
+  [
+   "Cigna",
+   "CI",
+   "Gesundheit"
+  ],
+  [
+   "Cincinnati Financial",
+   "CINF",
+   "Finanzen"
+  ],
+  [
+   "Cintas",
+   "CTAS",
+   "Industrie"
+  ],
+  [
+   "Citigroup",
+   "C",
+   "Finanzen"
+  ],
+  [
+   "Citizens Financial Group",
+   "CFG",
+   "Finanzen"
+  ],
+  [
+   "Clorox",
+   "CLX",
+   "Basiskonsum"
+  ],
+  [
+   "CME Group",
+   "CME",
+   "Finanzen"
+  ],
+  [
+   "CMS Energy",
+   "CMS",
+   "Versorger"
+  ],
+  [
+   "Cognizant",
+   "CTSH",
+   "Technologie"
+  ],
+  [
+   "Coherent Corp.",
+   "COHR",
+   "Technologie"
+  ],
+  [
+   "Colgate-Palmolive",
+   "CL",
+   "Basiskonsum"
+  ],
+  [
+   "Comcast",
+   "CMCSA",
+   "Medien & Telekom"
+  ],
+  [
+   "Comfort Systems USA",
+   "FIX",
+   "Industrie"
+  ],
+  [
+   "ConocoPhillips",
+   "COP",
+   "Energie"
+  ],
+  [
+   "Consolidated Edison",
+   "ED",
+   "Versorger"
+  ],
+  [
+   "Constellation Brands",
+   "STZ",
+   "Basiskonsum"
+  ],
+  [
+   "Constellation Energy",
+   "CEG",
+   "Versorger"
+  ],
+  [
+   "Cooper Companies",
+   "COO",
+   "Gesundheit"
+  ],
+  [
+   "Copart",
+   "CPRT",
+   "Industrie"
+  ],
+  [
+   "Corning",
+   "GLW",
+   "Technologie"
+  ],
+  [
+   "Corpay",
+   "CPAY",
+   "Finanzen"
+  ],
+  [
+   "CoStar Group",
+   "CSGP",
+   "Immobilien"
+  ],
+  [
+   "CRH",
+   "CRH",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Crown Castle",
+   "CCI",
+   "Immobilien"
+  ],
+  [
+   "CSX",
+   "CSX",
+   "Industrie"
+  ],
+  [
+   "Cummins",
+   "CMI",
+   "Industrie"
+  ],
+  [
+   "CVS Health",
+   "CVS",
+   "Gesundheit"
+  ],
+  [
+   "Danaher",
+   "DHR",
+   "Gesundheit"
+  ],
+  [
+   "Darden Restaurants",
+   "DRI",
+   "Konsum"
+  ],
+  [
+   "Datadog",
+   "DDOG",
+   "Technologie"
+  ],
+  [
+   "DaVita",
+   "DVA",
+   "Gesundheit"
+  ],
+  [
+   "Deckers Brands",
+   "DECK",
+   "Konsum"
+  ],
+  [
+   "Delta Air Lines",
+   "DAL",
+   "Industrie"
+  ],
+  [
+   "Devon Energy",
+   "DVN",
+   "Energie"
+  ],
+  [
+   "Dexcom",
+   "DXCM",
+   "Gesundheit"
+  ],
+  [
+   "Diamondback Energy",
+   "FANG",
+   "Energie"
+  ],
+  [
+   "Digital Realty",
+   "DLR",
+   "Immobilien"
+  ],
+  [
+   "Dollar General",
+   "DG",
+   "Basiskonsum"
+  ],
+  [
+   "Dollar Tree",
+   "DLTR",
+   "Basiskonsum"
+  ],
+  [
+   "Dominion Energy",
+   "D",
+   "Versorger"
+  ],
+  [
+   "Domino's",
+   "DPZ",
+   "Konsum"
+  ],
+  [
+   "DoorDash",
+   "DASH",
+   "Konsum"
+  ],
+  [
+   "Dover",
+   "DOV",
+   "Industrie"
+  ],
+  [
+   "Dow",
+   "DOW",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "D. R. Horton",
+   "DHI",
+   "Konsum"
+  ],
+  [
+   "DTE Energy",
+   "DTE",
+   "Versorger"
+  ],
+  [
+   "Duke Energy",
+   "DUK",
+   "Versorger"
+  ],
+  [
+   "DuPont",
+   "DD",
+   "Industrie"
+  ],
+  [
+   "Eaton",
+   "ETN",
+   "Industrie"
+  ],
+  [
+   "eBay",
+   "EBAY",
+   "Konsum"
+  ],
+  [
+   "EchoStar",
+   "ECHO",
+   "Medien & Telekom"
+  ],
+  [
+   "Ecolab",
+   "ECL",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Edison International",
+   "EIX",
+   "Versorger"
+  ],
+  [
+   "Edwards Lifesciences",
+   "EW",
+   "Gesundheit"
+  ],
+  [
+   "Elevance Health",
+   "ELV",
+   "Gesundheit"
+  ],
+  [
+   "Emcor",
+   "EME",
+   "Industrie"
+  ],
+  [
+   "Emerson Electric",
+   "EMR",
+   "Industrie"
+  ],
+  [
+   "Entergy",
+   "ETR",
+   "Versorger"
+  ],
+  [
+   "EOG Resources",
+   "EOG",
+   "Energie"
+  ],
+  [
+   "EQT",
+   "EQT",
+   "Energie"
+  ],
+  [
+   "Equifax",
+   "EFX",
+   "Industrie"
+  ],
+  [
+   "Equinix",
+   "EQIX",
+   "Immobilien"
+  ],
+  [
+   "Erie Indemnity",
+   "ERIE",
+   "Finanzen"
+  ],
+  [
+   "Essex Property Trust",
+   "ESS",
+   "Immobilien"
+  ],
+  [
+   "Estée Lauder Companies",
+   "EL",
+   "Basiskonsum"
+  ],
+  [
+   "Everest Group",
+   "EG",
+   "Finanzen"
+  ],
+  [
+   "Evergy",
+   "EVRG",
+   "Versorger"
+  ],
+  [
+   "Everpure",
+   "P",
+   "Technologie"
+  ],
+  [
+   "Eversource Energy",
+   "ES",
+   "Versorger"
+  ],
+  [
+   "Exelon",
+   "EXC",
+   "Versorger"
+  ],
+  [
+   "Expand Energy",
+   "EXE",
+   "Energie"
+  ],
+  [
+   "Expedia Group",
+   "EXPE",
+   "Konsum"
+  ],
+  [
+   "Expeditors International",
+   "EXPD",
+   "Industrie"
+  ],
+  [
+   "Extra Space Storage",
+   "EXR",
+   "Immobilien"
+  ],
+  [
+   "F5,",
+   "FFIV",
+   "Technologie"
+  ],
+  [
+   "FactSet",
+   "FDS",
+   "Finanzen"
+  ],
+  [
+   "Fair Isaac",
+   "FICO",
+   "Technologie"
+  ],
+  [
+   "Fastenal",
+   "FAST",
+   "Industrie"
+  ],
+  [
+   "Federal Realty Investment Trust",
+   "FRT",
+   "Immobilien"
+  ],
+  [
+   "FedEx",
+   "FDX",
+   "Industrie"
+  ],
+  [
+   "FedEx Freight",
+   "FDXF",
+   "Industrie"
+  ],
+  [
+   "Ferguson Enterprises",
+   "FERG",
+   "Industrie"
+  ],
+  [
+   "Fidelity National Information Services",
+   "FIS",
+   "Finanzen"
+  ],
+  [
+   "Fifth Third Bancorp",
+   "FITB",
+   "Finanzen"
+  ],
+  [
+   "First Solar",
+   "FSLR",
+   "Technologie"
+  ],
+  [
+   "FirstEnergy",
+   "FE",
+   "Versorger"
+  ],
+  [
+   "Fiserv",
+   "FISV",
+   "Finanzen"
+  ],
+  [
+   "Flex Ltd.",
+   "FLEX",
+   "Technologie"
+  ],
+  [
+   "Fortinet",
+   "FTNT",
+   "Technologie"
+  ],
+  [
+   "Fortive",
+   "FTV",
+   "Industrie"
+  ],
+  [
+   "Fox",
+   "FOXA",
+   "Medien & Telekom"
+  ],
+  [
+   "Franklin Resources",
+   "BEN",
+   "Finanzen"
+  ],
+  [
+   "Freeport-McMoRan",
+   "FCX",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Garmin",
+   "GRMN",
+   "Konsum"
+  ],
+  [
+   "Gartner",
+   "IT",
+   "Technologie"
+  ],
+  [
+   "GE HealthCare",
+   "GEHC",
+   "Gesundheit"
+  ],
+  [
+   "GE Vernova",
+   "GEV",
+   "Industrie"
+  ],
+  [
+   "Gen Digital",
+   "GEN",
+   "Technologie"
+  ],
+  [
+   "Generac",
+   "GNRC",
+   "Industrie"
+  ],
+  [
+   "General Dynamics",
+   "GD",
+   "Industrie"
+  ],
+  [
+   "General Mills",
+   "GIS",
+   "Basiskonsum"
+  ],
+  [
+   "Genuine Parts Company",
+   "GPC",
+   "Konsum"
+  ],
+  [
+   "Gilead Sciences",
+   "GILD",
+   "Gesundheit"
+  ],
+  [
+   "Global Payments",
+   "GPN",
+   "Finanzen"
+  ],
+  [
+   "Globe Life",
+   "GL",
+   "Finanzen"
+  ],
+  [
+   "GoDaddy",
+   "GDDY",
+   "Technologie"
+  ],
+  [
+   "Halliburton",
+   "HAL",
+   "Energie"
+  ],
+  [
+   "Hartford",
+   "HIG",
+   "Finanzen"
+  ],
+  [
+   "Hasbro",
+   "HAS",
+   "Konsum"
+  ],
+  [
+   "HCA Healthcare",
+   "HCA",
+   "Gesundheit"
+  ],
+  [
+   "Healthpeak Properties",
+   "DOC",
+   "Immobilien"
+  ],
+  [
+   "Henry Schein",
+   "HSIC",
+   "Gesundheit"
+  ],
+  [
+   "Hershey Company",
+   "HSY",
+   "Basiskonsum"
+  ],
+  [
+   "Hewlett Packard Enterprise",
+   "HPE",
+   "Technologie"
+  ],
+  [
+   "Hilton Worldwide",
+   "HLT",
+   "Konsum"
+  ],
+  [
+   "Honeywell Aerospace",
+   "HONA",
+   "Industrie"
+  ],
+  [
+   "Hormel Foods",
+   "HRL",
+   "Basiskonsum"
+  ],
+  [
+   "Host Hotels & Resorts",
+   "HST",
+   "Immobilien"
+  ],
+  [
+   "Howmet Aerospace",
+   "HWM",
+   "Industrie"
+  ],
+  [
+   "HP",
+   "HPQ",
+   "Technologie"
+  ],
+  [
+   "Hubbell Incorporated",
+   "HUBB",
+   "Industrie"
+  ],
+  [
+   "Humana",
+   "HUM",
+   "Gesundheit"
+  ],
+  [
+   "Huntington Bancshares",
+   "HBAN",
+   "Finanzen"
+  ],
+  [
+   "Huntington Ingalls Industries",
+   "HII",
+   "Industrie"
+  ],
+  [
+   "IDEX",
+   "IEX",
+   "Industrie"
+  ],
+  [
+   "Idexx Laboratories",
+   "IDXX",
+   "Gesundheit"
+  ],
+  [
+   "Illinois Tool Works",
+   "ITW",
+   "Industrie"
+  ],
+  [
+   "Illumina,",
+   "ILMN",
+   "Gesundheit"
+  ],
+  [
+   "Incyte",
+   "INCY",
+   "Gesundheit"
+  ],
+  [
+   "Ingersoll Rand",
+   "IR",
+   "Industrie"
+  ],
+  [
+   "Insulet",
+   "PODD",
+   "Gesundheit"
+  ],
+  [
+   "Interactive Brokers",
+   "IBKR",
+   "Finanzen"
+  ],
+  [
+   "Intercontinental Exchange",
+   "ICE",
+   "Finanzen"
+  ],
+  [
+   "International Flavors & Fragrances",
+   "IFF",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "International Paper",
+   "IP",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Invesco",
+   "IVZ",
+   "Finanzen"
+  ],
+  [
+   "Invitation Homes",
+   "INVH",
+   "Immobilien"
+  ],
+  [
+   "IQVIA",
+   "IQV",
+   "Gesundheit"
+  ],
+  [
+   "Iron Mountain",
+   "IRM",
+   "Immobilien"
+  ],
+  [
+   "J.B. Hunt",
+   "JBHT",
+   "Industrie"
+  ],
+  [
+   "Jabil",
+   "JBL",
+   "Technologie"
+  ],
+  [
+   "Jack Henry & Associates",
+   "JKHY",
+   "Finanzen"
+  ],
+  [
+   "Jacobs Solutions",
+   "J",
+   "Industrie"
+  ],
+  [
+   "Johnson Controls",
+   "JCI",
+   "Industrie"
+  ],
+  [
+   "Kenvue",
+   "KVUE",
+   "Basiskonsum"
+  ],
+  [
+   "Keurig Dr Pepper",
+   "KDP",
+   "Basiskonsum"
+  ],
+  [
+   "KeyCorp",
+   "KEY",
+   "Finanzen"
+  ],
+  [
+   "Keysight Technologies",
+   "KEYS",
+   "Technologie"
+  ],
+  [
+   "Kimberly-Clark",
+   "KMB",
+   "Basiskonsum"
+  ],
+  [
+   "Kimco Realty",
+   "KIM",
+   "Immobilien"
+  ],
+  [
+   "Kinder Morgan",
+   "KMI",
+   "Energie"
+  ],
+  [
+   "KKR & Co.",
+   "KKR",
+   "Finanzen"
+  ],
+  [
+   "Kraft Heinz",
+   "KHC",
+   "Basiskonsum"
+  ],
+  [
+   "Kroger",
+   "KR",
+   "Basiskonsum"
+  ],
+  [
+   "L3Harris",
+   "LHX",
+   "Industrie"
+  ],
+  [
+   "Labcorp",
+   "LH",
+   "Gesundheit"
+  ],
+  [
+   "Las Vegas Sands",
+   "LVS",
+   "Konsum"
+  ],
+  [
+   "Leidos",
+   "LDOS",
+   "Industrie"
+  ],
+  [
+   "Lennar",
+   "LEN",
+   "Konsum"
+  ],
+  [
+   "Lennox International",
+   "LII",
+   "Industrie"
+  ],
+  [
+   "Linde",
+   "LIN",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Live Nation Entertainment",
+   "LYV",
+   "Medien & Telekom"
+  ],
+  [
+   "Loews",
+   "L",
+   "Finanzen"
+  ],
+  [
+   "Lowe's",
+   "LOW",
+   "Konsum"
+  ],
+  [
+   "Lululemon Athletica",
+   "LULU",
+   "Konsum"
+  ],
+  [
+   "Lumentum",
+   "LITE",
+   "Technologie"
+  ],
+  [
+   "LyondellBasell",
+   "LYB",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "M&T Bank",
+   "MTB",
+   "Finanzen"
+  ],
+  [
+   "Marathon Petroleum",
+   "MPC",
+   "Energie"
+  ],
+  [
+   "Marriott International",
+   "MAR",
+   "Konsum"
+  ],
+  [
+   "Marsh McLennan",
+   "MRSH",
+   "Finanzen"
+  ],
+  [
+   "Martin Marietta Materials",
+   "MLM",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Masco",
+   "MAS",
+   "Industrie"
+  ],
+  [
+   "McCormick & Company",
+   "MKC",
+   "Basiskonsum"
+  ],
+  [
+   "McKesson",
+   "MCK",
+   "Gesundheit"
+  ],
+  [
+   "Medtronic",
+   "MDT",
+   "Gesundheit"
+  ],
+  [
+   "MetLife",
+   "MET",
+   "Finanzen"
+  ],
+  [
+   "Mettler Toledo",
+   "MTD",
+   "Gesundheit"
+  ],
+  [
+   "MGM Resorts",
+   "MGM",
+   "Konsum"
+  ],
+  [
+   "Microchip Technology",
+   "MCHP",
+   "Technologie"
+  ],
+  [
+   "Mid-America Apartment Communities",
+   "MAA",
+   "Immobilien"
+  ],
+  [
+   "Moderna",
+   "MRNA",
+   "Gesundheit"
+  ],
+  [
+   "Mondelez International",
+   "MDLZ",
+   "Basiskonsum"
+  ],
+  [
+   "Monolithic Power Systems",
+   "MPWR",
+   "Technologie"
+  ],
+  [
+   "Monster Beverage",
+   "MNST",
+   "Basiskonsum"
+  ],
+  [
+   "Moody's",
+   "MCO",
+   "Finanzen"
+  ],
+  [
+   "Mosaic Company",
+   "MOS",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Motorola Solutions",
+   "MSI",
+   "Technologie"
+  ],
+  [
+   "MSCI",
+   "MSCI",
+   "Finanzen"
+  ],
+  [
+   "Nasdaq,",
+   "NDAQ",
+   "Finanzen"
+  ],
+  [
+   "NetApp",
+   "NTAP",
+   "Technologie"
+  ],
+  [
+   "Newmont",
+   "NEM",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "News Corp",
+   "NWSA",
+   "Medien & Telekom"
+  ],
+  [
+   "NiSource",
+   "NI",
+   "Versorger"
+  ],
+  [
+   "Nordson",
+   "NDSN",
+   "Industrie"
+  ],
+  [
+   "Norfolk Southern",
+   "NSC",
+   "Industrie"
+  ],
+  [
+   "Northern Trust",
+   "NTRS",
+   "Finanzen"
+  ],
+  [
+   "Northrop Grumman",
+   "NOC",
+   "Industrie"
+  ],
+  [
+   "Norwegian Cruise Line Holdings",
+   "NCLH",
+   "Konsum"
+  ],
+  [
+   "NRG Energy",
+   "NRG",
+   "Versorger"
+  ],
+  [
+   "Nucor",
+   "NUE",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "NVR,",
+   "NVR",
+   "Konsum"
+  ],
+  [
+   "NXP Semiconductors",
+   "NXPI",
+   "Technologie"
+  ],
+  [
+   "O'Reilly Automotive",
+   "ORLY",
+   "Konsum"
+  ],
+  [
+   "Occidental Petroleum",
+   "OXY",
+   "Energie"
+  ],
+  [
+   "Old Dominion",
+   "ODFL",
+   "Industrie"
+  ],
+  [
+   "Omnicom Group",
+   "OMC",
+   "Medien & Telekom"
+  ],
+  [
+   "ON Semiconductor",
+   "ON",
+   "Technologie"
+  ],
+  [
+   "Oneok",
+   "OKE",
+   "Energie"
+  ],
+  [
+   "Otis Worldwide",
+   "OTIS",
+   "Industrie"
+  ],
+  [
+   "Paccar",
+   "PCAR",
+   "Industrie"
+  ],
+  [
+   "Packaging of America",
+   "PKG",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Parker Hannifin",
+   "PH",
+   "Industrie"
+  ],
+  [
+   "Paychex",
+   "PAYX",
+   "Industrie"
+  ],
+  [
+   "Pentair",
+   "PNR",
+   "Industrie"
+  ],
+  [
+   "PG&E",
+   "PCG",
+   "Versorger"
+  ],
+  [
+   "Phillips 66",
+   "PSX",
+   "Energie"
+  ],
+  [
+   "Pinnacle West Capital",
+   "PNW",
+   "Versorger"
+  ],
+  [
+   "PNC Financial Services",
+   "PNC",
+   "Finanzen"
+  ],
+  [
+   "PPG Industries",
+   "PPG",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "PPL",
+   "PPL",
+   "Versorger"
+  ],
+  [
+   "Principal Financial Group",
+   "PFG",
+   "Finanzen"
+  ],
+  [
+   "Progressive",
+   "PGR",
+   "Finanzen"
+  ],
+  [
+   "Prologis",
+   "PLD",
+   "Immobilien"
+  ],
+  [
+   "Prudential Financial",
+   "PRU",
+   "Finanzen"
+  ],
+  [
+   "PTC",
+   "PTC",
+   "Technologie"
+  ],
+  [
+   "Public Service Enterprise Group",
+   "PEG",
+   "Versorger"
+  ],
+  [
+   "Public Storage",
+   "PSA",
+   "Immobilien"
+  ],
+  [
+   "PulteGroup",
+   "PHM",
+   "Konsum"
+  ],
+  [
+   "Qnity Electronics",
+   "Q",
+   "Technologie"
+  ],
+  [
+   "Quanta Services",
+   "PWR",
+   "Industrie"
+  ],
+  [
+   "Quest Diagnostics",
+   "DGX",
+   "Gesundheit"
+  ],
+  [
+   "Ralph Lauren",
+   "RL",
+   "Konsum"
+  ],
+  [
+   "Raymond James Financial",
+   "RJF",
+   "Finanzen"
+  ],
+  [
+   "Reddit",
+   "RDDT",
+   "Medien & Telekom"
+  ],
+  [
+   "Realty Income",
+   "O",
+   "Immobilien"
+  ],
+  [
+   "Regency Centers",
+   "REG",
+   "Immobilien"
+  ],
+  [
+   "Regeneron Pharmaceuticals",
+   "REGN",
+   "Gesundheit"
+  ],
+  [
+   "Regions Financial",
+   "RF",
+   "Finanzen"
+  ],
+  [
+   "Republic Services",
+   "RSG",
+   "Industrie"
+  ],
+  [
+   "ResMed",
+   "RMD",
+   "Gesundheit"
+  ],
+  [
+   "Revvity",
+   "RVTY",
+   "Gesundheit"
+  ],
+  [
+   "Rockwell Automation",
+   "ROK",
+   "Industrie"
+  ],
+  [
+   "Rollins,",
+   "ROL",
+   "Industrie"
+  ],
+  [
+   "Roper Technologies",
+   "ROP",
+   "Technologie"
+  ],
+  [
+   "Ross Stores",
+   "ROST",
+   "Konsum"
+  ],
+  [
+   "Royal Caribbean Group",
+   "RCL",
+   "Konsum"
+  ],
+  [
+   "S&P Global",
+   "SPGI",
+   "Finanzen"
+  ],
+  [
+   "Sandisk",
+   "SNDK",
+   "Technologie"
+  ],
+  [
+   "SBA Communications",
+   "SBAC",
+   "Immobilien"
+  ],
+  [
+   "Schlumberger",
+   "SLB",
+   "Energie"
+  ],
+  [
+   "Seagate Technology",
+   "STX",
+   "Technologie"
+  ],
+  [
+   "Sempra",
+   "SRE",
+   "Versorger"
+  ],
+  [
+   "Sherwin-Williams",
+   "SHW",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Simon Property Group",
+   "SPG",
+   "Immobilien"
+  ],
+  [
+   "Skydance",
+   "SKYD",
+   "Medien & Telekom"
+  ],
+  [
+   "Skyworks Solutions",
+   "SWKS",
+   "Technologie"
+  ],
+  [
+   "J.M. Smucker Company",
+   "SJM",
+   "Basiskonsum"
+  ],
+  [
+   "Smurfit Westrock",
+   "SW",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Snap-on",
+   "SNA",
+   "Industrie"
+  ],
+  [
+   "Solventum",
+   "SOLV",
+   "Gesundheit"
+  ],
+  [
+   "Southern Company",
+   "SO",
+   "Versorger"
+  ],
+  [
+   "Southwest Airlines",
+   "LUV",
+   "Industrie"
+  ],
+  [
+   "Stanley Black & Decker",
+   "SWK",
+   "Industrie"
+  ],
+  [
+   "State Street",
+   "STT",
+   "Finanzen"
+  ],
+  [
+   "Steel Dynamics",
+   "STLD",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Steris",
+   "STE",
+   "Gesundheit"
+  ],
+  [
+   "Stryker",
+   "SYK",
+   "Gesundheit"
+  ],
+  [
+   "Synchrony Financial",
+   "SYF",
+   "Finanzen"
+  ],
+  [
+   "Synopsys",
+   "SNPS",
+   "Technologie"
+  ],
+  [
+   "Sysco",
+   "SYY",
+   "Basiskonsum"
+  ],
+  [
+   "T-Mobile US",
+   "TMUS",
+   "Medien & Telekom"
+  ],
+  [
+   "T. Rowe Price",
+   "TROW",
+   "Finanzen"
+  ],
+  [
+   "Take-Two Interactive",
+   "TTWO",
+   "Medien & Telekom"
+  ],
+  [
+   "Tapestry,",
+   "TPR",
+   "Konsum"
+  ],
+  [
+   "Targa Resources",
+   "TRGP",
+   "Energie"
+  ],
+  [
+   "TE Connectivity",
+   "TEL",
+   "Technologie"
+  ],
+  [
+   "Teledyne Technologies",
+   "TDY",
+   "Technologie"
+  ],
+  [
+   "Teradyne",
+   "TER",
+   "Technologie"
+  ],
+  [
+   "Texas Pacific Land",
+   "TPL",
+   "Energie"
+  ],
+  [
+   "Textron",
+   "TXT",
+   "Industrie"
+  ],
+  [
+   "TJX Companies",
+   "TJX",
+   "Konsum"
+  ],
+  [
+   "TKO Group Holdings",
+   "TKO",
+   "Medien & Telekom"
+  ],
+  [
+   "Tractor Supply",
+   "TSCO",
+   "Konsum"
+  ],
+  [
+   "Trane Technologies",
+   "TT",
+   "Industrie"
+  ],
+  [
+   "TransDigm Group",
+   "TDG",
+   "Industrie"
+  ],
+  [
+   "Travelers Companies",
+   "TRV",
+   "Finanzen"
+  ],
+  [
+   "Trimble",
+   "TRMB",
+   "Technologie"
+  ],
+  [
+   "Truist Financial",
+   "TFC",
+   "Finanzen"
+  ],
+  [
+   "Twilio",
+   "TWLO",
+   "Technologie"
+  ],
+  [
+   "Tyler Technologies",
+   "TYL",
+   "Technologie"
+  ],
+  [
+   "Tyson Foods",
+   "TSN",
+   "Basiskonsum"
+  ],
+  [
+   "U.S. Bancorp",
+   "USB",
+   "Finanzen"
+  ],
+  [
+   "UDR,",
+   "UDR",
+   "Immobilien"
+  ],
+  [
+   "Ulta Beauty",
+   "ULTA",
+   "Konsum"
+  ],
+  [
+   "Union Pacific",
+   "UNP",
+   "Industrie"
+  ],
+  [
+   "United Airlines Holdings",
+   "UAL",
+   "Industrie"
+  ],
+  [
+   "United Rentals",
+   "URI",
+   "Industrie"
+  ],
+  [
+   "Universal Health Services",
+   "UHS",
+   "Gesundheit"
+  ],
+  [
+   "Valero Energy",
+   "VLO",
+   "Energie"
+  ],
+  [
+   "Veeva Systems",
+   "VEEV",
+   "Gesundheit"
+  ],
+  [
+   "Ventas",
+   "VTR",
+   "Immobilien"
+  ],
+  [
+   "Veralto",
+   "VLTO",
+   "Industrie"
+  ],
+  [
+   "Verisign",
+   "VRSN",
+   "Technologie"
+  ],
+  [
+   "Verisk Analytics",
+   "VRSK",
+   "Industrie"
+  ],
+  [
+   "Vertex Pharmaceuticals",
+   "VRTX",
+   "Gesundheit"
+  ],
+  [
+   "Vertiv",
+   "VRT",
+   "Industrie"
+  ],
+  [
+   "Viatris",
+   "VTRS",
+   "Gesundheit"
+  ],
+  [
+   "Vici Properties",
+   "VICI",
+   "Immobilien"
+  ],
+  [
+   "Vistra Corp.",
+   "VST",
+   "Versorger"
+  ],
+  [
+   "Vivmark Residential",
+   "VMRK",
+   "Immobilien"
+  ],
+  [
+   "Vulcan Materials Company",
+   "VMC",
+   "Rohstoffe & Chemie"
+  ],
+  [
+   "Vylor",
+   "VYLR",
+   "Basiskonsum"
+  ],
+  [
+   "W. R. Berkley",
+   "WRB",
+   "Finanzen"
+  ],
+  [
+   "W. W. Grainger",
+   "GWW",
+   "Industrie"
+  ],
+  [
+   "Wabtec",
+   "WAB",
+   "Industrie"
+  ],
+  [
+   "Waste Management",
+   "WM",
+   "Industrie"
+  ],
+  [
+   "Waters",
+   "WAT",
+   "Gesundheit"
+  ],
+  [
+   "WEC Energy Group",
+   "WEC",
+   "Versorger"
+  ],
+  [
+   "Welltower",
+   "WELL",
+   "Immobilien"
+  ],
+  [
+   "West Pharmaceutical Services",
+   "WST",
+   "Gesundheit"
+  ],
+  [
+   "Western Digital",
+   "WDC",
+   "Technologie"
+  ],
+  [
+   "Weyerhaeuser",
+   "WY",
+   "Immobilien"
+  ],
+  [
+   "Williams-Sonoma,",
+   "WSM",
+   "Konsum"
+  ],
+  [
+   "Williams Companies",
+   "WMB",
+   "Energie"
+  ],
+  [
+   "Willis Towers Watson",
+   "WTW",
+   "Finanzen"
+  ],
+  [
+   "Workday,",
+   "WDAY",
+   "Technologie"
+  ],
+  [
+   "Wynn Resorts",
+   "WYNN",
+   "Konsum"
+  ],
+  [
+   "Xcel Energy",
+   "XEL",
+   "Versorger"
+  ],
+  [
+   "Xylem",
+   "XYL",
+   "Industrie"
+  ],
+  [
+   "Yum! Brands",
+   "YUM",
+   "Konsum"
+  ],
+  [
+   "Zebra Technologies",
+   "ZBRA",
+   "Technologie"
+  ],
+  [
+   "Zimmer Biomet",
+   "ZBH",
+   "Gesundheit"
+  ],
+  [
+   "Zoetis",
+   "ZTS",
+   "Gesundheit"
+  ]
  ]
 }

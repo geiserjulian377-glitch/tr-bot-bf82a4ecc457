@@ -1,6 +1,5 @@
 {
   "app_url": "https://geiserjulian377-glitch.github.io/tr-bot-bf82a4ecc457/",
-
   "listen": {
     "usa": true,
     "europa": true,
@@ -8,10 +7,10 @@
     "asien": true,
     "etfs": true,
     "krypto": true,
-    "rohstoffe": true
+    "rohstoffe": true,
+    "sp500": true
   },
   "eigene_werte": [],
-
   "fast_sma": 20,
   "slow_sma": 50,
   "stop_loss_pct": 8,
@@ -19,6 +18,5 @@
   "fee_per_order_eur": 1,
   "history_years": 5,
   "alert_lookback_days": 3,
-
   "only_send_on_signal": false
 }

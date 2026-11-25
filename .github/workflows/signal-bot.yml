@@ -70,6 +70,7 @@ jobs:
       - name: Push-Nachricht senden
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          DEPOT: ${{ secrets.DEPOT }}
         run: python bot.py --notify
 
   naechster-lauf:
