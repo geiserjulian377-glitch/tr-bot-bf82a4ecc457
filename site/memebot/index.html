@@ -92,7 +92,7 @@ a{color:var(--b)}
   <div class="head">
     <div class="logo" aria-hidden="true"></div>
     <div>
-      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v2 · test</span></div>
+      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v3 · test</span></div>
       <div class="status" id="status"><span class="dot"></span>gestoppt</div>
       <div class="chip" id="phase">bereit</div>
     </div>
@@ -150,7 +150,7 @@ a{color:var(--b)}
 
   <div class="card" style="margin-top:14px">
     <h3>SO ARBEITET DER BOT</h3>
-    <p class="note"><b>1 Scanner:</b> holt alle 20 Sek. frische Solana-Coins (DexScreener) und sucht Signale: Volumen-Spike, Kaufdruck, Rücksetzer im Aufwärtstrend, Holder-Wachstum, Trending. Kauft <b>nicht</b> in eine gerade laufende Explosion (über +12&nbsp;% in 5 Min.), sondern wartet auf den Rücksetzer. Mindestens 20 Min. alt, genug Liquidität im Verhältnis zum Marktwert.<br>
+    <p class="note"><b>1 Scanner:</b> holt alle 20 Sek. Solana-Coins aus 7 Listen (DexScreener + Jupiter-Trending), reichert jeden mit Jupiter-Daten an (Echtheits-Score gegen Fake-/Bot-Handel, Netto-Käufer, echte Käufer, Kauf-/Verkaufsvolumen, Liquiditätsverlauf) und prüft Website/Socials. Kauft nur bei mind. 3 Signalen und nicht, wenn der Gesamtmarkt (SOL) gerade fällt. Quellen: DexScreener und sucht Signale: Volumen-Spike, Kaufdruck, Rücksetzer im Aufwärtstrend, Holder-Wachstum, Trending. Kauft <b>nicht</b> in eine gerade laufende Explosion (über +12&nbsp;% in 5 Min.), sondern wartet auf den Rücksetzer. Mindestens 20 Min. alt, genug Liquidität im Verhältnis zum Marktwert.<br>
     <b>2 Rug-Check:</b> keine Mint-/Freeze-Rechte, keine Gefahren-Warnung, kein Insider-Netzwerk, größter Einzelhalter max. 10&nbsp;%, Top-10 unter Grenze, Entwickler-Anteil klein, Liquidität gesperrt, genug Halter, echter Verkaufs-Test über Jupiter.<br>
     <b>3 Sizer:</b> Größe aus dem Kontostand, angepasst an das, was der Bot gelernt hat (Setups mit schlechter Bilanz werden gesperrt, gute bekommen etwas mehr). Nach 2 Verlusten in Folge halbe Größe, max. 4 Käufe pro Stunde.<br>
     <b>4 Executor – ruhig, nicht panisch:</b> prüft offene Positionen alle 5 Sek. Bei +35&nbsp;% wird die Hälfte verkauft und der Stop auf den Einstieg gezogen (aus Gewinn wird kein Verlust). Danach Trailing-Stop 20&nbsp;% unter dem Hoch. Ein Stop löst erst aus, wenn der Kurs ~10 Sek. darunter bleibt – kurze Ausreißer werden ignoriert. Nur bei echtem Absturz (−25&nbsp;%) oder abgezogener Liquidität sofort raus. Steigt der Verkaufsdruck stark, sichert er Gewinne vorher.<br>
@@ -176,7 +176,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const DEF = {startBal: 70, minAgeMin: 20, maxAgeH: 24, minLiq: 15000, minVolH1: 20000, minLiqMc: 8, minHolders: 300, buyRatio: 60, spikeX: 2.5,
   noChase5m: 12, maxH1: 300, sizePct: 20, maxOpen: 2, maxBuysH: 4, top1Max: 10, top10Max: 35, devMax: 5, lpMin: 90, maxImpact: 8,
   tp1: 35, tp1Pct: 50, tp2: 100, tp2Pct: 25, trail: 20, stop: 12, crash: 25, confirmSec: 10, sellPressure: 1.6, liqDrop: 20,
-  timeStopMin: 40, ddLimit: 25, fee: 0.5, cooldownH: 6, ntfy: ""};
+  timeStopMin: 40, ddLimit: 25, fee: 0.5, cooldownH: 6, minOrganic: 15, minNetBuyers: 3, needSocials: 1, solDrop: 1.5, estLiq: 150000, estOrganic: 60, ntfy: ""};
 const LABEL = {startBal: "Startkapital ($)", minAgeMin: "Min. Alter (Min.)", maxAgeH: "Max. Alter (Std.)", minLiq: "Min. Liquidität ($)",
   minVolH1: "Min. Volumen 1 Std. ($)", minLiqMc: "Liquidität/Marktwert min. (%)", minHolders: "Min. Halter", buyRatio: "Kaufdruck min. (%)",
   spikeX: "Volumen-Spike (×)", noChase5m: "Nicht kaufen über (+% in 5 Min.)", maxH1: "Nicht jagen über (+% 1 Std.)", sizePct: "Größe je Trade (% Konto)",
@@ -185,7 +185,7 @@ const LABEL = {startBal: "Startkapital ($)", minAgeMin: "Min. Alter (Min.)", max
   tp1: "Gewinn sichern ab (+%)", tp1Pct: "dann verkaufen (%)", tp2: "2. Stufe ab (+%)", tp2Pct: "dann verkaufen (% vom Start)",
   trail: "Trailing-Stop (% unter Hoch)", stop: "Stop-Loss (−%)", crash: "Sofort raus bei Absturz (−%)", confirmSec: "Stop bestätigen nach (Sek.)",
   sellPressure: "Verkaufsdruck-Ausstieg (Verk./Käufe)", liqDrop: "Raus bei Liquiditätsverlust (%)", timeStopMin: "Zeit-Stop (Min.)",
-  ddLimit: "Tageslimit (−% vom Hoch)", fee: "Gebühren je Seite (%)", cooldownH: "Sperre nach Verlust (Std.)", ntfy: "ntfy-Thema (Push)"};
+  ddLimit: "Tageslimit (−% vom Hoch)", fee: "Gebühren je Seite (%)", cooldownH: "Sperre nach Verlust (Std.)", minOrganic: "Echtheits-Score min. (0–100)", minNetBuyers: "Netto-Käufer 5 Min. min.", needSocials: "Website/Socials Pflicht (1=ja)", solDrop: "Pause wenn SOL fällt (−% 1 Std.)", estLiq: "Etablierte Coins: Liquidität min. ($)", estOrganic: "Etablierte Coins: Echtheit min.", ntfy: "ntfy-Thema (Push)"};
 let C = {...DEF, ...store.get("cfg", {})};
 if (store.get("cfgVer", 1) < 3) {   // v2: neue, ruhigere Ausstiegsregeln übernehmen
   const keep = {startBal: C.startBal, ntfy: C.ntfy};
@@ -224,10 +224,27 @@ const blocked = m => S.block[m] && (S.block[m] === "immer" || S.block[m] > Date.
 async function universe() {
   const urls = ["https://api.dexscreener.com/token-profiles/latest/v1", "https://api.dexscreener.com/token-boosts/latest/v1",
     "https://api.dexscreener.com/token-boosts/top/v1", "https://api.dexscreener.com/community-takeovers/latest/v1"];
-  const lists = await Promise.all(urls.map(u => getJSON(u).catch(() => [])));
+  const jupUrls = ["https://lite-api.jup.ag/tokens/v2/toptrending/5m?limit=50", "https://lite-api.jup.ag/tokens/v2/toporganicscore/5m?limit=50", "https://lite-api.jup.ag/tokens/v2/toptraded/5m?limit=50"];
+  const [lists, jl] = await Promise.all([Promise.all(urls.map(u => getJSON(u).catch(() => []))), Promise.all(jupUrls.map(u => getJSON(u).catch(() => [])))]);
   const boosted = new Set([...(lists[1] || []), ...(lists[2] || [])].filter(x => x.chainId === "solana").map(x => x.tokenAddress));
-  const addrs = [...new Set(lists.flat().filter(x => x && x.chainId === "solana").map(x => x.tokenAddress))];
-  return {pairs: await pairsFor(addrs), boosted};
+  const jupTrend = new Set((jl[0] || []).map(x => x.id));
+  const addrs = [...new Set([...lists.flat().filter(x => x && x.chainId === "solana").map(x => x.tokenAddress), ...jl.flat().filter(x => x && x.id).map(x => x.id)])].filter(m => m !== SOL && m !== USDC);
+  const [pairs, jup] = await Promise.all([pairsFor(addrs), jupFor(addrs)]);
+  jl.flat().forEach(x => { if (x && x.id && !jup[x.id]) jup[x.id] = x; });
+  return {pairs, boosted, jup, jupTrend};
+}
+async function jupFor(mints) {   // Jupiter: Echtheits-Score, Netto-Käufer, echte Käufer, Kauf-/Verkaufsvolumen
+  const out = {};
+  for (let i = 0; i < mints.length; i += 100) {
+    const r = await getJSON("https://lite-api.jup.ag/tokens/v2/search?query=" + mints.slice(i, i + 100).join(",")).catch(() => []);
+    (r || []).forEach(t => out[t.id] = t);
+  }
+  return out;
+}
+async function market() {   // Gesamtmarkt: SOL-Trend
+  const r = await getJSON("https://api.dexscreener.com/latest/dex/pairs/solana/58oQChx4yWmvKdwLLZzBi4ChoCc2fqCUWBkwMihLYQo2").catch(() => null);
+  const ch = r?.pair?.priceChange || {};
+  return {h1: ch.h1 ?? 0, m5: ch.m5 ?? 0, h6: ch.h6 ?? 0};
 }
 async function pairsFor(addrs) {
   const pairs = {};
@@ -238,7 +255,7 @@ async function pairsFor(addrs) {
   }
   return pairs;
 }
-function signals(p, boosted) {
+function signals(p, boosted, j, jupTrend) {
   const v = p.volume || {}, tx = p.txns || {}, ch = p.priceChange || {};
   const sig = [];
   const avg5 = Math.max((v.h1 || 0) / 12, 1);
@@ -250,12 +267,17 @@ function signals(p, boosted) {
   const h = S.holders[p.baseToken.address];
   if (h && h.prev && h.n > h.prev * 1.03) sig.push({k: "holders", t: `Holder +${Math.round((h.n / h.prev - 1) * 100)}%`});
   if (boosted.has(p.baseToken.address)) sig.push({k: "trend", t: "Trending (Boost)"});
+  if (jupTrend && jupTrend.has(p.baseToken.address)) sig.push({k: "trend", t: "Trending bei Jupiter"});
+  if (j && j.stats5m) { const s5 = j.stats5m;
+    if ((s5.numNetBuyers || 0) >= 10 && (s5.buyVolume || 0) >= 1.2 * (s5.sellVolume || 0)) sig.push({k: "netbuy", t: `${s5.numNetBuyers} Netto-Käufer, Kaufvol. ${((s5.buyVolume || 0) / Math.max(s5.sellVolume || 1, 1)).toFixed(1)}× Verkauf`});
+    if ((j.organicScore || 0) >= 50 && (s5.numOrganicBuyers || 0) >= 15) sig.push({k: "organic", t: `echter Handel (Score ${Math.round(j.organicScore)}, ${s5.numOrganicBuyers} echte Käufer)`}); }
   return sig;
 }
-const setupKey = sig => sig.map(s => s.k).filter(k => k !== "trend" && k !== "holders").sort().join("+") || "sonstige";
-function filterReason(p) {
+const setupKey = sig => [...new Set(sig.map(s => s.k).filter(k => ["spike", "buyers", "pullback", "momentum"].includes(k)))].sort().join("+") || "sonstige";
+function filterReason(p, j) {
   const ageMin = (Date.now() - (p.pairCreatedAt || 0)) / 60000;
-  if (!p.pairCreatedAt || ageMin > C.maxAgeH * 60) return `zu alt: über ${C.maxAgeH} Std.`;
+  const est = ageMin > C.maxAgeH * 60 && (p.liquidity?.usd || 0) >= C.estLiq && (j?.organicScore || 0) >= C.estOrganic;   // etablierter, echter Coin
+  if (!p.pairCreatedAt || (ageMin > C.maxAgeH * 60 && !est)) return `zu alt: über ${C.maxAgeH} Std. (und nicht etabliert)`;
   if (ageMin < C.minAgeMin) return `zu jung: unter ${C.minAgeMin} Min.`;
   if (p.dexId === "pumpfun" && !(p.liquidity?.usd)) return "Pump.fun-Startphase: zu früh, höchstes Risiko";
   const liq = p.liquidity?.usd || 0;
@@ -264,6 +286,15 @@ function filterReason(p) {
   if ((p.volume?.h1 || 0) < C.minVolH1) return `zu wenig Volumen: ${usd(p.volume?.h1 || 0, 0)} in 1 Std.`;
   if ((p.priceChange?.h1 || 0) > C.maxH1 && (p.priceChange?.m5 || 0) > 0) return `nicht jagen: ${pct(p.priceChange.h1)} in 1 Std.`;
   if ((p.priceChange?.m5 || 0) > C.noChase5m) return `nicht jagen: ${pct(p.priceChange.m5)} in 5 Min. – warte auf Rücksetzer`;
+  if (C.needSocials && !(p.info?.socials?.length || p.info?.websites?.length)) return "keine Website/Socials: anonymes Projekt";
+  if (j) {
+    if ((j.organicScore || 0) < C.minOrganic) return `Fake-Handel: Echtheits-Score ${Math.round(j.organicScore || 0)}`;
+    const s5 = j.stats5m || {};
+    if ((s5.numNetBuyers ?? 0) < C.minNetBuyers) return `zu wenig Netto-Käufer: ${s5.numNetBuyers ?? 0} in 5 Min.`;
+    if ((s5.sellVolume || 0) > 1.5 * (s5.buyVolume || 0) && (s5.sellVolume || 0) > 2000) return `Verkaufsdruck: ${usd(s5.sellVolume, 0)} Verkauf vs. ${usd(s5.buyVolume || 0, 0)} Kauf`;
+    if ((j.stats1h?.liquidityChange || 0) < -15) return `Liquidität fällt: ${pct(j.stats1h.liquidityChange)} in 1 Std.`;
+    if (j.audit?.devMints > 30) return `Entwickler hat ${j.audit.devMints} Coins erstellt (Serien-Launcher)`;
+  }
   return null;
 }
 
@@ -323,7 +354,7 @@ function buy(p, sz, rc, sig) {
   S.pos.push({mint: p.baseToken.address, pair: p.pairAddress, sym: p.baseToken.symbol, name: p.baseToken.name, url: p.url, entry: fill, qty, qty0: qty,
     cost: sz.size, t0: Date.now(), peak: price, last: price, liq0: p.liquidity?.usd || 0, tp1: false, tp2: false, got: 0, stopAt: fill * (1 - C.stop / 100),
     below: 0, key, sig: sig.map(s => s.t)});
-  log("ENTER", p.baseToken.symbol, `Kauf ${usd(sz.size)} zu $${px(fill)} · Setup „${key}“ · ${sig.map(s => s.t).join(", ")} · Rug-Check ok (größter Halter ${rc.top1.toFixed(0)}%, Top10 ${rc.top10.toFixed(0)}%, ${rc.holders} Halter)`, "Größe " + sz.note);
+  log("ENTER", p.baseToken.symbol, `Kauf ${usd(sz.size)} zu $${px(fill)} · Setup „${key}“ · ${sig.map(s => s.t).join(", ")} · Rug-Check ok (größter Halter ${rc.top1.toFixed(0)}%, Top10 ${rc.top10.toFixed(0)}%, ${rc.holders} Halter, Echtheit ${Math.round(rc.org || 0)})`, "Größe " + sz.note);
   push(`KAUF ${p.baseToken.symbol}`, `${usd(sz.size)} zu $${px(fill)} | ${sig.map(s => s.t).join(", ")}`);
 }
 function sell(pos, share, price, why, type) {
@@ -390,7 +421,9 @@ async function cycle() {
     const today = new Date().toDateString();
     if (S.day !== today) { vaultDaily(); S.day = today; S.dayPeak = equity(); if (S.paused) { S.paused = false; log("INFO", "–", "Neuer Tag – Tageslimit zurückgesetzt"); } }
     setPhase("Scanner sucht frische Coins …");
-    const {pairs, boosted} = await universe();
+    const [{pairs, boosted, jup, jupTrend}, mk] = await Promise.all([universe(), market()]);
+    const weak = mk.h1 <= -C.solDrop || mk.m5 <= -0.8;
+    agentNote.market = `SOL ${pct(mk.h1)} 1h${weak ? " – schwach" : ""}`;
     const eq = equity(); S.peak = Math.max(S.peak, eq); S.dayPeak = Math.max(S.dayPeak, eq);
     if (!S.paused && eq < S.dayPeak * (1 - C.ddLimit / 100)) { S.paused = true; log("RISK", "–", `Tageslimit −${C.ddLimit}% vom Tageshoch – keine neuen Käufe bis morgen`); push("Bot pausiert", `Tageslimit -${C.ddLimit}% erreicht`); }
     flow = [];
@@ -400,22 +433,25 @@ async function cycle() {
     for (const p of list) {
       const m = p.baseToken.address;
       if (blocked(m)) { tally["gesperrt (früher Verlust)"] = (tally["gesperrt (früher Verlust)"] || 0) + 1; continue; }
-      const why = filterReason(p);
+      const why = filterReason(p, jup[m]);
       if (why) { S.stats.fil++; const k = why.split(":")[0]; tally[k] = (tally[k] || 0) + 1; if (/nicht jagen/.test(why)) flow.push({p, st: "⏸ " + why.split(":")[1], c: "var(--a)"}); continue; }
-      const sig = signals(p, boosted);
+      const sig = signals(p, boosted, jup[m], jupTrend);
       const core = sig.some(s => s.k === "buyers" || s.k === "pullback");
-      if (sig.length < 2 || !core) { flow.push({p, st: sig.length < 2 ? `${sig.length} Signal – zu wenig` : "kein Kaufdruck/Rücksetzer", c: "var(--mut)"}); continue; }
-      S.stats.sig++; cands.push({p, sig});
+      if (sig.length < 3 || !core) { flow.push({p, st: sig.length < 3 ? `${sig.length} Signale – zu wenig (min. 3)` : "kein Kaufdruck/Rücksetzer", c: "var(--mut)"}); continue; }
+      S.stats.sig++; cands.push({p, sig, j: jup[m]});
     }
     if (!S.lastTally || Date.now() - S.lastTally > 300000) {
       S.lastTally = Date.now();
       log("INFO", "–", `Scan: ${list.length} frische Coins · ${cands.length} mit Kaufsignal · aussortiert: ` + Object.entries(tally).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${n}× ${k}`).join(" · "));
     }
-    cands.sort((a, b) => b.sig.length - a.sig.length || (b.p.volume?.m5 || 0) - (a.p.volume?.m5 || 0));
+    const score = c => c.sig.length * 10 + (c.j?.organicScore || 0) / 5 + Math.min(c.j?.stats5m?.numNetBuyers || 0, 50) / 5;
+    cands.forEach(c => c.score = score(c));
+    cands.sort((a, b) => b.score - a.score);
     S.buys = S.buys.filter(t => Date.now() - t < 3600000);
-    for (const {p, sig} of cands.slice(0, 6)) {
+    for (const {p, sig, j} of cands.slice(0, 6)) {
       const m = p.baseToken.address, key = setupKey(sig);
       if (S.paused) { flow.push({p, st: "Pause (Tageslimit)", c: "var(--a)"}); continue; }
+      if (weak) { flow.push({p, st: `Markt schwach (SOL ${pct(mk.h1)} 1h) – kein Kauf`, c: "var(--a)"}); continue; }
       if (S.pos.length >= C.maxOpen) { flow.push({p, st: "max. Positionen offen", c: "var(--a)"}); continue; }
       if (S.buys.length >= C.maxBuysH) { flow.push({p, st: `max. ${C.maxBuysH} Käufe/Std.`, c: "var(--a)"}); continue; }
       const bl = setupBlocked(key);
@@ -431,7 +467,7 @@ async function cycle() {
         continue;
       }
       S.stats.rug++; flow.push({p, st: "✓ gekauft", c: "var(--g)"}); agentNote.size = `${usd(sz.size)} (${sz.note})`;
-      buy(p, sz, rc, sig);
+      rc.org = j?.organicScore || 0; buy(p, sz, rc, sig);
     }
     S.eq.push([Date.now(), Math.round(equity() * 100) / 100]);
     setPhase(S.paused ? "Pause – Tageslimit erreicht" : S.pos.length ? `überwacht ${S.pos.length} Position${S.pos.length > 1 ? "en" : ""} alle 5 Sek.` : "wartet auf ein sauberes Setup");
@@ -533,6 +569,7 @@ function render(light) {
     ["E", "EXECUTOR", `ruhig: sichert +${C.tp1}%, Stop bestätigt, prüft alle 5 Sek.`, S.pos.length ? `${S.pos.length} offen` : "flat · wartet", "#2ee59d"],
     ["L", "LOGGER", "jede Entscheidung mit Grund", `${S.log.length} Zeilen`, "#ffb547"],
     ["$", "EQUITY", "Kontostand + Tageslimit", usd(eq), "#38d6e0"],
+    ["◎", "MARKT", "SOL-Trend + Jupiter-Echtheit", agentNote.market || "–", "#facc15"],
     ["🧠", "LERNEN", "Setup-Statistik, Sperrliste", `${Object.keys(S.learn).length} Setups · ${Object.keys(S.block).length} gesperrt`, "#f472b6"],
   ];
   $("#agOnline").textContent = A.length + " online";
