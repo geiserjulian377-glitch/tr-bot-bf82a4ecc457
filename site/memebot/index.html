@@ -248,7 +248,7 @@ function filterReason(p) {
 }
 
 // ---------------- 2 RUG-CHECK
-async function rugCheck(mint, sizeUsd, price) {
+async function rugCheck(mint, sizeUsd, price, dexId) {
   const c = rugCache[mint];
   let rep = c && Date.now() - c.t < 180000 ? c.r : null;
   if (!rep) { rep = await getJSON(`https://api.rugcheck.xyz/v1/tokens/${mint}/report`); rugCache[mint] = {t: Date.now(), r: rep}; }
@@ -267,7 +267,10 @@ async function rugCheck(mint, sizeUsd, price) {
   const supply = rep.token?.supply || 0;
   const dev = supply ? (rep.creatorBalance || 0) / supply * 100 : 0;
   if (dev > C.devMax) fails.push(`Entwickler hält ${dev.toFixed(1)}%`);
-  const lp = Math.max(0, ...(rep.markets || []).map(m => m.lp?.lpLockedPct || 0));
+  let lp = Math.max(0, ...(rep.markets || []).map(m => m.lp?.lpLockedPct || 0));
+  // Pump.fun-Coins, die auf PumpSwap migriert sind: Liquidität wird vom Protokoll verwaltet (RugCheck zeigt dafür keine Marktdaten)
+  const pumpMigrated = rep.launchpad?.platform === "pump_fun" && dexId === "pumpswap" && !(rep.markets || []).length;
+  if (pumpMigrated) lp = 100;
   if (lp < C.lpMin) fails.push(`Liquidität nur ${lp.toFixed(0)}% gesperrt`);
   if ((rep.totalHolders || 0) < C.minHolders) fails.push(`nur ${rep.totalHolders || 0} Halter`);
   if ((rep.insiderNetworks || []).length && rep.graphInsidersDetected > 20) fails.push("Insider-Netzwerk erkannt");
@@ -368,7 +371,7 @@ async function cycle() {
       if (size < 1) { flow.push({p, st: "zu wenig Guthaben", c: "var(--a)"}); continue; }
       setPhase(`Rug-Check ${p.baseToken.symbol} …`); agentNote.rug = `prüft ${p.baseToken.symbol}`;
       let rc;
-      try { rc = await rugCheck(m, size, parseFloat(p.priceUsd)); } catch (e) { flow.push({p, st: "Rug-Check nicht erreichbar", c: "var(--a)"}); continue; }
+      try { rc = await rugCheck(m, size, parseFloat(p.priceUsd), p.dexId); } catch (e) { flow.push({p, st: "Rug-Check nicht erreichbar", c: "var(--a)"}); continue; }
       if (!rc.ok) {
         flow.push({p, st: "✗ " + rc.fails[0], c: "var(--r)"});
         if (!filteredAt[m] || Date.now() - filteredAt[m] > 600000) { filteredAt[m] = Date.now(); S.stats.fil++; log("FILTER", p.baseToken.symbol, `${sig.join(", ")} – aber: ${rc.fails.join("; ")}`); }
