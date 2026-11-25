@@ -339,6 +339,10 @@ body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
   <section class="view" id="v-chancen">
     <div class="vt">Chancen heute</div><p class="vs2" id="chSub"></p>
     <div id="chList"></div>
+    <h2>Was der Bot gelernt hat</h2>
+    <div class="panel" style="margin-top:0" id="learnP"></div>
+    <h2>Protokoll seiner Empfehlungen <small>live überprüft</small></h2>
+    <div class="panel" style="margin-top:0" id="journalP"></div>
     <h2>Was in der Welt passiert <small>Markt-Schlagzeilen</small></h2>
     <div class="panel" style="margin-top:0"><ul class="news" id="world" style="margin:0"></ul></div>
     <p class="note">Dip-Käufe sind riskant: Was stark gefallen ist, kann weiter fallen („fallendes Messer“). Deshalb immer mit Limit-Order kaufen und sofort den Stop-Loss setzen. Nachrichten und Kursziele erklären Bewegungen, garantieren aber nichts.</p>
@@ -475,6 +479,7 @@ function advice(r) {
 // Persönliche Sicht: was bedeutet das Signal für DICH (hast du die Aktie oder nicht?)
 function view(r) {
   const h = held(r.id), rec = r.rec, sp = DATA.params.stop_loss_pct;
+  if (r.flags && r.flags.length) return {k:"DATA", label:"DATEN PRÜFEN", color:"var(--dim)", text: rec.text};
   if (h) {
     if (r.status === "SELL") return {k:"SELL", label:"VERKAUFEN", color:"var(--sell)", text:`Du hast diese Aktie: verkaufen – ${rec.reason}.`};
     if (r.status === "BUY" || r.status === "HOLD") return {k:"HOLD", label:"HALTEN", color:"var(--hold)", text:`Du hast diese Aktie: halten und Stop-Loss bei ${money(rec.stop, r.cur)} setzen.`};
@@ -685,26 +690,47 @@ function renderMix() {
     <div class="dl">${ent.map(([k, v], i) => `<div><i style="background:${PAL[i % PAL.length]}"></i><span>${esc(k)}</span><b class="num">${nf(v / tot * 100, 0)}\u202f%</b></div>`).join("")}</div></div>`;
 }
 
+// ---------- Lernen + Protokoll
+let JOURNAL = null;
+function renderLearn() {
+  const m = DATA.model; if (!m || !m.all) { $("#learnP").innerHTML = `<p class="wait">Noch keine Lerndaten.</p>`; return; }
+  const row = (k, s) => `<div class="bar"><span>${esc(k)}</span><div class="tr"><i style="width:${s.win_rate || 0}%;background:${scoreColor(s.win_rate || 0)}"></i></div><span class="num">${nf(s.win_rate, 0)}\u202f%</span></div>`;
+  const grp = (label) => { const g = m.by[label] || {}; return `<div class="nlbl" style="margin-top:14px">nach ${label}</div>` + Object.entries(g).filter(([, s]) => s.n >= 20).map(([k, s]) => row(`${k} (${s.n})`, s)).join(""); };
+  $("#learnP").innerHTML = `<div class="bigscore" style="margin-bottom:6px">${ring(Math.round(m.all.win_rate || 0), 64, 6)}<p>Aus <b style="color:var(--ink)">${m.all.n.toLocaleString("de-DE")}</b> historischen Dip-Fällen in ${DATA.items.length} Werten: ${nf(m.all.win_rate, 0)}\u202f% gingen auf, Ø ${pct(m.all.avg_ret, 2)} je Fall nach ${nf(m.all.avg_days, 0)} Tagen.</p></div>
+    <p class="note" style="margin-top:0">Der Bot zeigt nur Chancen, deren Setup bei genau dieser Aktie (geglättet mit ähnlichen Fällen) mindestens 52\u202f% Trefferquote und ein positives Durchschnittsergebnis hat. Jeder neue Handelstag fließt automatisch ein.</p>
+    ${grp("RSI")}${grp("Rückgang")}${grp("Region")}`;
+}
+function renderJournal() {
+  const js = DATA.journal || {}, el = $("#journalP");
+  const head = `<div class="dstats" style="margin-top:0"><div><span>Empfehlungen</span><b class="num">${js.total || 0}</b></div><div><span>Trefferquote live</span><b class="num">${js.win_rate == null ? "–" : nf(js.win_rate, 0) + "\u202f%"}</b></div><div><span>Ø Ergebnis</span><b class="num ${cls(js.avg_ret)}">${js.avg_ret == null ? "–" : pct(js.avg_ret)}</b></div></div>
+    <p class="note">Seit ${js.since ? fmtDate(js.since) : "heute"} · ${js.closed || 0} abgeschlossen · ${js.open || 0} laufen noch · ${js.not_filled || 0} Limit nicht erreicht. Abgerechnet wird bei Ziel, Stop-Loss oder nach 20 Handelstagen.</p>`;
+  const list = (JOURNAL && JOURNAL.entries || []).slice(0, 12);
+  const col = {gewonnen: "var(--buy)", verloren: "var(--sell)", offen: "var(--mut)", "ausgeführt": "var(--blue)", "nicht ausgeführt": "var(--dim)"};
+  el.innerHTML = head + (list.length ? `<table class="trades">${list.map(e => `<tr><td><b>${esc(e.name)}</b><br><span class="wait" style="font-size:12px">${fmtDate(e.date)} · Limit ${esc(money(e.limit, e.cur))}</span></td><td><b style="color:${col[e.status] || "var(--mut)"}">${esc(e.status)}</b>${e.ret != null ? `<br><span class="num ${cls(e.ret)}" style="font-size:12px">${pct(e.ret)}</span>` : ""}</td></tr>`).join("")}</table>` : "");
+  if (!JOURNAL) fetch("journal.json?v=" + encodeURIComponent(DATA.generated)).then(x => x.json()).then(j => { JOURNAL = j; renderJournal(); }).catch(() => {});
+}
+
 // ---------- Chancen (Dip-Käufe + Nachrichten)
 const ago = ts => { if (!ts) return ""; const m = Math.round((Date.now() / 1000 - ts) / 60); return m < 60 ? `vor ${m} Min.` : m < 1440 ? `vor ${Math.round(m / 60)} Std.` : `vor ${Math.round(m / 1440)} Tg.`; };
 const newsList = (arr, n) => (arr || []).slice(0, n).map(x => `<li><a href="${esc(x.u)}" rel="noopener" target="_blank">${esc(x.t)}<span>${esc(x.p)} · ${esc(ago(x.ts))}</span></a></li>`).join("");
 function renderChances() {
   const ch = (DATA.chances || []).filter(c => byId[c.id]);
-  const runTxt = {morgen: "Morgen-Update (vor Börsenstart)", us: "Update zur US-Eröffnung", abend: "Abend-Update (nach Börsenschluss)"}[DATA.run] || "Update";
-  $("#chSub").textContent = `${runTxt} · ${new Date(DATA.generated).toLocaleString("de-DE", {weekday: "short", hour: "2-digit", minute: "2-digit"})} Uhr · nächste Updates ca. 8:30, 16:00 und 19:30 Uhr`;
+  const runTxt = {live: "Live-Update", morgen: "Morgen-Update", us: "Update zur US-Eröffnung", abend: "Abend-Update"}[DATA.run] || "Update";
+  $("#chSub").textContent = `${runTxt} · ${new Date(DATA.generated).toLocaleString("de-DE", {weekday: "short", hour: "2-digit", minute: "2-digit"})} Uhr · Mo–Fr ca. alle 10 Min. von 7 bis 22 Uhr`;
+  renderLearn(); renderJournal();
   $("#teaser").innerHTML = ch.length ? `<div class="teaser" data-view="chancen"><div class="ic">💡</div><div><b>${ch.length} Dip-Chance${ch.length > 1 ? "n" : ""} heute</b><span>${ch.slice(0, 3).map(c => esc(byId[c.id].name)).join(", ")}</span></div><span style="font-size:20px">›</span></div>` : "";
   $("#chList").innerHTML = ch.length ? ch.map(c => { const r = byId[c.id], h = held(r.id);
     return `<article class="chance">
-      <div class="hd" data-id="${esc(r.id)}">${avatar(r, 44)}<div><b>${esc(r.name)}</b><span>${esc(r.ticker)} · ${esc(r.region)} · Chance-Score ${c.score}${h ? " · im Depot (Nachkauf)" : ""}</span></div>
-        <div class="drop num">${pct(c.drop)}<small>${(r.ind.r1d ?? 0) <= -2 ? "heute" : "5 Tage"}</small></div></div>
+      <div class="hd" data-id="${esc(r.id)}">${avatar(r, 44)}<div><b>${esc(r.name)}</b><span>${esc(r.ticker)} · ${esc(r.region)} · ${c.n} historische Fälle${h ? " · im Depot (Nachkauf)" : ""}</span></div>
+        <div class="drop num">${pct(c.drop)}<small>${(r.ind.r1d ?? 0) <= -2.5 ? "heute" : "5 Tage"}</small></div></div>
       <ul class="rs">${c.reasons.map(x => `<li><span>${esc(x)}</span></li>`).join("")}</ul>
       <div class="plan"><div><span>Limit-Kauf bei</span><b class="num">${money(c.limit, r.cur)}</b></div><div><span>Stop-Loss</span><b class="num sell">${money(c.stop, r.cur)}</b></div>
         <div><span>Erholungsziel</span><b class="num buy">${money(c.rebound, r.cur)}</b></div></div>
-      <div class="plan" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div><span>Chance : Risiko</span><b class="num">${c.rr ? nf(c.rr, 1) + " : 1" : "–"}</b></div><div><span>Analysten-Ziel</span><b class="num ${c.target ? cls(c.target - r.price) : ""}">${c.target ? money(c.target, r.cur) : "–"}</b></div></div>
+      <div class="plan"><div><span>Trefferquote (gelernt)</span><b class="num" style="color:${scoreColor(c.p)}">${nf(c.p, 0)}\u202f%</b></div><div><span>Ø Ergebnis je Fall</span><b class="num ${cls(c.exp)}">${pct(c.exp)}</b></div><div><span>Analysten-Ziel</span><b class="num ${c.target ? cls(c.target - r.price) : ""}">${c.target ? money(c.target, r.cur) : "–"}</b></div></div>
       <div class="when"><span>🕒</span><span><b>Wann kaufen:</b> ${esc(c.when)}</span></div>
       ${r.news && r.news.length ? `<div class="nlbl">Warum ist sie gefallen? Aktuelle Nachrichten</div><ul class="news">${newsList(r.news, 3)}</ul>` : ""}
     </article>`; }).join("")
-    : `<div class="empty"><b>Gerade keine Dip-Chance.</b> Keine Qualitäts-Aktie ist in den letzten Tagen stark gefallen. Schau später wieder rein – die App prüft das 3× am Tag.</div>`;
+    : `<div class="empty"><b>Gerade keine Dip-Chance.</b> Keine Aktie erfüllt gerade alle Bedingungen (Rücksetzer im Aufwärtstrend und historisch bewährt). Lieber keine Empfehlung als eine schlechte – die App prüft alle 10 Minuten neu.</div>`;
   $("#world").innerHTML = newsList(DATA.world, 10) || `<li class="wait" style="padding:8px 0">Gerade keine Schlagzeilen geladen.</li>`;
 }
 
@@ -1051,6 +1077,15 @@ document.addEventListener("input", e => {
 $("#sort").addEventListener("change", e => { state.sort = e.target.value; store.set("sort", state.sort); renderList(); });
 window.addEventListener("popstate", () => { const id = location.hash.slice(1); id && byId[id] ? openDetail(id, false) : closeDetail(false); });
 const ro = new ResizeObserver(() => { drawChart(); drawDepotHistory(); }); ro.observe(document.body);
+
+// Offene App lädt alle 5 Minuten neue Daten nach (ohne die Seite neu zu laden)
+setInterval(() => { if (document.hidden || cur) return; fetch("data.json?v=" + Date.now()).then(r => r.json()).then(d => {
+  if (!DATA || d.generated === DATA.generated) return;
+  const keepDetail = {}; Object.values(byId).forEach(r => { if (r.detail) keepDetail[r.id] = null; });
+  DATA = d; byId = {}; d.items.forEach(r => byId[r.id] = r); JOURNAL = null;
+  $("#stamp").innerHTML = `Stand ${esc(fmtDate(d.date))}<br>aktualisiert ${esc(new Date(d.generated).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"}))} Uhr`;
+  renderAll();
+}).catch(() => {}); }, 300000);
 
 fetch("data.json?v=" + Date.now()).then(r => r.json()).then(d => {
   DATA = d; d.items.forEach(r => byId[r.id] = r);

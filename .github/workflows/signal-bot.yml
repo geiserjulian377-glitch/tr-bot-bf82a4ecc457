@@ -3,13 +3,13 @@ name: Signal-Radar
 on:
   schedule:
     # Zeiten in UTC (Winterzeit +1 Std., Sommerzeit +2 Std.)
-    - cron: "20 7 * * 1-5"    # ca. 8:20 Uhr: Morgen-Check vor Börsenstart
-    - cron: "50 14 * * 1-5"   # ca. 15:50 Uhr: kurz nach US-Börsenstart
-    - cron: "7 18 * * 1-5"    # ca. 19:07 Uhr: Abend-Update nach Börsenschluss
+    - cron: "*/10 6-20 * * 1-5"  # Live: ca. alle 10 Min. von 7 bis 22 Uhr (schnell, Analysten aus Cache)
+    - cron: "20 7 * * 1-5"       # Voll-Lauf am Morgen (Analysten neu)
+    - cron: "7 18 * * 1-5"       # Voll-Lauf am Abend mit Tagesbericht
   workflow_dispatch: {}
   push:
     branches: [main]
-    paths: ["config.json", "presets.json", "bot.py", "site/**", ".github/workflows/**"]
+    paths: ["config.json", "presets.json", "bot.py", "learn.py", "site/**", ".github/workflows/**"]
 
 permissions:
   contents: read
@@ -20,15 +20,21 @@ concurrency:
   group: signal-radar
   cancel-in-progress: false
 
+# Ein Lauf darf nie länger als 9 Minuten dauern, sonst stauen sich die 10-Minuten-Läufe
+
+
 jobs:
   analyse:
     runs-on: ubuntu-latest
+    timeout-minutes: 9
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Kurse laden und analysieren
+        env:
+          RUN_MODE: ${{ github.event.schedule == '*/10 6-20 * * 1-5' && 'quick' || 'full' }}
         run: python bot.py --no-push
       - uses: actions/upload-pages-artifact@v3
         with:

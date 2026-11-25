@@ -184,6 +184,291 @@
    "Spotify",
    "SPOT",
    "Medien"
+  ],
+  [
+   "Intel",
+   "INTC",
+   "Halbleiter"
+  ],
+  [
+   "Qualcomm",
+   "QCOM",
+   "Halbleiter"
+  ],
+  [
+   "Texas Instruments",
+   "TXN",
+   "Halbleiter"
+  ],
+  [
+   "Micron",
+   "MU",
+   "Halbleiter"
+  ],
+  [
+   "Applied Materials",
+   "AMAT",
+   "Halbleiter"
+  ],
+  [
+   "Lam Research",
+   "LRCX",
+   "Halbleiter"
+  ],
+  [
+   "KLA",
+   "KLAC",
+   "Halbleiter"
+  ],
+  [
+   "Arm Holdings",
+   "ARM",
+   "Halbleiter"
+  ],
+  [
+   "Marvell",
+   "MRVL",
+   "Halbleiter"
+  ],
+  [
+   "Super Micro",
+   "SMCI",
+   "Technologie"
+  ],
+  [
+   "Dell",
+   "DELL",
+   "Technologie"
+  ],
+  [
+   "IBM",
+   "IBM",
+   "Software"
+  ],
+  [
+   "Cisco",
+   "CSCO",
+   "Technologie"
+  ],
+  [
+   "Intuit",
+   "INTU",
+   "Software"
+  ],
+  [
+   "ServiceNow",
+   "NOW",
+   "Software"
+  ],
+  [
+   "Shopify",
+   "SHOP",
+   "Software"
+  ],
+  [
+   "Snowflake",
+   "SNOW",
+   "Software"
+  ],
+  [
+   "CrowdStrike",
+   "CRWD",
+   "Software"
+  ],
+  [
+   "Palo Alto Networks",
+   "PANW",
+   "Software"
+  ],
+  [
+   "Airbnb",
+   "ABNB",
+   "Reisen"
+  ],
+  [
+   "Booking",
+   "BKNG",
+   "Reisen"
+  ],
+  [
+   "PayPal",
+   "PYPL",
+   "Finanzen"
+  ],
+  [
+   "Coinbase",
+   "COIN",
+   "Finanzen"
+  ],
+  [
+   "Strategy (MicroStrategy)",
+   "MSTR",
+   "Software"
+  ],
+  [
+   "Robinhood",
+   "HOOD",
+   "Finanzen"
+  ],
+  [
+   "Roblox",
+   "RBLX",
+   "Medien"
+  ],
+  [
+   "Wells Fargo",
+   "WFC",
+   "Finanzen"
+  ],
+  [
+   "Bank of America",
+   "BAC",
+   "Finanzen"
+  ],
+  [
+   "Morgan Stanley",
+   "MS",
+   "Finanzen"
+  ],
+  [
+   "American Express",
+   "AXP",
+   "Finanzen"
+  ],
+  [
+   "BlackRock",
+   "BLK",
+   "Finanzen"
+  ],
+  [
+   "Pfizer",
+   "PFE",
+   "Gesundheit"
+  ],
+  [
+   "Merck & Co",
+   "MRK",
+   "Gesundheit"
+  ],
+  [
+   "AbbVie",
+   "ABBV",
+   "Gesundheit"
+  ],
+  [
+   "Abbott",
+   "ABT",
+   "Gesundheit"
+  ],
+  [
+   "Thermo Fisher",
+   "TMO",
+   "Gesundheit"
+  ],
+  [
+   "Amgen",
+   "AMGN",
+   "Gesundheit"
+  ],
+  [
+   "Intuitive Surgical",
+   "ISRG",
+   "Gesundheit"
+  ],
+  [
+   "Chevron",
+   "CVX",
+   "Energie"
+  ],
+  [
+   "NextEra Energy",
+   "NEE",
+   "Energie"
+  ],
+  [
+   "AT&T",
+   "T",
+   "Telekom"
+  ],
+  [
+   "Verizon",
+   "VZ",
+   "Telekom"
+  ],
+  [
+   "Starbucks",
+   "SBUX",
+   "Konsum"
+  ],
+  [
+   "Target",
+   "TGT",
+   "Handel"
+  ],
+  [
+   "Philip Morris",
+   "PM",
+   "Konsum"
+  ],
+  [
+   "GE Aerospace",
+   "GE",
+   "Luftfahrt"
+  ],
+  [
+   "Honeywell",
+   "HON",
+   "Industrie"
+  ],
+  [
+   "RTX",
+   "RTX",
+   "Rüstung"
+  ],
+  [
+   "Lockheed Martin",
+   "LMT",
+   "Rüstung"
+  ],
+  [
+   "UPS",
+   "UPS",
+   "Logistik"
+  ],
+  [
+   "Deere",
+   "DE",
+   "Industrie"
+  ],
+  [
+   "Ford",
+   "F",
+   "Auto"
+  ],
+  [
+   "General Motors",
+   "GM",
+   "Auto"
+  ],
+  [
+   "Rivian",
+   "RIVN",
+   "Auto"
+  ],
+  [
+   "MercadoLibre",
+   "MELI",
+   "Handel"
+  ],
+  [
+   "PDD Holdings",
+   "PDD",
+   "Handel"
+  ],
+  [
+   "Sea Ltd",
+   "SE",
+   "Technologie"
   ]
  ],
  "europa": [
@@ -296,6 +581,191 @@
    "Adyen",
    "ADYEN.AS",
    "Finanzen"
+  ],
+  [
+   "Sanofi",
+   "SAN.PA",
+   "Gesundheit"
+  ],
+  [
+   "BNP Paribas",
+   "BNP.PA",
+   "Finanzen"
+  ],
+  [
+   "Air Liquide",
+   "AI.PA",
+   "Chemie"
+  ],
+  [
+   "EssilorLuxottica",
+   "EL.PA",
+   "Gesundheit"
+  ],
+  [
+   "Safran",
+   "SAF.PA",
+   "Luftfahrt"
+  ],
+  [
+   "Vinci",
+   "DG.PA",
+   "Industrie"
+  ],
+  [
+   "AXA",
+   "CS.PA",
+   "Finanzen"
+  ],
+  [
+   "Danone",
+   "BN.PA",
+   "Konsum"
+  ],
+  [
+   "Kering",
+   "KER.PA",
+   "Luxus"
+  ],
+  [
+   "Stellantis",
+   "STLAM.MI",
+   "Auto"
+  ],
+  [
+   "Eni",
+   "ENI.MI",
+   "Energie"
+  ],
+  [
+   "Intesa Sanpaolo",
+   "ISP.MI",
+   "Finanzen"
+  ],
+  [
+   "Enel",
+   "ENEL.MI",
+   "Energie"
+  ],
+  [
+   "Iberdrola",
+   "IBE.MC",
+   "Energie"
+  ],
+  [
+   "BBVA",
+   "BBVA.MC",
+   "Finanzen"
+  ],
+  [
+   "GSK",
+   "GSK.L",
+   "Gesundheit"
+  ],
+  [
+   "Rio Tinto",
+   "RIO.L",
+   "Rohstoffe"
+  ],
+  [
+   "BAE Systems",
+   "BA.L",
+   "Rüstung"
+  ],
+  [
+   "Diageo",
+   "DGE.L",
+   "Konsum"
+  ],
+  [
+   "Barclays",
+   "BARC.L",
+   "Finanzen"
+  ],
+  [
+   "Lloyds",
+   "LLOY.L",
+   "Finanzen"
+  ],
+  [
+   "Zurich Insurance",
+   "ZURN.SW",
+   "Finanzen"
+  ],
+  [
+   "ABB",
+   "ABBN.SW",
+   "Industrie"
+  ],
+  [
+   "Richemont",
+   "CFR.SW",
+   "Luxus"
+  ],
+  [
+   "ING",
+   "INGA.AS",
+   "Finanzen"
+  ],
+  [
+   "Prosus",
+   "PRX.AS",
+   "Technologie"
+  ],
+  [
+   "Heineken",
+   "HEIA.AS",
+   "Konsum"
+  ],
+  [
+   "Philips",
+   "PHIA.AS",
+   "Gesundheit"
+  ],
+  [
+   "Nokia",
+   "NOKIA.HE",
+   "Technologie"
+  ],
+  [
+   "Ericsson",
+   "ERIC-B.ST",
+   "Technologie"
+  ],
+  [
+   "Volvo",
+   "VOLV-B.ST",
+   "Auto"
+  ],
+  [
+   "Atlas Copco",
+   "ATCO-A.ST",
+   "Industrie"
+  ],
+  [
+   "Equinor",
+   "EQNR.OL",
+   "Energie"
+  ],
+  [
+   "DSV",
+   "DSV.CO",
+   "Logistik"
+  ],
+  [
+   "Ørsted",
+   "ORSTED.CO",
+   "Energie"
+  ],
+  [
+   "Saab",
+   "SAAB-B.ST",
+   "Rüstung"
+  ],
+  [
+   "Leonardo",
+   "LDO.MI",
+   "Rüstung"
   ]
  ],
  "deutschland": [
@@ -388,6 +858,206 @@
    "Bayer",
    "BAYN.DE",
    "Gesundheit"
+  ],
+  [
+   "Deutsche Börse",
+   "DB1.DE",
+   "Finanzen"
+  ],
+  [
+   "DHL Group",
+   "DHL.DE",
+   "Logistik"
+  ],
+  [
+   "Beiersdorf",
+   "BEI.DE",
+   "Konsum"
+  ],
+  [
+   "Brenntag",
+   "BNR.DE",
+   "Chemie"
+  ],
+  [
+   "Continental",
+   "CON.DE",
+   "Auto"
+  ],
+  [
+   "Daimler Truck",
+   "DTG.DE",
+   "Auto"
+  ],
+  [
+   "Fresenius",
+   "FRE.DE",
+   "Gesundheit"
+  ],
+  [
+   "Hannover Rück",
+   "HNR1.DE",
+   "Finanzen"
+  ],
+  [
+   "Heidelberg Materials",
+   "HEI.DE",
+   "Industrie"
+  ],
+  [
+   "Henkel",
+   "HEN3.DE",
+   "Konsum"
+  ],
+  [
+   "Merck KGaA",
+   "MRK.DE",
+   "Gesundheit"
+  ],
+  [
+   "MTU Aero Engines",
+   "MTX.DE",
+   "Luftfahrt"
+  ],
+  [
+   "Porsche AG",
+   "P911.DE",
+   "Auto"
+  ],
+  [
+   "Porsche SE",
+   "PAH3.DE",
+   "Auto"
+  ],
+  [
+   "Qiagen",
+   "QIA.DE",
+   "Gesundheit"
+  ],
+  [
+   "RWE",
+   "RWE.DE",
+   "Energie"
+  ],
+  [
+   "Siemens Healthineers",
+   "SHL.DE",
+   "Gesundheit"
+  ],
+  [
+   "Symrise",
+   "SY1.DE",
+   "Chemie"
+  ],
+  [
+   "Vonovia",
+   "VNA.DE",
+   "Immobilien"
+  ],
+  [
+   "Zalando",
+   "ZAL.DE",
+   "Handel"
+  ],
+  [
+   "Scout24",
+   "G24.DE",
+   "Technologie"
+  ],
+  [
+   "GEA Group",
+   "G1A.DE",
+   "Industrie"
+  ],
+  [
+   "Hensoldt",
+   "HAG.DE",
+   "Rüstung"
+  ],
+  [
+   "Renk",
+   "R3NK.DE",
+   "Rüstung"
+  ],
+  [
+   "thyssenkrupp",
+   "TKA.DE",
+   "Industrie"
+  ],
+  [
+   "Lufthansa",
+   "LHA.DE",
+   "Luftfahrt"
+  ],
+  [
+   "Puma",
+   "PUM.DE",
+   "Konsum"
+  ],
+  [
+   "Aixtron",
+   "AIXA.DE",
+   "Halbleiter"
+  ],
+  [
+   "Sartorius",
+   "SRT3.DE",
+   "Gesundheit"
+  ],
+  [
+   "Nemetschek",
+   "NEM.DE",
+   "Software"
+  ],
+  [
+   "Delivery Hero",
+   "DHER.DE",
+   "Technologie"
+  ],
+  [
+   "TeamViewer",
+   "TMV.DE",
+   "Software"
+  ],
+  [
+   "HelloFresh",
+   "HFG.DE",
+   "Konsum"
+  ],
+  [
+   "Evonik",
+   "EVK.DE",
+   "Chemie"
+  ],
+  [
+   "Fraport",
+   "FRA.DE",
+   "Logistik"
+  ],
+  [
+   "Talanx",
+   "TLX.DE",
+   "Finanzen"
+  ],
+  [
+   "Hochtief",
+   "HOT.DE",
+   "Industrie"
+  ],
+  [
+   "K+S",
+   "SDF.DE",
+   "Chemie"
+  ],
+  [
+   "Carl Zeiss Meditec",
+   "AFX.DE",
+   "Gesundheit"
+  ],
+  [
+   "Nordex",
+   "NDX1.DE",
+   "Energie"
   ]
  ],
  "asien": [
@@ -440,6 +1110,56 @@
    "Infosys",
    "INFY",
    "Software"
+  ],
+  [
+   "SoftBank Group",
+   "9984.T",
+   "Technologie"
+  ],
+  [
+   "Keyence",
+   "6861.T",
+   "Technologie"
+  ],
+  [
+   "Xiaomi",
+   "1810.HK",
+   "Technologie"
+  ],
+  [
+   "Meituan",
+   "3690.HK",
+   "Technologie"
+  ],
+  [
+   "SK Hynix",
+   "000660.KS",
+   "Halbleiter"
+  ],
+  [
+   "HDFC Bank",
+   "HDB",
+   "Finanzen"
+  ],
+  [
+   "JD.com",
+   "JD",
+   "Handel"
+  ],
+  [
+   "NIO",
+   "NIO",
+   "Auto"
+  ],
+  [
+   "Fast Retailing",
+   "9983.T",
+   "Handel"
+  ],
+  [
+   "Tokyo Electron",
+   "8035.T",
+   "Halbleiter"
   ]
  ],
  "etfs": [
@@ -477,6 +1197,31 @@
    "DAX",
    "EXS1.DE",
    "ETF"
+  ],
+  [
+   "MSCI World (Xtrackers)",
+   "XDWD.DE",
+   "ETF"
+  ],
+  [
+   "MSCI World Small Cap",
+   "IUSN.DE",
+   "ETF"
+  ],
+  [
+   "S&P 500 IT",
+   "QDVE.DE",
+   "ETF"
+  ],
+  [
+   "Xetra-Gold",
+   "4GLD.DE",
+   "ETF"
+  ],
+  [
+   "MSCI ACWI",
+   "IUSQ.DE",
+   "ETF"
   ]
  ],
  "krypto": [
@@ -513,6 +1258,31 @@
   [
    "Dogecoin",
    "DOGE-EUR",
+   "Krypto"
+  ],
+  [
+   "Litecoin",
+   "LTC-EUR",
+   "Krypto"
+  ],
+  [
+   "Polkadot",
+   "DOT-EUR",
+   "Krypto"
+  ],
+  [
+   "Chainlink",
+   "LINK-EUR",
+   "Krypto"
+  ],
+  [
+   "Avalanche",
+   "AVAX-EUR",
+   "Krypto"
+  ],
+  [
+   "Tron",
+   "TRX-EUR",
    "Krypto"
   ]
  ],

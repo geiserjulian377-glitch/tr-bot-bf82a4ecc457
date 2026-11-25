@@ -26,7 +26,10 @@ import sys
 import time
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
+
+import learn
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REGION = {"usa": "USA", "europa": "Europa", "deutschland": "Deutschland", "asien": "Asien",
@@ -187,41 +190,48 @@ def trading_time(r):
     return "USA: Am besten ab 16:00 Uhr – 30 Min. nach US-Börsenstart (15:30) ist der Kurs fairer. Limit-Order nutzen."
 
 
-def find_dips(results, cfg):
-    """Qualitäts-Aktien, die kurzfristig stark gefallen sind."""
+def find_dips(results, cfg, model):
+    """Dip-Chancen – nur Setups, die bei dieser Aktie historisch funktioniert haben."""
     out = []
     for r in results:
-        ind, an = r["ind"], r.get("analyst")
-        d1, d5 = ind.get("r1d") or 0, ind.get("r5d") or 0
-        drop = min(d1, d5)
-        if drop > -4 and not (d1 <= -2.5 and ind["rsi"] < 35):
+        if r.get("flags"):
             continue
-        long_up = ind["dist200"] is not None and ind["dist200"] > -6 and (ind.get("r1y") or 0) > 0
-        bull = bool(an and an.get("rec_mean") and an["rec_mean"] <= 2.3 and an["upside"] >= 15)
-        if not (long_up or bull) or r["region"] == "Rohstoffe":
+        s = r["_series"]
+        i = len(s["closes"]) - 1
+        f = learn.dip_setup(i, s["closes"], s["s200"], s["rsis"])
+        if not f:
             continue
-        score = 40 + min(25, -drop * 2.5) + (15 if long_up else 0) + (12 if bull else 0) \
-            + (8 if ind["rsi"] < 35 else 4 if ind["rsi"] < 45 else 0) - (10 if ind["vol"] > 60 else 0)
+        st = r["dip_stats"]
+        p = learn.smoothed(st, model, f)
+        g_avg = model["all"]["avg_ret"] or 0
+        exp = ((st["avg_ret"] or 0) * st["n"] + learn.PRIOR * g_avg) / (st["n"] + learn.PRIOR)
+        if p < 52 or exp <= 0:
+            continue
         price = r["price"]
-        sup = price * (1 + ind["sup_pct"] / 100) if ind.get("sup_pct") is not None else None
-        limit = sup * 1.005 if sup and sup > price * 0.95 and sup < price else price * 0.985
-        stop = max(limit * (1 - cfg["stop_loss_pct"] / 100), min(limit * 0.94, (sup or limit) * 0.97))
-        targets = [x for x in [r["fast_now"], r["slow_now"]] if x and x > limit * 1.02]
-        rebound = min(targets) if targets else limit * 1.08
-        reasons = [f"Minus {abs(d1):.1f} % heute".replace(".", ",") if d1 <= -2 else f"Minus {abs(d5):.1f} % in 5 Tagen".replace(".", ",")]
-        if long_up:
-            reasons.append("langfristig im Aufwärtstrend – Rücksetzer statt Absturz")
+        limit, stop, target = learn.dip_plan(price, s["sma20"][-1], cfg["stop_loss_pct"])
+        an = r.get("analyst")
+        bull = bool(an and an.get("rec_mean") and an["rec_mean"] <= 2.3 and an["upside"] >= 15)
+        d1, d5 = r["ind"].get("r1d") or 0, r["ind"].get("r5d") or 0
+        reasons = [(f"Minus {abs(d1):.1f} % heute" if d1 <= -2.5 else f"Minus {abs(d5):.1f} % in 5 Tagen").replace(".", ","),
+                   "langfristig im Aufwärtstrend (über der 200-Tage-Linie, Plus über 12 Monate)"]
+        if st["n"]:
+            reasons.append(f"Bei {r['name']} ging dieses Setup in {st['wins']} von {st['n']} Fällen auf "
+                           f"(Ø {st['avg_ret']:+.1f} % in {st['avg_days']:.0f} Tagen)".replace(".", ","))
+        if r["ind"]["rsi"] < 35:
+            reasons.append(f"RSI {r['ind']['rsi']:.0f}: überverkauft")
         if bull:
-            reasons.append(f"Analysten: „{an['label']}“, Ø Ziel {an['upside']:+.0f} %".replace(".", ","))
-        if ind["rsi"] < 35:
-            reasons.append(f"RSI {ind['rsi']:.0f}: überverkauft – Gegenbewegung wahrscheinlicher")
+            reasons.append(f"Analysten: „{an['label']}“, Ø Kursziel {an['upside']:+.0f} %")
+        score = p + (5 if bull else 0) + (3 if st["n"] >= 12 else 0) - (8 if r["ind"]["vol"] > 60 else 0)
         out.append({
-            "id": r["id"], "score": int(min(99, score)), "drop": drop, "limit": limit, "stop": stop,
-            "rebound": rebound, "target": an["mean"] if an else None,
-            "rr": (rebound - limit) / (limit - stop) if limit > stop else None,
+            "id": r["id"], "name": r["name"], "cur": r["cur"], "date": r["date"],
+            "score": int(max(0, min(99, round(score)))), "p": round(p, 1), "n": st["n"],
+            "avg_ret": st["avg_ret"], "avg_days": st["avg_days"], "exp": exp,
+            "drop": f["drop"], "limit": limit, "stop": stop, "rebound": target,
+            "target": an["mean"] if an else None,
+            "rr": (target - limit) / (limit - stop) if limit > stop else None,
             "reasons": reasons, "when": trading_time(r),
         })
-    return sorted(out, key=lambda x: -x["score"])[:12]
+    return sorted(out, key=lambda x: -x["score"])[:15]
 
 
 def demo_analyst(seed, price):
@@ -400,11 +410,16 @@ def analyse(item, prices, cur, fx, cfg, analyst=None):
     s200 = sma(closes, 200)
     trades, events, pos, st = simulate(dates, closes, fast, slow, cfg)
     today, price = dates[-1], closes[-1]
+    flags = learn.validate(dates, closes, item["region"])
+    if analyst and analyst.get("mean") and not (0.25 < analyst["mean"] / price < 4):
+        analyst = None   # Kursziel passt nicht zum Kurs (z. B. andere Währung) – lieber weglassen
 
     lookback = cfg.get("alert_lookback_days", 3)
     recent = [e for e in events if (today - e["date"]).days <= lookback]
     last = recent[-1] if recent else None
     status = last["type"] if last else ("HOLD" if pos else "WAIT")
+    if flags:
+        status = "WAIT"
 
     macd_line = [a - b for a, b in zip(ema(closes, 12), ema(closes, 26))]
     macd_sig = ema(macd_line, 9)
@@ -495,6 +510,9 @@ def analyse(item, prices, cur, fx, cfg, analyst=None):
         else:
             add("~", f"Analysten: „{label}“, Ø Kursziel {de(analyst['mean'], '.2f')} {cur} ({de(up, '+.0f')} %).")
 
+    for fl in flags:
+        why.insert(0, {"t": "-", "x": f"Datenprüfung: {fl}. Deshalb keine Empfehlung für diesen Wert."})
+
     # ---- Handlungsanweisung
     rate = fx.get(cur) or 1.0
     rec = {"status": status, "confidence": "Hoch" if score >= 70 else "Mittel" if score >= 50 else "Niedrig"}
@@ -518,6 +536,9 @@ def analyse(item, prices, cur, fx, cfg, analyst=None):
         rec["watch"] = near
         rec["text"] = ("Noch nicht kaufen – das Kaufsignal rückt näher. Beobachten." if near
                        else "Nicht kaufen. Kein Aufwärtstrend – auf ein Kaufsignal warten.")
+    if flags:
+        rec["text"] = f"Keine Empfehlung – {flags[0]}. Erst handeln, wenn die Daten wieder stimmen."
+        rec["watch"] = False
 
     # ---- Chartdaten (letzte ~260 Tage täglich + bis 5 Jahre wöchentlich)
     n0 = max(0, len(closes) - 260)
@@ -527,6 +548,10 @@ def analyse(item, prices, cur, fx, cfg, analyst=None):
     lows = [p[4] for p in prices]
     vols = [p[5] for p in prices]
     rsis = rsi_series(closes)
+    sma20 = sma(closes, 20)
+    dip_samples = learn.learn_history(closes, highs, lows, s200, sma20, rsis, cfg["stop_loss_pct"])
+    for smp in dip_samples:
+        smp["region"] = item["region"]
     hist = [a - b for a, b in zip(macd_line, macd_sig)]
     sup, resi = swing_levels(highs, lows, price)
     wk = list(range(len(closes) - 1, -1, -5))[::-1]
@@ -553,7 +578,11 @@ def analyse(item, prices, cur, fx, cfg, analyst=None):
         "cur": cur, "eur_rate": 1 / rate, "price": price, "date": str(today),
         "status": status, "score": score, "parts": parts, "parts_max": maxes, "analyst": an,
         "ind": {**ind, "sup_pct": (sup / price - 1) * 100, "res_pct": (resi / price - 1) * 100 if resi else None},
-        "stats": st, "rec": rec, "why": why, "spark": spark, "fast_now": fast[-1], "slow_now": slow[-1],
+        "stats": st, "rec": rec, "why": why, "spark": spark, "flags": flags,
+        "dip_stats": learn.summarize(dip_samples),
+        "_samples": dip_samples,
+        "_series": {"dates": dates, "closes": closes, "highs": highs, "lows": lows, "s200": s200,
+                    "sma20": sma20, "rsis": rsis},
         "_detail": {"chart": chart, "trades": trades[-10:][::-1]},
     }
 
@@ -575,84 +604,157 @@ def fmt(x, cur):
 
 
 # ---------------------------------------------------------------- Hauptprogramm
+def fetch_prev(app_url):
+    """Letzten veröffentlichten Stand der App laden (für Vergleich, Analysten-Cache und Protokoll)."""
+    def get(name):
+        req = urllib.request.Request(app_url + name + f"?t={int(time.time())}", headers={"User-Agent": "signal-radar"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.load(r)
+    prev = None
+    try:
+        prev = get("data.json")
+    except Exception as e:
+        print(f"Vorheriger Stand nicht ladbar: {e}")
+    try:
+        journal = get("journal.json")
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            raise SystemExit(f"Protokoll nicht ladbar ({e}) – Abbruch, damit nichts verloren geht.")
+        journal = {}
+    except Exception as e:
+        raise SystemExit(f"Protokoll nicht ladbar ({e}) – Abbruch, damit nichts verloren geht.")
+    return prev, journal
+
+
 def main():
     args = set(sys.argv[1:])
     if "--notify" in args:
         return notify(os.path.join(HERE, "push.json"))
     demo = "--demo" in args
     dry = demo or "--print" in args
+    mode = os.environ.get("RUN_MODE", "full")
     cfg = load_json("config.json")
     items = watchlist(cfg)
+    t0 = time.time()
 
-    raw, failed = [], []
-    for i, it in enumerate(items):
+    prev, journal = (None, {}) if demo else fetch_prev(cfg["app_url"])
+    prev_items = {r["id"]: r for r in (prev or {}).get("items", [])}
+
+    # ---- Kurse parallel laden
+    def load(k_it):
+        k, it = k_it
         try:
-            prices, cur = demo_prices(i) if demo else fetch_prices(it["ticker"], cfg.get("history_years", 5))
-            if not demo:
-                time.sleep(0.25)
+            prices, cur = demo_prices(k) if demo else fetch_prices(it["ticker"], cfg.get("history_years", 5))
             if len(prices) < cfg["slow_sma"] + 15:
                 raise ValueError(f"nur {len(prices)} Kurstage")
-            raw.append((it, prices, cur))
+            return it, prices, cur, None
         except Exception as e:
-            print(f"FEHLER {it['name']} ({it['ticker']}): {e}")
-            failed.append(it["name"])
-    if not raw:
-        raise SystemExit("Keine Kurse geladen.")
-
-    fx = fx_rates({cur for _, _, cur in raw}, demo)
-    results = []
-    n_an = 0
-    for k, (it, prices, cur) in enumerate(raw):
-        try:
-            if demo:
-                an = demo_analyst(k, prices[-1][1])
-            elif it["region"] in ("Krypto", "Rohstoffe", "ETFs"):
-                an = None
+            return it, None, None, e
+    raw, failed = [], []
+    with ThreadPoolExecutor(max_workers=1 if demo else 8) as ex:
+        for it, prices, cur, err in ex.map(load, enumerate(items)):
+            if err:
+                print(f"FEHLER {it['name']} ({it['ticker']}): {err}")
+                failed.append(it["name"])
             else:
-                an = fetch_analyst(it["ticker"])
-                time.sleep(0.2)
-            n_an += an is not None
+                raw.append((it, prices, cur))
+    if len(raw) < len(items) * 0.5:
+        raise SystemExit(f"Nur {len(raw)} von {len(items)} Werten geladen – Abbruch, alte Daten bleiben sichtbar.")
+    print(f"Kurse: {len(raw)}/{len(items)} in {time.time() - t0:.0f}s")
+    if demo:
+        learn.TODAY = max(p[-1][0] for _, p, _ in raw)
+
+    # ---- Analysten: im Voll-Lauf neu, im 10-Minuten-Lauf aus dem letzten Stand
+    fx = fx_rates({cur for _, _, cur in raw}, demo)
+    def analyst_for(k, it, prices):
+        if demo:
+            return demo_analyst(k, prices[-1][1])
+        if it["region"] in ("Krypto", "Rohstoffe", "ETFs"):
+            return None
+        rid = re.sub(r"[^A-Za-z0-9]+", "-", it["ticker"]).strip("-")
+        old = prev_items.get(rid, {}).get("analyst")
+        if mode == "quick" and prev:
+            return {k2: old[k2] for k2 in ("n", "mean", "high", "low", "rec", "rec_mean", "cur", "votes")} if old else None
+        return fetch_analyst(it["ticker"])
+    if not demo and (mode != "quick" or not prev):
+        _yahoo_session()
+    with ThreadPoolExecutor(max_workers=1 if demo else 6) as ex:
+        ans = list(ex.map(lambda a: analyst_for(*a), [(k, it, p) for k, (it, p, _) in enumerate(raw)]))
+    print(f"Analysten-Daten für {sum(a is not None for a in ans)} Werte ({'aus Cache' if mode == 'quick' and prev else 'neu geladen'}).")
+
+    results = []
+    for (it, prices, cur), an in zip(raw, ans):
+        try:
             results.append(analyse(it, prices, cur, fx, cfg, an))
         except Exception as e:
             print(f"FEHLER Analyse {it['name']}: {e}")
             failed.append(it["name"])
+    flagged = [r["name"] for r in results if r["flags"]]
+    if flagged:
+        print("Datenprüfung – ausgeschlossen:", ", ".join(flagged))
 
-    print(f"Analysten-Daten für {n_an} Werte geladen.")
-    dips = find_dips(results, cfg)
+    # ---- Lernen: was hat über alle Aktien funktioniert?
+    all_samples = [s for r in results for s in r.pop("_samples")]
+    model = learn.global_model(all_samples)
+    print(f"Gelernt aus {model['all']['n']} historischen Dip-Fällen: Trefferquote {model['all']['win_rate'] or 0:.0f} %, "
+          f"Ø {model['all']['avg_ret'] or 0:+.2f} %")
+    dips = find_dips(results, cfg, model)
     by = {r["id"]: r for r in results}
+
+    # ---- Nachrichten
+    prev_ch = {c["id"] for c in (prev or {}).get("chances", [])}
     movers = sorted(results, key=lambda r: -abs(r["ind"].get("r1d") or 0))[:8]
-    news_ids = list(dict.fromkeys([d["id"] for d in dips] + [m["id"] for m in movers]))
-    for k, nid in enumerate(news_ids):
-        r = by[nid]
+    want = [d["id"] for d in dips] + [m["id"] for m in movers]
+    if mode == "quick" and prev:
+        for rid in want:
+            if rid in prev_items and prev_items[rid].get("news") and rid in prev_ch:
+                by[rid]["news"] = prev_items[rid]["news"]
+    def news_for(rid):
+        r = by[rid]
         q = r["ticker"] if not r["ticker"].endswith(("-EUR", "=F")) else r["name"]
-        r["news"] = demo_news(k) if demo else fetch_news(q, 4)
-        if not demo:
-            time.sleep(0.2)
-    world = []
+        return rid, fetch_news(q, 4)
+    todo = [rid for rid in dict.fromkeys(want) if "news" not in by[rid]]
+    if demo:
+        for k, rid in enumerate(todo):
+            by[rid]["news"] = demo_news(k)
+    else:
+        with ThreadPoolExecutor(max_workers=4) as ex:
+            for rid, n in ex.map(news_for, todo):
+                by[rid]["news"] = n
     if demo:
         world = demo_news(99, 6)
+    elif mode == "quick" and prev and prev.get("world") and datetime.now(timezone.utc).minute >= 10:
+        world = prev["world"]
     else:
-        seen = set()
+        world, seen = [], set()
         for q in ("SPY", "^GSPC", "QQQ", "^GDAXI", "GLD", "^TNX", "stock market"):
             for n in fetch_news(q, 5):
                 if n["u"] not in seen and n["t"]:
                     seen.add(n["u"])
                     world.append(n)
         world = sorted(world, key=lambda n: -n["ts"])[:10]
-    print(f"Chancen: {len(dips)} · Nachrichten: {sum(len(by[i].get('news', [])) for i in news_ids)} + {len(world)} Markt")
+
+    # ---- Live-Protokoll fortschreiben
+    today_str = str(max(r["date"] for r in results))
+    journal = learn.update_journal(journal or {}, dips, {r["id"]: r["_series"] for r in results}, today_str)
+    for r in results:
+        r.pop("_series")
+    js = journal["summary"]
+    print(f"Chancen: {len(dips)} · Protokoll: {js['total']} Einträge, {js['closed']} abgeschlossen")
 
     above = [r for r in results if r["ind"]["dist200"] is not None]
     breadth = 100 * sum(r["ind"]["dist200"] > 0 for r in above) / len(above) if above else 0
     counts = {k: sum(r["status"] == k for r in results) for k in ("BUY", "SELL", "HOLD", "WAIT")}
+    hour = datetime.now(timezone.utc).hour
+    run_kind = "live" if mode == "quick" else ("morgen" if hour < 11 else "us" if hour < 17 else "abend")
     data = {
         "generated": datetime.now(timezone.utc).isoformat(timespec="minutes"),
-        "date": max(r["date"] for r in results),
+        "date": today_str, "run": run_kind, "mode": mode,
         "params": {k: cfg[k] for k in ("fast_sma", "slow_sma", "stop_loss_pct", "fee_per_order_eur")},
         "market": {"breadth": breadth, "avg_score": sum(r["score"] for r in results) / len(results),
-                   "counts": counts, "total": len(items), "failed": failed},
-        "items": results,
-        "chances": dips,
-        "world": world,
+                   "counts": counts, "total": len(items), "failed": failed, "flagged": flagged},
+        "model": model, "journal": js,
+        "items": results, "chances": dips, "world": world,
     }
     os.makedirs(os.path.join(HERE, "site", "d"), exist_ok=True)
     for r in results:
@@ -660,49 +762,49 @@ def main():
             json.dump(r.pop("_detail"), f, ensure_ascii=False, separators=(",", ":"))
     with open(os.path.join(HERE, "site", "data.json"), "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
+    with open(os.path.join(HERE, "site", "journal.json"), "w", encoding="utf-8") as f:
+        json.dump(journal, f, ensure_ascii=False, separators=(",", ":"))
 
+    # ---- Push: nur Neues (im Vergleich zum letzten veröffentlichten Stand)
+    prev_status = {rid: p.get("status") for rid, p in prev_items.items()}
     sig = sorted((r for r in results if r["status"] in ("BUY", "SELL")), key=lambda r: -r["score"])
-    hold = [r for r in results if r["status"] == "HOLD"]
+    new_sig = [r for r in sig if prev_status.get(r["id"]) != r["status"]] if prev else sig
+    new_ch = [d for d in dips if d["id"] not in prev_ch] if prev else dips
+    evening = run_kind == "abend"
+    show_sig, show_ch = (sig, dips) if evening else (new_sig, new_ch)
     lines = []
-    for r in sig:
+    for r in show_sig:
         verb = "Kaufsignal" if r["status"] == "BUY" else "Trend gekippt (nur relevant, wenn du sie hast)"
         lines.append(f"{'🟢' if r['status'] == 'BUY' else '🔴'} {verb}: {r['name']} {fmt(r['price'], r['cur'])} · Score {r['score']}")
-    if not sig:
-        lines.append("Heute keine neuen Kauf- oder Verkaufssignale.")
-    for d in dips[:3]:
+    for d in show_ch[:5]:
         r = by[d["id"]]
-        lines.append(f"💡 Dip-Chance: {r['name']} ({format(d['drop'], '+.1f').replace('.', ',')} %) · Limit {fmt(d['limit'], r['cur'])}")
-    lines.append(f"Halten: {len(hold)} · Marktbreite {breadth:.0f} % über 200-Tage-Linie")
-    msg = "\n".join(lines)
+        lines.append(f"💡 Dip-Chance: {r['name']} ({format(d['drop'], '+.1f').replace('.', ',')} %) · Limit {fmt(d['limit'], r['cur'])}"
+                     f" · historisch {d['p']:.0f} % Treffer")
+    if evening:
+        lines.append(f"Marktbreite {breadth:.0f} % über 200-Tage-Linie · {len(results)} Werte geprüft")
+    msg = "\n".join(lines) or "Keine neuen Signale."
     print(msg)
-    if failed:
-        print("Nicht geladen:", ", ".join(failed))
-    for r in results:
-        p = r["rec"]
-        print(f"WERT {r['id']} {r['status']} score={r['score']} preis={r['price']:.2f}{r['cur']} "
-              f"stop={p.get('stop') or 0:.2f} d200={r['ind']['dist200'] if r['ind']['dist200'] is None else round(r['ind']['dist200'], 1)} "
-              f"rsi={r['ind']['rsi']:.0f} r3m={r['ind']['r3m'] if r['ind']['r3m'] is None else round(r['ind']['r3m'], 1)}")
-
-    hour = datetime.now(timezone.utc).hour
-    run_kind = "morgen" if hour < 11 else "us" if hour < 17 else "abend"
-    run_label = {"morgen": "Signal-Radar am Morgen", "us": "Signal-Radar zur US-Eröffnung", "abend": "Signal-Radar"}[run_kind]
-    data["run"] = run_kind
-    with open(os.path.join(HERE, "site", "data.json"), "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
     app = cfg["app_url"]
-    nb = sum(r["status"] == "BUY" for r in sig)
+    nb = sum(r["status"] == "BUY" for r in show_sig)
+    label = {"live": "Signal-Radar live", "morgen": "Signal-Radar am Morgen", "us": "Signal-Radar zur US-Eröffnung",
+             "abend": "Signal-Radar"}[run_kind]
+    if show_ch and not show_sig:
+        title = f"{label}: {len(show_ch)} neue Dip-Chance{'n' if len(show_ch) != 1 else ''}"
+    elif show_sig:
+        title = f"{label}: {nb}× Kaufsignal, {len(show_sig) - nb}× Trend gekippt"
+    else:
+        title = f"{label}: Tagesupdate"
     push = {
-        "send": bool(sig or dips) if run_kind != "abend" else (bool(sig) or not cfg.get("only_send_on_signal")),
-        "title": (f"{run_label}: {len(dips)} Dip-Chance{'n' if len(dips) != 1 else ''}" if dips and not sig else
-                  f"{run_label}: {nb}× Kaufsignal, {len(sig) - nb}× Trend gekippt" if sig else f"{run_label}: Tagesupdate"),
-        "message": msg,
-        "click": f"{app}#{sig[0]['id']}" if sig else (f"{app}#chancen" if dips else app),
-        "priority": "high" if sig else "low",
-        "tags": "rotating_light" if sig else "bar_chart",
+        "send": (bool(new_sig or new_ch) if not evening else (bool(sig or dips) or not cfg.get("only_send_on_signal"))),
+        "title": title, "message": msg,
+        "click": f"{app}#{show_sig[0]['id']}" if show_sig else (f"{app}#chancen" if show_ch else app),
+        "priority": "high" if (new_sig or new_ch) else "low",
+        "tags": "rotating_light" if show_sig else ("bulb" if show_ch else "bar_chart"),
         "actions": f"view, App öffnen, {app}",
     }
     with open(os.path.join(HERE, "push.json"), "w", encoding="utf-8") as f:
         json.dump(push, f, ensure_ascii=False)
+    print(f"Fertig in {time.time() - t0:.0f}s ({mode}).")
     if not dry and "--no-push" not in args:
         notify(os.path.join(HERE, "push.json"))
 
