@@ -397,9 +397,15 @@ async function pretrain(manual) {
     const pairs = Object.values({...(await pairsFor(mints)), ...lastPairs}).filter(p => (p.liquidity?.usd || 0) >= C.minLiq).sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0)).slice(0, 24);
     let n = 0, wins = 0, sum = 0, pools = 0;
     for (const p of pairs) {
-      await sleep(2200);   // GeckoTerminal-Limit einhalten
+      if ((S.pretrainSeen || {})[p.pairAddress] > Date.now() - 4 * 3600000) continue;   // denselben Verlauf nicht doppelt lernen
+      await sleep(4000);   // GeckoTerminal-Limit einhalten
       let k;
-      try { const j = await getJSON(`https://api.geckoterminal.com/api/v2/networks/solana/pools/${p.pairAddress}/ohlcv/minute?aggregate=1&limit=300`); k = (j?.data?.attributes?.ohlcv_list || []).slice().reverse(); } catch (e) { continue; }
+      for (let tries = 0; tries < 2 && !k; tries++) {
+        try { const j = await getJSON(`https://api.geckoterminal.com/api/v2/networks/solana/pools/${p.pairAddress}/ohlcv/minute?aggregate=1&limit=300`); k = (j?.data?.attributes?.ohlcv_list || []).slice().reverse(); }
+        catch (e) { await sleep(12000); }
+      }
+      if (!k) continue;
+      S.pretrainSeen = S.pretrainSeen || {}; S.pretrainSeen[p.pairAddress] = Date.now();
       if (!k || k.length < 120) continue;
       pools++; setPhase(`Vortraining: ${p.baseToken.symbol} (${pools}/${pairs.length}) – ${n} Lernbeispiele`);
       const c = k.map(x => x[4]); let e9 = c[0], e21 = c[0]; const E9 = [], E21 = [];
@@ -429,7 +435,8 @@ async function pretrain(manual) {
       }
     }
     if (!n) { log("INFO", "–", "Vortraining: Datenquellen gerade überlastet – neuer Versuch in 5 Min."); S.pretrainBusy = false; setTimeout(() => pretrain(false), 300000); return; }
-    S.pretrained = {t: Date.now(), n, pools, wr: n ? wins / n * 100 : 0, avg: n ? sum / n : 0};
+    const prevN = S.pretrained?.total || 0;
+    S.pretrained = {total: prevN + n, t: Date.now(), n, pools, wr: n ? wins / n * 100 : 0, avg: n ? sum / n : 0};
     log("INFO", "–", `Vortraining fertig: ${n} Lernbeispiele aus ${pools} Coins (letzte 5 Std.) · ${n ? Math.round(wins / n * 100) : 0}% wären Gewinner gewesen, Ø ${pct(n ? sum / n : 0)} – Gehirn angepasst`);
     vaultQueue.push({path: "MemeBot/Lernen.md", append: false, text: learnMarkdown()});
     save();
@@ -867,7 +874,7 @@ function render(light) {
   const top = B.w.map((w, i) => [FEAT[i][1], w]).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).slice(0, 5);
   $("#brain").innerHTML = `<div class="row"><b>Marktlage: ${esc(S.lage?.name || "–")}</b><span class="mut">${S.lage ? Math.round(S.lage.breadth * 100) + "% der Coins steigen" : ""}</span></div>
     <div class="row mut"><span>Gelernt aus ${Math.round(B.n)} Auswertungen${acc != null ? ` · lag ${acc}% richtig` : ""}</span><span>kauft ab ${C.minProb}% Chance</span></div>
-    ${S.pretrained ? `<div class="mut">Vortraining: ${S.pretrained.n} Beispiele aus ${S.pretrained.pools} Coins · ${new Date(S.pretrained.t).toLocaleString("de-DE", {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"})}</div>` : ""}
+    ${S.pretrained ? `<div class="mut">Vortraining: ${S.pretrained.total || S.pretrained.n} Beispiele gesamt (zuletzt ${S.pretrained.n} aus ${S.pretrained.pools} Coins) · ${new Date(S.pretrained.t).toLocaleString("de-DE", {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"})}</div>` : ""}
     <div class="mut" style="margin-top:6px">Phantom-Bereitschaft: ${(() => { const R = liveReadiness(); return R.checks.map(([ok, t]) => `<span class="${ok ? "up" : "down"}">${ok ? "✓" : "✗"} ${esc(t)}</span>`).join(" · "); })()}</div>
     <div class="mut" style="margin-top:6px">Achtet am stärksten auf: ${top.map(([n, w]) => `<b class="${w > 0 ? "up" : "down"}">${w > 0 ? "▲" : "▼"} ${esc(n)}</b>`).join(" · ")}</div>`;
   $("#learnN").textContent = `${S.trades.length} echte + ${Object.values(S.slearn || {}).reduce((a, x) => a + x.n, 0)} Schatten-Trades · ${sh} laufen`;
@@ -896,7 +903,8 @@ function renderSettings() {
 
 // ---------------- Bedienung
 $("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus, v7)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render();
-  if (!S.pretrained || Date.now() - S.pretrained.t > 12 * 3600000) setTimeout(() => pretrain(false), 3000); };
+  if (!S.pretrained || Date.now() - S.pretrained.t > 2 * 3600000) setTimeout(() => pretrain(false), 3000);
+  clearInterval(window.__ptI); window.__ptI = setInterval(() => { if (running) pretrain(false); }, 2 * 3600000); };
 $("#stop").onclick = () => { running = false; if (worker) worker.postMessage("stop"); $("#start").hidden = false; $("#stop").hidden = true; log("INFO", "–", "Bot gestoppt"); save(); render(); setPhase("gestoppt"); };
 $("#reset").onclick = () => { const b = $("#reset"); if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = "Wirklich zurücksetzen?"; setTimeout(() => { b.dataset.sure = ""; b.textContent = "Testgeld zurücksetzen"; }, 4000); return; }
   b.dataset.sure = ""; b.textContent = "Testgeld zurücksetzen"; const keepLearn = S.learn, keepBlock = S.block; S = fresh(); S.learn = keepLearn; S.block = keepBlock; log("INFO", "–", "Testgeld zurückgesetzt – Gelerntes und Sperrliste bleiben erhalten"); save(); render(); };
