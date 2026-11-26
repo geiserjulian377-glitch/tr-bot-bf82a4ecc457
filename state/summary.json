@@ -1,5 +1,5 @@
 {
- "updated": 1795721374066,
+ "updated": 1795721959644,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -21,12 +21,18 @@
   }
  ],
  "brain": {
-  "n": 492,
+  "n": 494,
   "acc": 67
  },
  "lage": "normal",
  "tune": null,
  "minProb": 58,
+ "rt": {
+  "key": true,
+  "jup": true,
+  "note": "",
+  "updates": 0
+ },
  "days": [
   [
    "2026-11-26",
@@ -37,9 +43,37 @@
    }
   ]
  ],
- "shadows": 1,
- "scanned": 17107,
+ "shadows": 3,
+ "scanned": 17361,
  "log": [
+  [
+   1795721901421,
+   "INFO",
+   "–",
+   "Scan: 44 frische Coins · 0 mit Kaufsignal · aussortiert: 22× zu alt · 14× zu wenig Liquidität · 7× Pump.fun-Startphase · 1× gesperrt (früher Verlust)",
+   ""
+  ],
+  [
+   1795721901420,
+   "INFO",
+   "BIRB",
+   "Schatten-Trade ausgewertet: wäre −3.2% gewesen (aussortiert wegen hart: Top-10-Halter 88%, Setup „buyers“, Gehirn schätzte 4%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795721901420,
+   "INFO",
+   "pippin",
+   "Schatten-Trade ausgewertet: wäre −2.4% gewesen (aussortiert wegen hart: größter Halter besitzt 33%, Setup „buyers“, Gehirn schätzte 15%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795721899581,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v12)",
+   ""
+  ],
   [
    1795721314742,
    "INFO",
