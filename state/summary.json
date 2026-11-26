@@ -1,5 +1,5 @@
 {
- "updated": 1795721959644,
+ "updated": 1795723161123,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -21,10 +21,10 @@
   }
  ],
  "brain": {
-  "n": 494,
+  "n": 496,
   "acc": 67
  },
- "lage": "normal",
+ "lage": "kalt",
  "tune": null,
  "minProb": 58,
  "rt": {
@@ -43,9 +43,65 @@
    }
   ]
  ],
- "shadows": 3,
- "scanned": 17361,
+ "shadows": 5,
+ "scanned": 22321,
  "log": [
+  [
+   1795723131275,
+   "INFO",
+   "–",
+   "Scan: 39 frische Coins · 0 mit Kaufsignal · aussortiert: 17× zu alt · 13× zu wenig Liquidität · 5× Pump.fun-Startphase · 2× zu jung · 1× gesperrt (früher Verlust)",
+   ""
+  ],
+  [
+   1795723121255,
+   "INFO",
+   "1T",
+   "Schatten-Trade ausgewertet: wäre −22.7% gewesen (aussortiert wegen hart: Verkaufs-Test fehlgeschlagen (mögliche Honeypot), Setup „buyers+pullback“, Gehirn schätzte 29%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795722883239,
+   "FILTER",
+   "1T",
+   "Kaufdruck 87%, Rücksetzer im Aufwärtstrend (1h +319.0%, 5m −4.4%) – aber (hart): Verkaufs-Test fehlgeschlagen (mögliche Honeypot)",
+   ""
+  ],
+  [
+   1795722821289,
+   "INFO",
+   "–",
+   "Scan: 40 frische Coins · 0 mit Kaufsignal · aussortiert: 18× zu alt · 12× zu wenig Liquidität · 5× Pump.fun-Startphase · 2× zu jung · 1× nicht jagen · 1× gesperrt (früher Verlust)",
+   ""
+  ],
+  [
+   1795722521275,
+   "INFO",
+   "–",
+   "Scan: 41 frische Coins · 0 mit Kaufsignal · aussortiert: 18× zu alt · 13× zu wenig Liquidität · 5× Pump.fun-Startphase · 4× zu jung · 1× gesperrt (früher Verlust)",
+   ""
+  ],
+  [
+   1795722491309,
+   "INFO",
+   "SPCX",
+   "Schatten-Trade ausgewertet: wäre −3.8% gewesen (aussortiert wegen hart: Mint-Recht offen (neue Coins druckbar), Setup „buyers+spike“, Gehirn schätzte 72%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795722221266,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795722211291,
+   "INFO",
+   "–",
+   "Scan: 43 frische Coins · 0 mit Kaufsignal · aussortiert: 20× zu alt · 14× zu wenig Liquidität · 6× Pump.fun-Startphase · 2× zu jung · 1× gesperrt (früher Verlust)",
+   ""
+  ],
   [
    1795721901421,
    "INFO",
@@ -163,48 +219,6 @@
    "INFO",
    "–",
    "Scan: 136 frische Coins · 0 mit Kaufsignal · aussortiert: 70× zu alt · 27× Liquidität zu dünn · 14× zu wenig Liquidität · 10× Pump.fun-Startphase · 7× zu wenig Volumen · 2× zu jung · 1× Fake-Handel · 1× Halter springen a",
-   ""
-  ],
-  [
-   1795720064253,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 67%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795719939448,
-   "FILTER",
-   "pippin",
-   "Kaufdruck 65%, Trending bei Jupiter – aber (hart): größter Halter besitzt 33%; Top-10-Halter 63%",
-   ""
-  ],
-  [
-   1795719918705,
-   "INFO",
-   "NORFEATH",
-   "Gehirn: Gewinnchance 66% (Abzug für: Chart: mehr Volumen auf roten Kerzen (0.3×)) – Gründe: +Kaufdruck 5 Min., +Top-10-Konzentration, +Netto-Käufer · Markt normal",
-   ""
-  ],
-  [
-   1795719918700,
-   "ENTER",
-   "NORFEATH",
-   "Kauf $2.55 zu $0.0003259 · Setup „buyers+momentum“ · Kaufdruck 76%, Momentum +9.2% in 5 Min., Trending (Boost), Trending bei Jupiter, Halter +7% in 1 Std. · Stop −18% / Trailing 25% (an Schwankung angepasst) · Rug-Check ",
-   "Größe 20% (Chance 66%, Ø Gewinn 30% / Ø Verlust 13%) ×0,85 (Markt normal) ×0,75 (Setup noch unerprobt)"
-  ],
-  [
-   1795719908636,
-   "INFO",
-   "–",
-   "Scan: 135 frische Coins · 1 mit Kaufsignal · aussortiert: 66× zu alt · 33× Liquidität zu dünn · 15× zu wenig Liquidität · 10× Pump.fun-Startphase · 4× zu wenig Volumen · 1× nicht jagen · 1× zu jung · 1× keine Website/Soc",
-   ""
-  ],
-  [
-   1795719907438,
-   "INFO",
-   "–",
-   "Bot gestartet (Testmodus, v10)",
    ""
   ]
  ]
