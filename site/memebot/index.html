@@ -222,9 +222,23 @@ function log(type, sym, text, val) {
 }
 // API-Schlüssel: nur lokal im Browser (mb_keys) bzw. auf dem Server aus GitHub-Secrets – nie im Code oder im gespeicherten Zustand
 const KEYS = (() => { try { return JSON.parse(localStorage.getItem("mb_keys") || "{}"); } catch (e) { return {}; } })();
+// Jupiter-Drossel: kostenloser Schlüssel = 60 Abfragen/Min. → max. 50/Min., Listen 60 Sek. zwischenspeichern
+const JUP = {calls: [], cache: {}};
+async function jupGate() {
+  for (;;) { JUP.calls = JUP.calls.filter(t => Date.now() - t < 60000); if (JUP.calls.length < 50) { JUP.calls.push(Date.now()); return; } await sleep(1200); }
+}
 async function getJSON(url, tries = 2) {
   let headers = {};
-  if (KEYS.jup && url.startsWith("https://lite-api.jup.ag/")) { url = url.replace("https://lite-api.jup.ag/", "https://api.jup.ag/"); headers = {"x-api-key": KEYS.jup}; }
+  const isJup = url.startsWith("https://lite-api.jup.ag/");
+  if (isJup && /\/tokens\/v2\/(top|recent)/.test(url)) { const c = JUP.cache[url]; if (c && Date.now() - c.t < 60000) return c.d; }
+  if (KEYS.jup && isJup) { url = url.replace("https://lite-api.jup.ag/", "https://api.jup.ag/"); headers = {"x-api-key": KEYS.jup}; }
+  if (isJup) await jupGate();
+  if (isJup && /\/tokens\/v2\/(top|recent)/.test(url)) {
+    const d = await getJSONraw(url, tries, headers); if (Array.isArray(d)) JUP.cache[url.replace("https://api.jup.ag/", "https://lite-api.jup.ag/")] = {t: Date.now(), d}; return d;
+  }
+  return getJSONraw(url, tries, headers);
+}
+async function getJSONraw(url, tries, headers) {
   for (let i = 0; i < tries; i++) {
     try { const r = await fetch(url, {cache: "no-store", headers}); if (r.status === 429) { await sleep(2500); continue; } if (!r.ok) throw new Error("HTTP " + r.status); return await r.json(); }
     catch (e) { if (i === tries - 1) throw e; await sleep(700); }
