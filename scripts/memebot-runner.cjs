@@ -83,7 +83,7 @@ async function main() {
   }
 
   await open();
-  let lastSave = Date.now(), lastCommit = Date.now(), lastReload = Date.now();
+  let lastSave = 0, lastCommit = Date.now(), lastReload = Date.now(), firstCommitted = false;
   while (Date.now() - t0 < RUN_MIN * 60000) {
     await sleep(60000);
     if (Date.now() - lastSave > 5 * 60000) {
@@ -91,7 +91,7 @@ async function main() {
       if (s) log(`Konto $${s.equity} · ${s.trades} Trades (${s.wins}/${s.losses}) · offen ${s.open.length} · Gehirn ${s.brain.n}/${s.brain.acc}%`);
       else { log("Seite reagiert nicht – lade neu"); await open().catch(e => log(e.message)); }
     }
-    if (Date.now() - lastCommit > 30 * 60000) { commit("Dauertest-Zwischenstand"); lastCommit = Date.now(); }
+    if (Date.now() - lastCommit > 20 * 60000 || !firstCommitted) { if (fs.existsSync(path.join(ST, "summary.json"))) { commit("Dauertest-Zwischenstand"); firstCommitted = true; } lastCommit = Date.now(); }
     if (Date.now() - lastReload > 120 * 60000) {   // alle 2 Std. neu laden: neueste Bot-Version übernehmen
       await save(); await page.evaluate(() => document.querySelector("#stop")?.click()).catch(() => {});
       await sleep(3000); await open().catch(e => log(e.message)); lastReload = Date.now();
