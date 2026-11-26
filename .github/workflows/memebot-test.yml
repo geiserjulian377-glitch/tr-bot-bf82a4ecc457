@@ -40,7 +40,7 @@ jobs:
           git -C data config user.email "memebot-dauertest@users.noreply.github.com"
           node scripts/memebot-runner.cjs
       - name: Nächsten Lauf starten
-        if: always()
+        if: success() || failure()
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
