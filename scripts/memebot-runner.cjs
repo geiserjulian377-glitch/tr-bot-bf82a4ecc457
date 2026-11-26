@@ -42,6 +42,10 @@ async function main() {
     localStorage.setItem("mb_cfgVer", ver || "5");
     sessionStorage.setItem("seeded", "1");
   }, seedState, seedCfg, seedVer && seedVer.trim());
+  // API-Schlüssel aus GitHub-Secrets nur in den Browser geben – nie speichern oder committen
+  const keys = {}; if (process.env.HELIUS_KEY) keys.helius = process.env.HELIUS_KEY; if (process.env.JUP_KEY) keys.jup = process.env.JUP_KEY;
+  await page.evaluateOnNewDocument(k => { try { localStorage.setItem("mb_keys", k); } catch (e) {} }, JSON.stringify(keys));
+  log("Schlüssel:", Object.keys(keys).join(", ") || "keine");
   page.on("pageerror", e => log("Seitenfehler:", e.message));
 
   async function open() {

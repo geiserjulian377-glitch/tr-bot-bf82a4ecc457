@@ -34,6 +34,8 @@ jobs:
       - name: Bot testen
         env:
           NODE_PATH: /tmp/pp/node_modules
+          HELIUS_KEY: ${{ secrets.HELIUS_KEY }}
+          JUP_KEY: ${{ secrets.JUP_KEY }}
           RUN_MIN: "330"
         run: |
           git -C data config user.name "memebot-dauertest"
