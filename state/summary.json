@@ -1,5 +1,5 @@
 {
- "updated": 1795729567079,
+ "updated": 1795730768118,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -61,8 +61,50 @@
   ]
  ],
  "shadows": 7,
- "scanned": 88955,
+ "scanned": 105528,
  "log": [
+  [
+   1795730723675,
+   "INFO",
+   "–",
+   "Scan: 143 frische Coins · 0 mit Kaufsignal · aussortiert: 69× zu alt · 30× Liquidität zu dünn · 18× zu wenig Liquidität · 8× Pump.fun-Startphase · 8× zu wenig Volumen · 2× zu jung · 2× gesperrt (früher Verlust) · 1× Verk",
+   ""
+  ],
+  [
+   1795730423082,
+   "INFO",
+   "–",
+   "Scan: 138 frische Coins · 0 mit Kaufsignal · aussortiert: 71× zu alt · 27× Liquidität zu dünn · 17× zu wenig Liquidität · 8× Pump.fun-Startphase · 8× zu wenig Volumen · 2× gesperrt (früher Verlust) · 1× zu jung · 1× nich",
+   ""
+  ],
+  [
+   1795730123013,
+   "INFO",
+   "–",
+   "Scan: 143 frische Coins · 0 mit Kaufsignal · aussortiert: 71× zu alt · 30× Liquidität zu dünn · 20× zu wenig Liquidität · 8× Pump.fun-Startphase · 8× zu wenig Volumen · 2× gesperrt (früher Verlust) · 1× zu jung · 1× nich",
+   ""
+  ],
+  [
+   1795729813595,
+   "INFO",
+   "–",
+   "Scan: 138 frische Coins · 1 mit Kaufsignal · aussortiert: 74× zu alt · 26× Liquidität zu dünn · 19× zu wenig Liquidität · 8× Pump.fun-Startphase · 4× zu wenig Volumen · 2× gesperrt (früher Verlust) · 1× zu jung · 1× Verk",
+   ""
+  ],
+  [
+   1795729674779,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 64%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795729674333,
+   "FILTER",
+   "SPCX",
+   "Kaufdruck 65%, Trending bei Jupiter – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control Enabled; Gefahr: Freez",
+   ""
+  ],
   [
    1795729503806,
    "INFO",
@@ -194,48 +236,6 @@
    "INFO",
    "–",
    "Scan: 130 frische Coins · 0 mit Kaufsignal · aussortiert: 65× zu alt · 24× Liquidität zu dünn · 16× zu wenig Liquidität · 7× Pump.fun-Startphase · 5× zu wenig Volumen · 3× nicht jagen · 2× zu jung · 2× zu wenig Netto-Käu",
-   ""
-  ],
-  [
-   1795727053923,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795726875001,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 67%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795726846458,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795726793004,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795726762997,
-   "INFO",
-   "–",
-   "Scan: 127 frische Coins · 0 mit Kaufsignal · aussortiert: 64× zu alt · 24× Liquidität zu dünn · 18× zu wenig Liquidität · 7× Pump.fun-Startphase · 5× zu wenig Volumen · 2× Fake-Handel · 2× keine Website/Socials · 1× nich",
-   ""
-  ],
-  [
-   1795726453828,
-   "INFO",
-   "duk",
-   "Gehirn: Gewinnchance 51% (Abzug für: Insider-Netzwerk erkannt; Chart: unter der Trendlinie (EMA21)) – Gründe: +Kaufdruck 5 Min., +Abstand zur Trendlinie, −Top-10-Konzentration · Markt kalt",
    ""
   ]
  ]
