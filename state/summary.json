@@ -1,5 +1,5 @@
 {
- "updated": 1795724665935,
+ "updated": 1795724762894,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -45,8 +45,22 @@
   ]
  ],
  "shadows": 5,
- "scanned": 24685,
+ "scanned": 25453,
  "log": [
+  [
+   1795724704703,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 68%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795724702816,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v12)",
+   ""
+  ],
   [
    1795724607871,
    "FILTER",
@@ -206,20 +220,6 @@
    "INFO",
    "–",
    "Marktlage wechselt: heiß → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795721314026,
-   "INFO",
-   "–",
-   "Bot gestartet (Testmodus, v12)",
-   ""
-  ],
-  [
-   1795721138554,
-   "INFO",
-   "–",
-   "Scan: 127 frische Coins · 0 mit Kaufsignal · aussortiert: 64× zu alt · 28× Liquidität zu dünn · 13× zu wenig Liquidität · 7× Pump.fun-Startphase · 5× zu wenig Volumen · 2× zu jung · 2× keine Website/Socials · 1× Fake-Han",
    ""
   ]
  ]
