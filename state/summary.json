@@ -1,16 +1,24 @@
 {
- "updated": 1795724762894,
+ "updated": 1795725963981,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
- "equity": 19.38,
- "cash": 19.38,
- "trades": 1,
+ "equity": 18.77,
+ "cash": 18.77,
+ "trades": 2,
  "wins": 0,
- "losses": 1,
- "pnl": -0.62,
+ "losses": 2,
+ "pnl": -1.23,
  "open": [],
  "last": [
+  {
+   "sym": "bolphante",
+   "mode": "lern",
+   "ret": -21.06323932250228,
+   "cost": 2.9076476831811777,
+   "why": "Stop bestätigt ($0.00004629)",
+   "t1": 1795725656934
+  },
   {
    "sym": "NORFEATH",
    "mode": "normal",
@@ -21,7 +29,7 @@
   }
  ],
  "brain": {
-  "n": 496,
+  "n": 500,
   "acc": 67
  },
  "lage": "kalt",
@@ -31,22 +39,127 @@
   "key": true,
   "jup": true,
   "jupFails": 0,
-  "note": "",
+  "note": "bereit",
   "updates": 0
  },
  "days": [
   [
    "2026-11-26",
    {
-    "n": 1,
+    "n": 2,
     "w": 0,
-    "pnl": -0.615682112125479
+    "pnl": -1.2281269022891232
    }
   ]
  ],
- "shadows": 5,
- "scanned": 25453,
+ "shadows": 7,
+ "scanned": 40761,
  "log": [
+  [
+   1795725863452,
+   "INFO",
+   "duk",
+   "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen Insider-Netzwerk erkannt, Setup „buyers+pullback“, Gehirn schätzte 18%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795725833007,
+   "INFO",
+   "–",
+   "Scan: 126 frische Coins · 0 mit Kaufsignal · aussortiert: 65× zu alt · 21× Liquidität zu dünn · 17× zu wenig Liquidität · 7× Pump.fun-Startphase · 6× zu wenig Volumen · 2× gesperrt (früher Verlust) · 2× zu wenig Netto-Kä",
+   ""
+  ],
+  [
+   1795725656934,
+   "INFO",
+   "bolphante",
+   "Coin für 6 Std. gesperrt (Verlust)",
+   ""
+  ],
+  [
+   1795725656933,
+   "EXIT",
+   "bolphante",
+   "Verkauf Rest zu $0.00004505 – Stop bestätigt ($0.00004629)",
+   "−21.1%"
+  ],
+  [
+   1795725653403,
+   "INFO",
+   "bolphante",
+   "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen Insider-Netzwerk erkannt, Setup „pullback“, Gehirn schätzte 21%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795725533006,
+   "INFO",
+   "–",
+   "Scan: 127 frische Coins · 2 mit Kaufsignal · aussortiert: 63× zu alt · 25× Liquidität zu dünn · 16× zu wenig Liquidität · 7× Pump.fun-Startphase · 6× zu wenig Volumen · 1× Fake-Handel · 1× zu jung · 1× gesperrt (früher V",
+   ""
+  ],
+  [
+   1795725483119,
+   "INFO",
+   "bolphante",
+   "Gehirn: Gewinnchance 52% (Abzug für: Insider-Netzwerk erkannt; Chart: unter der Trendlinie (EMA21)) – Gründe: +Liquidität/Marktwert, +Abstand zur Trendlinie, +Anstieg 5 Min. · Markt kalt",
+   ""
+  ],
+  [
+   1795725483118,
+   "ENTER",
+   "bolphante",
+   "LERN-TRADE (klein, zum Dazulernen) – Kauf $2.91 zu $0.00005468 · Setup „pullback“ · Rücksetzer im Aufwärtstrend (1h +32.7%, 5m −7.5%), Halter +6% in 1 Std. · Stop −15% / Trailing 21% (an Schwankung angepasst) · Rug-Check",
+   "Größe 15% Lern-Trade (Chance 52%)"
+  ],
+  [
+   1795725404962,
+   "FILTER",
+   "pippin",
+   "Kaufdruck 100%, Trending bei Jupiter – aber (hart): größter Halter besitzt 33%; Top-10-Halter 63%",
+   ""
+  ],
+  [
+   1795725343006,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795725333783,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795725243002,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795725223055,
+   "INFO",
+   "–",
+   "Scan: 123 frische Coins · 0 mit Kaufsignal · aussortiert: 64× zu alt · 23× Liquidität zu dünn · 17× zu wenig Liquidität · 7× Pump.fun-Startphase · 3× zu wenig Volumen · 2× Verkaufsdruck · 1× zu jung · 1× gesperrt (früher",
+   ""
+  ],
+  [
+   1795725203000,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795724913623,
+   "INFO",
+   "–",
+   "Scan: 129 frische Coins · 0 mit Kaufsignal · aussortiert: 68× zu alt · 27× Liquidität zu dünn · 16× zu wenig Liquidität · 6× Pump.fun-Startphase · 4× zu wenig Volumen · 1× zu jung · 1× gesperrt (früher Verlust) · 1× Entw",
+   ""
+  ],
   [
    1795724704703,
    "FILTER",
@@ -115,111 +228,6 @@
    "INFO",
    "–",
    "Scan: 131 frische Coins · 0 mit Kaufsignal · aussortiert: 71× zu alt · 22× Liquidität zu dünn · 15× zu wenig Liquidität · 6× Pump.fun-Startphase · 4× zu wenig Volumen · 3× zu jung · 2× nicht jagen · 2× keine Website/Soci",
-   ""
-  ],
-  [
-   1795723574282,
-   "INFO",
-   "–",
-   "Jupiter-Schlüssel wird abgelehnt (HTTP 401) – nutze wieder die schlüssellose Adresse. Bitte Schlüssel prüfen.",
-   ""
-  ],
-  [
-   1795723573361,
-   "INFO",
-   "–",
-   "Bot gestartet (Testmodus, v12)",
-   ""
-  ],
-  [
-   1795723131275,
-   "INFO",
-   "–",
-   "Scan: 39 frische Coins · 0 mit Kaufsignal · aussortiert: 17× zu alt · 13× zu wenig Liquidität · 5× Pump.fun-Startphase · 2× zu jung · 1× gesperrt (früher Verlust)",
-   ""
-  ],
-  [
-   1795723121255,
-   "INFO",
-   "1T",
-   "Schatten-Trade ausgewertet: wäre −22.7% gewesen (aussortiert wegen hart: Verkaufs-Test fehlgeschlagen (mögliche Honeypot), Setup „buyers+pullback“, Gehirn schätzte 29%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795722883239,
-   "FILTER",
-   "1T",
-   "Kaufdruck 87%, Rücksetzer im Aufwärtstrend (1h +319.0%, 5m −4.4%) – aber (hart): Verkaufs-Test fehlgeschlagen (mögliche Honeypot)",
-   ""
-  ],
-  [
-   1795722821289,
-   "INFO",
-   "–",
-   "Scan: 40 frische Coins · 0 mit Kaufsignal · aussortiert: 18× zu alt · 12× zu wenig Liquidität · 5× Pump.fun-Startphase · 2× zu jung · 1× nicht jagen · 1× gesperrt (früher Verlust)",
-   ""
-  ],
-  [
-   1795722521275,
-   "INFO",
-   "–",
-   "Scan: 41 frische Coins · 0 mit Kaufsignal · aussortiert: 18× zu alt · 13× zu wenig Liquidität · 5× Pump.fun-Startphase · 4× zu jung · 1× gesperrt (früher Verlust)",
-   ""
-  ],
-  [
-   1795722491309,
-   "INFO",
-   "SPCX",
-   "Schatten-Trade ausgewertet: wäre −3.8% gewesen (aussortiert wegen hart: Mint-Recht offen (neue Coins druckbar), Setup „buyers+spike“, Gehirn schätzte 72%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795722221266,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795722211291,
-   "INFO",
-   "–",
-   "Scan: 43 frische Coins · 0 mit Kaufsignal · aussortiert: 20× zu alt · 14× zu wenig Liquidität · 6× Pump.fun-Startphase · 2× zu jung · 1× gesperrt (früher Verlust)",
-   ""
-  ],
-  [
-   1795721901421,
-   "INFO",
-   "–",
-   "Scan: 44 frische Coins · 0 mit Kaufsignal · aussortiert: 22× zu alt · 14× zu wenig Liquidität · 7× Pump.fun-Startphase · 1× gesperrt (früher Verlust)",
-   ""
-  ],
-  [
-   1795721901420,
-   "INFO",
-   "BIRB",
-   "Schatten-Trade ausgewertet: wäre −3.2% gewesen (aussortiert wegen hart: Top-10-Halter 88%, Setup „buyers“, Gehirn schätzte 4%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795721901420,
-   "INFO",
-   "pippin",
-   "Schatten-Trade ausgewertet: wäre −2.4% gewesen (aussortiert wegen hart: größter Halter besitzt 33%, Setup „buyers“, Gehirn schätzte 15%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795721899581,
-   "INFO",
-   "–",
-   "Bot gestartet (Testmodus, v12)",
-   ""
-  ],
-  [
-   1795721314742,
-   "INFO",
-   "–",
-   "Marktlage wechselt: heiß → normal (normaler Betrieb)",
    ""
   ]
  ]
