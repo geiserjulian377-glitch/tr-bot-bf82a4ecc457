@@ -1,5 +1,5 @@
 {
- "updated": 1795724203849,
+ "updated": 1795724665935,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -45,8 +45,29 @@
   ]
  ],
  "shadows": 5,
- "scanned": 23923,
+ "scanned": 24685,
  "log": [
+  [
+   1795724607871,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 80%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795724606834,
+   "INFO",
+   "–",
+   "Scan: 127 frische Coins · 1 mit Kaufsignal · aussortiert: 59× zu alt · 31× Liquidität zu dünn · 15× zu wenig Liquidität · 6× Pump.fun-Startphase · 5× zu wenig Volumen · 1× zu jung · 1× Fake-Handel · 1× gesperrt (früher V",
+   ""
+  ],
+  [
+   1795724605899,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v12)",
+   ""
+  ],
   [
    1795724194239,
    "INFO",
@@ -200,27 +221,6 @@
    "–",
    "Scan: 127 frische Coins · 0 mit Kaufsignal · aussortiert: 64× zu alt · 28× Liquidität zu dünn · 13× zu wenig Liquidität · 7× Pump.fun-Startphase · 5× zu wenig Volumen · 2× zu jung · 2× keine Website/Socials · 1× Fake-Han",
    ""
-  ],
-  [
-   1795721107684,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → heiß (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795720993524,
-   "INFO",
-   "NORFEATH",
-   "Coin für 6 Std. gesperrt (Verlust)",
-   ""
-  ],
-  [
-   1795720993523,
-   "EXIT",
-   "NORFEATH",
-   "Verkauf Rest zu $0.0002587 – Stop bestätigt ($0.0002673)",
-   "−24.1%"
   ]
  ]
 }
