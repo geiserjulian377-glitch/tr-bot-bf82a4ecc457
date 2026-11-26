@@ -1,6 +1,6 @@
 {
- "updated": 1795721169076,
- "version": "v10 · test",
+ "updated": 1795721374066,
+ "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
  "equity": 19.38,
@@ -24,10 +24,36 @@
   "n": 492,
   "acc": 67
  },
- "lage": "heiß",
+ "lage": "normal",
+ "tune": null,
+ "minProb": 58,
+ "days": [
+  [
+   "2026-11-26",
+   {
+    "n": 1,
+    "w": 0,
+    "pnl": -0.615682112125479
+   }
+  ]
+ ],
  "shadows": 1,
- "scanned": 16326,
+ "scanned": 17107,
  "log": [
+  [
+   1795721314742,
+   "INFO",
+   "–",
+   "Marktlage wechselt: heiß → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795721314026,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v12)",
+   ""
+  ],
   [
    1795721138554,
    "INFO",
