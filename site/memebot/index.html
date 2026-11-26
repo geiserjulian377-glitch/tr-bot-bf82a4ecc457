@@ -231,12 +231,23 @@ async function getJSON(url, tries = 2) {
   let headers = {};
   const isJup = url.startsWith("https://lite-api.jup.ag/");
   if (isJup && /\/tokens\/v2\/(top|recent)/.test(url)) { const c = JUP.cache[url]; if (c && Date.now() - c.t < 60000) return c.d; }
-  if (KEYS.jup && isJup) { url = url.replace("https://lite-api.jup.ag/", "https://api.jup.ag/"); headers = {"x-api-key": KEYS.jup}; }
+  const orig = url;
+  if (KEYS.jup && !JUP.bad && isJup) { url = url.replace("https://lite-api.jup.ag/", "https://api.jup.ag/"); headers = {"x-api-key": KEYS.jup}; }
   if (isJup) await jupGate();
-  if (isJup && /\/tokens\/v2\/(top|recent)/.test(url)) {
-    const d = await getJSONraw(url, tries, headers); if (Array.isArray(d)) JUP.cache[url.replace("https://api.jup.ag/", "https://lite-api.jup.ag/")] = {t: Date.now(), d}; return d;
+  let d;
+  try { d = await getJSONraw(url, tries, headers); }
+  catch (e) {
+    if (headers["x-api-key"] && /HTTP 40[13]|Rate-Limit|HTTP 429/.test(e.message)) {   // Schlüssel abgelehnt/gedrosselt → schlüssellos weiter
+      JUP.fails = (JUP.fails || 0) + 1;
+      if (JUP.fails >= 3 && !JUP.bad) { JUP.bad = true; log("INFO", "–", `Jupiter-Schlüssel wird abgelehnt (${e.message}) – nutze wieder die schlüssellose Adresse. Bitte Schlüssel prüfen.`); }
+      d = await getJSONraw(orig, tries, {});
+    } else throw e;
   }
-  return getJSONraw(url, tries, headers);
+  if (headers["x-api-key"] && Array.isArray(d) && d.length === 0 && /\/tokens\/v2\/(top|recent)/.test(url)) {   // leere Liste mit Schlüssel → zur Sicherheit schlüssellos gegenprüfen
+    const d2 = await getJSONraw(orig, tries, {}).catch(() => []); if (Array.isArray(d2) && d2.length) { JUP.fails = (JUP.fails || 0) + 1; if (JUP.fails >= 3 && !JUP.bad) { JUP.bad = true; log("INFO", "–", "Jupiter-Schlüssel liefert leere Daten – nutze wieder die schlüssellose Adresse."); } d = d2; }
+  }
+  if (isJup && Array.isArray(d) && /\/tokens\/v2\/(top|recent)/.test(orig)) JUP.cache[orig] = {t: Date.now(), d};
+  return d;
 }
 async function getJSONraw(url, tries, headers) {
   for (let i = 0; i < tries; i++) {
@@ -1098,7 +1109,7 @@ async function serverView() {
 }
 serverView(); setInterval(serverView, 60000);
 
-window.__memebot = {rtInfo: () => ({key: !!KEYS.helius, jup: !!KEYS.jup, note: agentNote.rt || "", updates: RT.n}), think: f => think(f), train: (f, w) => train(f, w), FEAT, rugCheck, filterReason, signals, manage, get S(){ return S; }, C};   // für Tests
+window.__memebot = {rtInfo: () => ({key: !!KEYS.helius, jup: !!KEYS.jup && !JUP.bad, jupFails: JUP.fails || 0, note: agentNote.rt || "", updates: RT.n}), think: f => think(f), train: (f, w) => train(f, w), FEAT, rugCheck, filterReason, signals, manage, get S(){ return S; }, C};   // für Tests
 renderSettings(); render();
 }
 </script>
