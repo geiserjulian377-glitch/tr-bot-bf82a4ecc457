@@ -1,0 +1,66 @@
+{
+ "updated": 1795719622298,
+ "version": "v10 · test",
+ "startBal": 70,
+ "since": 1795719561433,
+ "equity": 69.39,
+ "cash": 59.5,
+ "trades": 0,
+ "wins": 0,
+ "losses": 0,
+ "pnl": 0,
+ "open": [
+  {
+   "sym": "NORFEATH",
+   "mode": "lern",
+   "cost": 10.5,
+   "gain": -4.796597487496546,
+   "min": 1
+  }
+ ],
+ "last": [],
+ "brain": {
+  "n": 489,
+  "acc": 67
+ },
+ "lage": "normal",
+ "shadows": 0,
+ "scanned": 800,
+ "log": [
+  [
+   1795719593412,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 71%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795719572535,
+   "INFO",
+   "NORFEATH",
+   "Gehirn: Gewinnchance 49% – Gründe: +Kaufdruck 5 Min., +Top-10-Konzentration, +Netto-Käufer · Markt normal",
+   ""
+  ],
+  [
+   1795719572530,
+   "ENTER",
+   "NORFEATH",
+   "LERN-TRADE (klein, zum Dazulernen) – Kauf $10.50 zu $0.0003047 · Setup „buyers+momentum“ · Kaufdruck 76%, Momentum +2.8% in 5 Min., Trending (Boost), Halter +7% in 1 Std. · Stop −17% / Trailing 24% (an Schwankung angepas",
+   "Größe 15% Lern-Trade (Chance 49%)"
+  ],
+  [
+   1795719563257,
+   "INFO",
+   "–",
+   "Scan: 134 frische Coins · 1 mit Kaufsignal · aussortiert: 76× zu alt · 25× Liquidität zu dünn · 16× zu wenig Liquidität · 8× Pump.fun-Startphase · 3× zu wenig Volumen · 1× zu jung · 1× Fake-Handel · 1× keine Website/Soci",
+   ""
+  ],
+  [
+   1795719562237,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v10)",
+   ""
+  ]
+ ]
+}
