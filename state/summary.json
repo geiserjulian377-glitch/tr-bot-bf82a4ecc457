@@ -1,32 +1,117 @@
 {
- "updated": 1795719967504,
+ "updated": 1795721169076,
  "version": "v10 · test",
  "startBal": 20,
  "since": 1795719905877,
- "equity": 19.83,
- "cash": 17.45,
- "trades": 0,
+ "equity": 19.38,
+ "cash": 19.38,
+ "trades": 1,
  "wins": 0,
- "losses": 0,
- "pnl": 0,
- "open": [
+ "losses": 1,
+ "pnl": -0.62,
+ "open": [],
+ "last": [
   {
    "sym": "NORFEATH",
    "mode": "normal",
+   "ret": -24.14439655394035,
    "cost": 2.55,
-   "gain": -5.283926021013308,
-   "min": 1
+   "why": "Stop bestätigt ($0.0002673)",
+   "t1": 1795720993524
   }
  ],
- "last": [],
  "brain": {
-  "n": 489,
+  "n": 492,
   "acc": 67
  },
- "lage": "normal",
- "shadows": 0,
- "scanned": 809,
+ "lage": "heiß",
+ "shadows": 1,
+ "scanned": 16326,
  "log": [
+  [
+   1795721138554,
+   "INFO",
+   "–",
+   "Scan: 127 frische Coins · 0 mit Kaufsignal · aussortiert: 64× zu alt · 28× Liquidität zu dünn · 13× zu wenig Liquidität · 7× Pump.fun-Startphase · 5× zu wenig Volumen · 2× zu jung · 2× keine Website/Socials · 1× Fake-Han",
+   ""
+  ],
+  [
+   1795721107684,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → heiß (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795720993524,
+   "INFO",
+   "NORFEATH",
+   "Coin für 6 Std. gesperrt (Verlust)",
+   ""
+  ],
+  [
+   1795720993523,
+   "EXIT",
+   "NORFEATH",
+   "Verkauf Rest zu $0.0002587 – Stop bestätigt ($0.0002673)",
+   "−24.1%"
+  ],
+  [
+   1795720978270,
+   "INFO",
+   "NORFEATH",
+   "Schatten-Trade ausgewertet: wäre −22.7% gewesen (aussortiert wegen Chart: mehr Volumen auf roten Kerzen (0.3×), Setup „buyers+momentum“, Gehirn schätzte 66%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795720828132,
+   "INFO",
+   "–",
+   "Scan: 123 frische Coins · 1 mit Kaufsignal · aussortiert: 57× zu alt · 29× Liquidität zu dünn · 13× zu wenig Liquidität · 8× Pump.fun-Startphase · 6× zu wenig Volumen · 2× zu jung · 2× keine Website/Socials · 1× Fake-Han",
+   ""
+  ],
+  [
+   1795720688823,
+   "FILTER",
+   "SPCX",
+   "Volumen-Spike 6.4×, Kaufdruck 67% – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control Enabled; Gefahr: Freeze ",
+   ""
+  ],
+  [
+   1795720668126,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 70%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795720639736,
+   "FILTER",
+   "pippin",
+   "Kaufdruck 80%, Trending bei Jupiter – aber (hart): größter Halter besitzt 33%; Top-10-Halter 63%",
+   ""
+  ],
+  [
+   1795720519001,
+   "INFO",
+   "–",
+   "Scan: 128 frische Coins · 0 mit Kaufsignal · aussortiert: 63× zu alt · 30× Liquidität zu dünn · 12× zu wenig Liquidität · 8× Pump.fun-Startphase · 6× zu wenig Volumen · 3× zu jung · 2× keine Website/Socials · 1× Fake-Han",
+   ""
+  ],
+  [
+   1795720218405,
+   "INFO",
+   "–",
+   "Scan: 136 frische Coins · 0 mit Kaufsignal · aussortiert: 70× zu alt · 27× Liquidität zu dünn · 14× zu wenig Liquidität · 10× Pump.fun-Startphase · 7× zu wenig Volumen · 2× zu jung · 1× Fake-Handel · 1× Halter springen a",
+   ""
+  ],
+  [
+   1795720064253,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 67%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
   [
    1795719939448,
    "FILTER",
