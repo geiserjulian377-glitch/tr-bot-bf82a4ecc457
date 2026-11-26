@@ -1,5 +1,5 @@
 {
- "updated": 1795723633410,
+ "updated": 1795724203849,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -24,13 +24,13 @@
   "n": 496,
   "acc": 67
  },
- "lage": "normal",
+ "lage": "kalt",
  "tune": null,
  "minProb": 58,
  "rt": {
   "key": true,
-  "jup": false,
-  "jupFails": 3,
+  "jup": true,
+  "jupFails": 0,
   "note": "",
   "updates": 0
  },
@@ -45,8 +45,29 @@
   ]
  ],
  "shadows": 5,
- "scanned": 23107,
+ "scanned": 23923,
  "log": [
+  [
+   1795724194239,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795724145537,
+   "INFO",
+   "–",
+   "Scan: 136 frische Coins · 0 mit Kaufsignal · aussortiert: 66× zu alt · 32× Liquidität zu dünn · 17× zu wenig Liquidität · 8× Pump.fun-Startphase · 4× zu wenig Volumen · 2× Verkaufsdruck · 1× nicht jagen · 1× gesperrt (fr",
+   ""
+  ],
+  [
+   1795724143802,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v12)",
+   ""
+  ],
   [
    1795723613908,
    "INFO",
@@ -200,27 +221,6 @@
    "NORFEATH",
    "Verkauf Rest zu $0.0002587 – Stop bestätigt ($0.0002673)",
    "−24.1%"
-  ],
-  [
-   1795720978270,
-   "INFO",
-   "NORFEATH",
-   "Schatten-Trade ausgewertet: wäre −22.7% gewesen (aussortiert wegen Chart: mehr Volumen auf roten Kerzen (0.3×), Setup „buyers+momentum“, Gehirn schätzte 66%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795720828132,
-   "INFO",
-   "–",
-   "Scan: 123 frische Coins · 1 mit Kaufsignal · aussortiert: 57× zu alt · 29× Liquidität zu dünn · 13× zu wenig Liquidität · 8× Pump.fun-Startphase · 6× zu wenig Volumen · 2× zu jung · 2× keine Website/Socials · 1× Fake-Han",
-   ""
-  ],
-  [
-   1795720688823,
-   "FILTER",
-   "SPCX",
-   "Volumen-Spike 6.4×, Kaufdruck 67% – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control Enabled; Gefahr: Freeze ",
-   ""
   ]
  ]
 }
