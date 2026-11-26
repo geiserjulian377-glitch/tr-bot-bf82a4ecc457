@@ -139,6 +139,7 @@ a{color:var(--b)}
           <div class="fig" id="eqFig"><svg></svg></div>
         </div>
       </div>
+      <div class="card" style="margin-top:14px"><h3>☁️ DAUERTEST · läuft rund um die Uhr auf dem Server <span id="srvAge">–</span></h3><div id="srv" class="note">Lade Server-Stand …</div></div>
       <div class="card" style="margin-top:14px"><h3>🧠 GEHIRN · Lage &amp; Einschätzung</h3><div id="brain" class="note">Startet beim ersten Scan.</div></div>
       <div class="card" style="margin-top:14px"><h3>GELERNT · was funktioniert, was nicht <span id="learnN">–</span></h3><div id="learn"><div class="note">Nach den ersten abgeschlossenen Trades siehst du hier, welche Einstiegs-Setups Gewinn bringen. Setups, die oft verlieren, sperrt der Bot automatisch.</div></div></div>
       <div class="card" style="margin-top:14px"><h3>PROTOKOLL · jede Entscheidung mit Grund <span id="logN">0 Zeilen</span></h3><div class="log" id="log"></div></div>
@@ -966,6 +967,21 @@ $("#recap").onclick = () => {
 };
 document.addEventListener("change", e => { const k = e.target.dataset.k; if (!k) return; C[k] = k === "ntfy" ? e.target.value.trim() : parseFloat(e.target.value); store.set("cfg", C); render(); });
 new ResizeObserver(() => drawEq()).observe($("#eqFig"));
+// ---------------- DAUERTEST-ANZEIGE: Stand des Server-Bots (GitHub Actions, Testgeld)
+async function serverView() {
+  try {
+    const d = await fetch("https://raw.githubusercontent.com/geiserjulian377-glitch/tr-bot-bf82a4ecc457/memebot-data/state/summary.json?t=" + Math.floor(Date.now() / 60000), {cache: "no-store"}).then(r => r.ok ? r.json() : null);
+    if (!d) { $("#srv").innerHTML = `<div class="note">Der Dauertest startet gerade – der erste Stand erscheint nach ca. 10 Min.</div>`; return; }
+    const ago = Math.round((Date.now() - d.updated) / 60000), r = (d.equity / d.startBal - 1) * 100;
+    $("#srvAge").textContent = ago <= 1 ? "gerade eben" : `vor ${ago} Min.`;
+    $("#srv").innerHTML = `<div class="row"><b>Konto: <span class="${d.equity >= d.startBal ? "up" : "down"}">${usd(d.equity)}</span> (Start ${usd(d.startBal)}, ${pct(r)})</b><span class="mut">${esc(d.version)} · seit ${new Date(d.since).toLocaleString("de-DE", {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"})}</span></div>
+      <div class="row mut"><span>${d.trades} Trades · ${d.wins} Gewinne / ${d.losses} Verluste · Bilanz ${usd(d.pnl)}</span><span>Gehirn ${d.brain.n} gelernt · ${d.brain.acc}% richtig · Markt ${esc(d.lage)}</span></div>
+      ${d.open.length ? `<div class="mut">Offen: ${d.open.map(o => `<b>$${esc(o.sym)}</b> ${o.mode === "lern" ? "(Lern-Trade) " : ""}<span class="${o.gain >= 0 ? "up" : "down"}">${pct(o.gain)}</span> seit ${o.min} Min.`).join(" · ")}</div>` : ""}
+      ${d.last.length ? `<div class="log" style="height:auto;max-height:180px;margin-top:6px">${d.last.map(t => `<div style="grid-template-columns:60px 90px 70px minmax(0,1fr)"><span class="mut">${hhmm(t.t1)}</span><span><b>$${esc(t.sym)}</b></span><span class="${t.ret >= 0 ? "up" : "down"}">${pct(t.ret)}</span><span class="mut">${t.mode === "lern" ? "Lern-Trade · " : ""}${esc(t.why)}</span></div>`).join("")}</div>` : `<div class="note">Noch kein abgeschlossener Trade auf dem Server.</div>`}`;
+  } catch (e) { $("#srv").innerHTML = `<div class="note">Server-Stand gerade nicht erreichbar.</div>`; }
+}
+serverView(); setInterval(serverView, 60000);
+
 window.__memebot = {think: f => think(f), train: (f, w) => train(f, w), FEAT, rugCheck, filterReason, signals, manage, get S(){ return S; }, C};   // für Tests
 renderSettings(); render();
 }

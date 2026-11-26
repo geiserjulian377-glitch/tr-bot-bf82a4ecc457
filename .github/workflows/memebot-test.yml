@@ -1,0 +1,49 @@
+name: Meme-Bot Dauertest
+
+# Testet den Meme-Bot rund um die Uhr im TESTMODUS (Testgeld, kein echtes Geld).
+# Jeder Lauf dauert ~5,5 Std. und startet am Ende selbst den nächsten (Kette).
+# Anhalten: Datei state/STOP im Branch memebot-data anlegen.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 */6 * * *"   # Reserve, falls die Kette abreißt
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: memebot-test
+  cancel-in-progress: false
+
+jobs:
+  dauertest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: memebot-data
+          path: data
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Puppeteer installieren
+        run: npm install --prefix /tmp/pp puppeteer-core@23 --no-audit --no-fund
+      - name: Bot testen
+        env:
+          NODE_PATH: /tmp/pp/node_modules
+          RUN_MIN: "330"
+        run: |
+          git -C data config user.name "memebot-dauertest"
+          git -C data config user.email "memebot-dauertest@users.noreply.github.com"
+          node scripts/memebot-runner.cjs
+      - name: Nächsten Lauf starten
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if [ -f STOPPED ]; then echo "Angehalten."; exit 0; fi
+          for t in 1 2 3 4 5 6; do gh workflow run memebot-test.yml --ref main && break; sleep 30; done
