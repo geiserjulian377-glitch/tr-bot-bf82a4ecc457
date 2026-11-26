@@ -181,9 +181,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 // ---------------- Einstellungen
 const DEF = {startBal: 20, minAgeMin: 20, maxAgeH: 24, minLiq: 15000, minVolH1: 20000, minLiqMc: 8, minHolders: 300, buyRatio: 60, spikeX: 2.5,
-  noChase5m: 12, maxH1: 300, sizePct: 20, maxOpen: 2, maxBuysH: 4, top1Max: 10, top10Max: 35, devMax: 5, lpMin: 90, maxImpact: 8,
+  noChase5m: 12, maxH1: 300, sizePct: 20, maxOpen: 3, maxBuysH: 6, top1Max: 10, top10Max: 35, devMax: 5, lpMin: 90, maxImpact: 8,
   tp1: 35, tp1Pct: 50, tp2: 100, tp2Pct: 25, trail: 20, stop: 12, crash: 25, confirmSec: 6, sellPressure: 1.6, liqDrop: 20,
-  timeStopMin: 40, ddLimit: 25, fee: 0.85, fixFee: 0.02, cooldownH: 6, minOrganic: 15, minNetBuyers: 3, needSocials: 1, solDrop: 1.5, estLiq: 150000, estOrganic: 60, maxAtr: 9, atrStop: 3, shadowMin: 30, maxRugScore: 60, maxPriceDiff: 5, confirmScans: 2, dayLock: 15, minProb: 58, scanSec: 10, fastSec: 3, maxDrift: 5, explore: 1, exploreProb: 35, exploreSize: 15, exploreMaxH: 4, ntfy: ""};
+  timeStopMin: 40, ddLimit: 25, fee: 0.85, fixFee: 0.02, cooldownH: 6, minOrganic: 15, minNetBuyers: 3, needSocials: 1, solDrop: 1.5, estLiq: 150000, estOrganic: 60, maxAtr: 9, atrStop: 3, shadowMin: 30, maxRugScore: 60, maxPriceDiff: 5, confirmScans: 2, dayLock: 15, minProb: 58, scanSec: 10, fastSec: 3, maxDrift: 5, explore: 1, exploreProb: 35, exploreSize: 15, exploreMaxH: 6, ntfy: ""};
 const LABEL = {startBal: "Startkapital ($)", minAgeMin: "Min. Alter (Min.)", maxAgeH: "Max. Alter (Std.)", minLiq: "Min. Liquidität ($)",
   minVolH1: "Min. Volumen 1 Std. ($)", minLiqMc: "Liquidität/Marktwert min. (%)", minHolders: "Min. Halter", buyRatio: "Kaufdruck min. (%)",
   spikeX: "Volumen-Spike (×)", noChase5m: "Nicht kaufen über (+% in 5 Min.)", maxH1: "Nicht jagen über (+% 1 Std.)", sizePct: "Größe je Trade (% Konto)",
@@ -194,15 +194,18 @@ const LABEL = {startBal: "Startkapital ($)", minAgeMin: "Min. Alter (Min.)", max
   sellPressure: "Verkaufsdruck-Ausstieg (Verk./Käufe)", liqDrop: "Raus bei Liquiditätsverlust (%)", timeStopMin: "Zeit-Stop (Min.)",
   ddLimit: "Tageslimit (−% vom Hoch)", fee: "Phantom-Gebühr je Swap (%)", fixFee: "Netzwerk-/Prioritätsgebühr je Swap ($)", cooldownH: "Sperre nach Verlust (Std.)", minOrganic: "Echtheits-Score min. (0–100)", minNetBuyers: "Netto-Käufer 5 Min. min.", needSocials: "Website/Socials Pflicht (1=ja)", solDrop: "Pause wenn SOL fällt (−% 1 Std.)", estLiq: "Etablierte Coins: Liquidität min. ($)", estOrganic: "Etablierte Coins: Echtheit min.", maxAtr: "Max. Schwankung je Minute (%)", atrStop: "Stop = Schwankung × (dynamisch)", shadowMin: "Schatten-Trade auswerten nach (Min.)", maxRugScore: "RugCheck-Risiko max. (0–100)", maxPriceDiff: "Max. Preisabweichung der Quellen (%)", confirmScans: "Bestätigung über Scans", dayLock: "Ab Tagesgewinn (+%) halbe Größe", minProb: "Gehirn: Gewinnchance min. (%)", scanSec: "Scan alle (Sek.)", fastSec: "Positionen prüfen alle (Sek.)", maxDrift: "Kurs-Check vor Kauf: max. Abweichung (%)", explore: "Lern-Trades im Testmodus (1=an)", exploreProb: "Lern-Trade ab Chance (%)", exploreSize: "Lern-Trade Größe (% Konto)", exploreMaxH: "Max. Lern-Trades pro Std.", ntfy: "ntfy-Thema (Push)"};
 let C = {...DEF, ...store.get("cfg", {})};
+if (store.get("cfgVer", 1) === 5) {   // Testbeschleunigung: mehr Positionen und Lern-Trades
+  C.maxOpen = DEF.maxOpen; C.maxBuysH = DEF.maxBuysH; C.exploreMaxH = DEF.exploreMaxH; store.set("cfg", C); store.set("cfgVer", 6);
+}
 if (store.get("cfgVer", 1) === 4) {   // v10: echte Phantom-Kosten
-  C.fee = DEF.fee; C.fixFee = DEF.fixFee; C.exploreSize = DEF.exploreSize; store.set("cfg", C); store.set("cfgVer", 5);
+  C.fee = DEF.fee; C.fixFee = DEF.fixFee; C.exploreSize = DEF.exploreSize; C.maxOpen = DEF.maxOpen; C.maxBuysH = DEF.maxBuysH; C.exploreMaxH = DEF.exploreMaxH; store.set("cfg", C); store.set("cfgVer", 6);
 }
 if (store.get("cfgVer", 1) >= 3 && store.get("cfgVer", 1) < 4) {   // v9: schneller reagieren
-  C.scanSec = DEF.scanSec; C.confirmSec = DEF.confirmSec; C.fastSec = DEF.fastSec; C.fee = DEF.fee; C.fixFee = DEF.fixFee; C.exploreSize = DEF.exploreSize; store.set("cfg", C); store.set("cfgVer", 5);
+  C.scanSec = DEF.scanSec; C.confirmSec = DEF.confirmSec; C.fastSec = DEF.fastSec; C.fee = DEF.fee; C.fixFee = DEF.fixFee; C.exploreSize = DEF.exploreSize; C.maxOpen = DEF.maxOpen; C.maxBuysH = DEF.maxBuysH; C.exploreMaxH = DEF.exploreMaxH; store.set("cfg", C); store.set("cfgVer", 6);
 }
 if (store.get("cfgVer", 1) < 3) {   // v2: neue, ruhigere Ausstiegsregeln übernehmen
   const keep = {startBal: C.startBal, ntfy: C.ntfy};
-  C = {...DEF, ...keep}; store.set("cfg", C); store.set("cfgVer", 5);
+  C = {...DEF, ...keep}; store.set("cfg", C); store.set("cfgVer", 6);
 }
 
 // ---------------- Zustand
