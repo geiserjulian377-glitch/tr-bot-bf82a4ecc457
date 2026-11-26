@@ -1,5 +1,5 @@
 {
- "updated": 1795733174363,
+ "updated": 1795734375337,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -37,7 +37,7 @@
   }
  ],
  "brain": {
-  "n": 567,
+  "n": 568,
   "acc": 69
  },
  "lage": "kalt",
@@ -60,9 +60,86 @@
    }
   ]
  ],
- "shadows": 6,
- "scanned": 138866,
+ "shadows": 7,
+ "scanned": 154972,
  "log": [
+  [
+   1795734353520,
+   "INFO",
+   "–",
+   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795734093568,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
+   ""
+  ],
+  [
+   1795734084382,
+   "INFO",
+   "–",
+   "Scan: 135 frische Coins · 0 mit Kaufsignal · aussortiert: 71× zu alt · 25× Liquidität zu dünn · 15× zu wenig Liquidität · 12× Pump.fun-Startphase · 4× zu wenig Volumen · 2× zu jung · 2× Verkaufsdruck · 2× gesperrt (frühe",
+   ""
+  ],
+  [
+   1795733903555,
+   "INFO",
+   "–",
+   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795733874154,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
+   ""
+  ],
+  [
+   1795733823553,
+   "INFO",
+   "–",
+   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795733783574,
+   "INFO",
+   "–",
+   "Scan: 138 frische Coins · 0 mit Kaufsignal · aussortiert: 67× zu alt · 29× Liquidität zu dünn · 15× zu wenig Liquidität · 12× Pump.fun-Startphase · 6× zu wenig Volumen · 2× zu jung · 2× gesperrt (früher Verlust) · 1× nic",
+   ""
+  ],
+  [
+   1795733713537,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
+   ""
+  ],
+  [
+   1795733525636,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 61%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795733483498,
+   "INFO",
+   "–",
+   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 73× zu alt · 18× Liquidität zu dünn · 15× zu wenig Liquidität · 11× Pump.fun-Startphase · 6× zu wenig Volumen · 2× zu jung · 2× gesperrt (früher Verlust) · 1× Dat",
+   ""
+  ],
+  [
+   1795733463566,
+   "INFO",
+   "HOLD",
+   "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen zu wild: 25.2% Schwankung je Minute, Setup „buyers“, Gehirn schätzte 20%) – Gehirn lernt daraus",
+   ""
+  ],
   [
    1795733174207,
    "INFO",
@@ -159,83 +236,6 @@
    "INFO",
    "–",
    "Scan: 129 frische Coins · 1 mit Kaufsignal · aussortiert: 67× zu alt · 20× Liquidität zu dünn · 17× zu wenig Liquidität · 8× Pump.fun-Startphase · 6× zu wenig Volumen · 2× zu jung · 2× gesperrt (früher Verlust) · 1× Date",
-   ""
-  ],
-  [
-   1795731913374,
-   "INFO",
-   "–",
-   "Bot gestartet (Testmodus, v12)",
-   ""
-  ],
-  [
-   1795731909201,
-   "INFO",
-   "–",
-   "Bot gestoppt",
-   ""
-  ],
-  [
-   1795731703867,
-   "INFO",
-   "PLAZA",
-   "Schatten-Trade ausgewertet: wäre +32.6% gewesen (aussortiert wegen zu wild: 13.1% Schwankung je Minute, Setup „buyers+momentum+spike“, Gehirn schätzte 30%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795731653020,
-   "INFO",
-   "–",
-   "Scan: 138 frische Coins · 0 mit Kaufsignal · aussortiert: 68× zu alt · 28× Liquidität zu dünn · 17× zu wenig Liquidität · 8× Pump.fun-Startphase · 7× zu wenig Volumen · 2× gesperrt (früher Verlust) · 1× zu jung · 1× nich",
-   ""
-  ],
-  [
-   1795731643089,
-   "FILTER",
-   "PLAZA",
-   "Volumen-Spike 3.0×, Kaufdruck 67%, Momentum +9.7% in 5 Min., Trending bei Jupiter – aber (hart): Verkauf würde 8.2% Kurs kosten",
-   ""
-  ],
-  [
-   1795731424786,
-   "INFO",
-   "Cateball",
-   "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen zu wild: 11.1% Schwankung je Minute, Setup „buyers“, Gehirn schätzte 29%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795731344879,
-   "INFO",
-   "–",
-   "Scan: 142 frische Coins · 0 mit Kaufsignal · aussortiert: 70× zu alt · 26× Liquidität zu dünn · 17× zu wenig Liquidität · 11× zu wenig Volumen · 8× Pump.fun-Startphase · 2× Daten widersprüchlich · 2× gesperrt (früher Ver",
-   ""
-  ],
-  [
-   1795731284980,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 63%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795731143944,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795731133013,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795731033024,
-   "INFO",
-   "–",
-   "Scan: 140 frische Coins · 0 mit Kaufsignal · aussortiert: 66× zu alt · 29× Liquidität zu dünn · 17× zu wenig Liquidität · 12× zu wenig Volumen · 8× Pump.fun-Startphase · 2× gesperrt (früher Verlust) · 1× Fake-Handel · 1×",
    ""
   ]
  ]
