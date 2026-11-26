@@ -68,6 +68,8 @@ async function main() {
           open: S.pos.map(p => ({ sym: p.sym, mode: p.mode, cost: p.cost, gain: (p.last / p.entry - 1) * 100, min: Math.round((Date.now() - p.t0) / 60000) })),
           last: S.trades.slice(-15).reverse().map(t => ({ sym: t.sym, mode: t.mode, ret: t.ret, cost: t.cost, why: t.why, t1: t.t1 })),
           brain: { n: Math.round(B.n || 0), acc: B.seen ? Math.round(B.hits / B.seen * 100) : 0 }, lage: S.lage ? S.lage.name : "",
+          tune: S.tune || null, minProb: window.__memebot.C.minProb,
+          days: Object.entries(S.trades.reduce((m, t) => { const k = new Date(t.t1).toISOString().slice(0, 10); m[k] = m[k] || {n: 0, w: 0, pnl: 0}; m[k].n++; m[k].w += t.ret > 0 ? 1 : 0; m[k].pnl += t.got - t.cost; return m; }, {})).slice(-7),
           shadows: (S.shadow || []).filter(x => x.done).length, scanned: S.stats.scan,
           log: S.log.slice(-25).reverse().map(l => [l.t, l.type, l.sym, l.text.slice(0, 220), l.val])
         }

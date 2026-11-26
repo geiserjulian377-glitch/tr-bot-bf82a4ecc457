@@ -92,7 +92,7 @@ a{color:var(--b)}
   <div class="head">
     <div class="logo" aria-hidden="true"></div>
     <div>
-      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v10 · test</span></div>
+      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v11 · test</span></div>
       <div class="status" id="status"><span class="dot"></span>gestoppt</div>
       <div class="chip" id="phase">bereit</div>
     </div>
@@ -208,9 +208,9 @@ if (store.get("cfgVer", 1) < 3) {   // v2: neue, ruhigere Ausstiegsregeln übern
 // ---------------- Zustand
 function fresh() { return {bal: C.startBal, start: Date.now(), startBal: C.startBal, pos: [], trades: [], log: [], eq: [[Date.now(), C.startBal]],
   wins: 0, losses: 0, streak: 0, peak: C.startBal, day: new Date().toDateString(), dayPeak: C.startBal, paused: false,
-  stats: {scan: 0, sig: 0, rug: 0, fil: 0}, holders: {}, block: {}, learn: {}, buys: [], shadow: [], slearn: {}, rej: {}, explores: []}; }
+  stats: {scan: 0, sig: 0, rug: 0, fil: 0}, holders: {}, block: {}, learn: {}, buys: [], shadow: [], slearn: {}, rej: {}, explores: [], evals: []}; }
 let S = store.get("state", null) || fresh();
-S.dayPeak0 = S.dayPeak0 || S.startBal; S.block = S.block || {}; S.learn = S.learn || {}; S.buys = S.buys || []; S.shadow = S.shadow || []; S.slearn = S.slearn || {}; S.brain = S.brain || null; S.pretrainBusy = false; S.rej = S.rej || {}; S.explores = S.explores || [];
+S.dayPeak0 = S.dayPeak0 || S.startBal; S.block = S.block || {}; S.learn = S.learn || {}; S.buys = S.buys || []; S.shadow = S.shadow || []; S.slearn = S.slearn || {}; S.brain = S.brain || null; S.pretrainBusy = false; S.rej = S.rej || {}; S.explores = S.explores || []; S.evals = S.evals || []; S.tune = S.tune || null;
 let confirmSeen = {}, guardAt = 0, lastPairs = {};
 let running = false, busy = false, fastBusy = false, rugCache = {}, filteredAt = {}, flow = [], agentNote = {}, vaultQueue = [];
 const save = () => { S.log = S.log.slice(-800); S.eq = S.eq.slice(-4000); S.trades = S.trades.slice(-500); store.set("state", S); };
@@ -468,6 +468,28 @@ async function pretrain(big) {
 }
 $("#pretrain").onclick = () => pretrain(true);   // Knopf = großes Training
 
+// ---------------- SELBST-OPTIMIERER: stellt die Kaufschwelle nach den eigenen Ergebnissen ein
+function autotune() {
+  const E = (S.evals || []).filter(e => Date.now() - e.t < 3 * 86400000);
+  if (E.length < 25) return null;
+  let best = null;
+  for (let t = 0.35; t <= 0.80; t += 0.05) {
+    const sel = E.filter(e => e.p >= t); if (sel.length < 8) continue;
+    const avg = sel.reduce((a, e) => a + e.r, 0) / sel.length, wr = sel.filter(e => e.r > 0).length / sel.length;
+    const score = avg * Math.sqrt(sel.length);
+    if (!best || score > best.score) best = {t, avg, wr, n: sel.length, score};
+  }
+  const old = C.minProb;
+  if (!best) return null;
+  if (best.avg > 0) C.minProb = Math.round(Math.min(75, Math.max(45, best.t * 100)));
+  else C.minProb = Math.min(75, Math.max(old, 68));   // nirgends Gewinn → vorsichtiger werden
+  C.exploreProb = Math.max(30, C.minProb - 15);
+  store.set("cfg", C);
+  S.tune = {t: Date.now(), n: E.length, minProb: C.minProb, avg: best.avg, wr: best.wr * 100, sel: best.n};
+  if (old !== C.minProb) log("INFO", "–", `Selbst-Optimierer: Kaufschwelle ${old}% → ${C.minProb}% (aus ${E.length} Auswertungen: ab ${Math.round(best.t * 100)}% Chance Ø ${pct(best.avg)}, ${Math.round(best.wr * 100)}% Treffer bei ${best.n} Fällen)`);
+  return S.tune;
+}
+
 // ---------------- SCHATTEN-TRADES: verfolgt Setups, die nicht gekauft wurden, und lernt daraus
 function shadowAdd(p, key, atr, f, prob, reason) {
   const m = p.baseToken.address;
@@ -490,6 +512,7 @@ async function shadowUpdate(pairs) {
     if (r == null) continue;
     r -= costPct();                                                          // Phantom-Gebühren + Netzwerk + Slippage
     x.done = true; x.ret = r;
+    if (x.prob != null && !/^hart/.test(x.reason || "")) { S.evals = (S.evals || []).concat([{p: x.prob, r, t: Date.now(), s: 1}]).slice(-600); }
     const L = S.slearn[x.key] = S.slearn[x.key] || {n: 0, w: 0, sum: 0};
     L.n++; L.w += r > 0 ? 1 : 0; L.sum += r;
     train(x.f, r > 0, 1);
@@ -578,13 +601,13 @@ function buy(p, sz, rc, sig, ch, f, prob, mode) {
     cost: sz.size, t0: Date.now(), peak: price, last: price, liq0: p.liquidity?.usd || 0, tp1: false, tp2: false, got: 0,
     stopPct: ch ? Math.min(18, Math.max(8, ch.atr * C.atrStop)) : C.stop, trailPct: ch ? Math.min(30, Math.max(15, ch.atr * C.atrStop * 1.4)) : C.trail,
     stopAt: fill * (1 - (ch ? Math.min(18, Math.max(8, ch.atr * C.atrStop)) : C.stop) / 100),
-    below: 0, key, sig: sig.map(s => s.t), creatorBal: rc.creatorBal, top1Addr: rc.top1Addr, top1Amt: rc.top1Amt, f, prob, mode: mode || "normal"});
+    below: 0, key, sig: sig.map(s => s.t), creatorBal: rc.creatorBal, top1Addr: rc.top1Addr, top1Amt: rc.top1Amt, f, prob, mode: mode || "normal", impact: rc.impact || 0});
   if (mode === "lern") S.explores.push(Date.now());
   log("ENTER", p.baseToken.symbol, `${mode === "lern" ? "LERN-TRADE (klein, zum Dazulernen) – " : ""}Kauf ${usd(sz.size)} zu $${px(fill)} · Setup „${key}“ · ${sig.map(s => s.t).join(", ")} · Stop −${S.pos[S.pos.length - 1].stopPct.toFixed(0)}% / Trailing ${S.pos[S.pos.length - 1].trailPct.toFixed(0)}% (an Schwankung angepasst) · Rug-Check ok (größter Halter ${rc.top1.toFixed(0)}%, Top10 ${rc.top10.toFixed(0)}%, ${rc.holders} Halter, Echtheit ${Math.round(rc.org || 0)})`, "Größe " + sz.note);
   push(`KAUF ${p.baseToken.symbol}`, `${usd(sz.size)} zu $${px(fill)} | ${sig.map(s => s.t).join(", ")}`);
 }
 function sell(pos, share, price, why, type) {
-  const fee = C.fee / 100, slip = 0.01;
+  const fee = C.fee / 100, slip = Math.max(0.01, (pos.impact || 0) * 1.5 / 100) * (/Absturz|Liquidität abgezogen|Entwickler verkauft/.test(why) ? 3 : 1);   // im Absturz kostet der Verkauf mehr
   const q = Math.min(pos.qty, pos.qty0 * share);
   const out = Math.max(0, q * price * (1 - slip) * (1 - fee) - C.fixFee);
   pos.qty -= q; pos.got += out; S.bal += out;
@@ -592,6 +615,7 @@ function sell(pos, share, price, why, type) {
   log("EXIT", pos.sym, `${done ? "Verkauf Rest" : "Teilverkauf " + Math.round(share * 100) + "%"} zu $${px(price)} – ${why}`, done ? pct((pos.got / pos.cost - 1) * 100) : "");
   if (!done) return;
   const r = (pos.got / pos.cost - 1) * 100, win = pos.got > pos.cost;
+  if (pos.prob != null) S.evals = (S.evals || []).concat([{p: pos.prob, r, t: Date.now(), s: 0}]).slice(-600);
   S.trades.push({sym: pos.sym, name: pos.name, mint: pos.mint, cost: pos.cost, got: pos.got, ret: r, t0: pos.t0, t1: Date.now(), why, key: pos.key, sig: pos.sig, prob: pos.prob, mode: pos.mode});
   train(pos.f, win, 2);   // echte Trades zählen doppelt
   if (win) { S.wins++; S.streak = 0; } else { S.losses++; S.streak++; }
@@ -685,6 +709,7 @@ async function cycle() {
     const eq = equity(); S.peak = Math.max(S.peak, eq); S.dayPeak = Math.max(S.dayPeak, eq);
     if (!S.paused && eq < S.dayPeak * (1 - C.ddLimit / 100)) { S.paused = true; log("RISK", "–", `Tageslimit −${C.ddLimit}% vom Tageshoch – keine neuen Käufe bis morgen`); push("Bot pausiert", `Tageslimit -${C.ddLimit}% erreicht`); }
     await shadowUpdate(pairs);
+    if (!S.tune || Date.now() - S.tune.t > 30 * 60000) autotune();
     await guard().catch(() => {});
     flow = [];
     const list = Object.values(pairs).filter(p => !S.pos.some(x => x.mint === p.baseToken.address));
@@ -919,6 +944,8 @@ function render(light) {
   const top = B.w.map((w, i) => [FEAT[i][1], w]).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).slice(0, 5);
   $("#brain").innerHTML = `<div class="row"><b>Marktlage: ${esc(S.lage?.name || "–")}</b><span class="mut">${S.lage ? Math.round(S.lage.breadth * 100) + "% der Coins steigen" : ""}</span></div>
     <div class="row mut"><span>Gelernt aus ${Math.round(B.n)} Auswertungen${acc != null ? ` · lag ${acc}% richtig` : ""}</span><span>kauft ab ${C.minProb}% Chance</span></div>
+    <div class="mut">Selbst-Optimierer: ${S.tune ? `Kaufschwelle ${S.tune.minProb}% (aus ${S.tune.n} Auswertungen, ${new Date(S.tune.t).toLocaleTimeString("de-DE", {hour: "2-digit", minute: "2-digit"})})` : `sammelt noch (${(S.evals || []).length}/25 Auswertungen)`}</div>
+    <div class="mut">Heute: ${(() => { const d0 = new Date().setHours(0, 0, 0, 0), T = S.trades.filter(t => t.t1 >= d0); return T.length ? `${T.length} Trades · ${T.filter(t => t.ret > 0).length} Gewinne · Bilanz <b class="${T.reduce((a, t) => a + t.got - t.cost, 0) >= 0 ? "up" : "down"}">${usd(T.reduce((a, t) => a + t.got - t.cost, 0))}</b>` : "noch kein abgeschlossener Trade"; })()}</div>
     ${S.pretrained ? `<div class="mut">Vortraining: ${S.pretrained.total || S.pretrained.n} Beispiele gesamt (zuletzt ${S.pretrained.n} aus ${S.pretrained.pools} Coins) · ${new Date(S.pretrained.t).toLocaleString("de-DE", {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"})}</div>` : ""}
     <div class="mut" style="margin-top:6px">Phantom-Bereitschaft: ${(() => { const R = liveReadiness(); return R.checks.map(([ok, t]) => `<span class="${ok ? "up" : "down"}">${ok ? "✓" : "✗"} ${esc(t)}</span>`).join(" · "); })()}</div>
     <div class="mut" style="margin-top:6px">Achtet am stärksten auf: ${top.map(([n, w]) => `<b class="${w > 0 ? "up" : "down"}">${w > 0 ? "▲" : "▼"} ${esc(n)}</b>`).join(" · ")}</div>`;
@@ -949,12 +976,12 @@ function renderSettings() {
 }
 
 // ---------------- Bedienung
-$("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus, v10)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render();
+$("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus, v11)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render();
   if (!S.pretrained || Date.now() - S.pretrained.t > 2 * 3600000) setTimeout(() => pretrain(false), 3000);
   clearInterval(window.__ptI); window.__ptI = setInterval(() => { if (running) pretrain(false); }, 2 * 3600000); };
 $("#stop").onclick = () => { running = false; if (worker) worker.postMessage("stop"); $("#start").hidden = false; $("#stop").hidden = true; log("INFO", "–", "Bot gestoppt"); save(); render(); setPhase("gestoppt"); };
 $("#reset").onclick = () => { const b = $("#reset"); if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = "Wirklich zurücksetzen?"; setTimeout(() => { b.dataset.sure = ""; b.textContent = "Testgeld zurücksetzen"; }, 4000); return; }
-  b.dataset.sure = ""; b.textContent = "Testgeld zurücksetzen"; const keep = {learn: S.learn, block: S.block, brain: S.brain, slearn: S.slearn, rej: S.rej, pretrained: S.pretrained, pretrainSeen: S.pretrainSeen, shadow: (S.shadow || []).filter(x => !x.done)};
+  b.dataset.sure = ""; b.textContent = "Testgeld zurücksetzen"; const keep = {evals: S.evals, tune: S.tune, calib: S.calib, learn: S.learn, block: S.block, brain: S.brain, slearn: S.slearn, rej: S.rej, pretrained: S.pretrained, pretrainSeen: S.pretrainSeen, shadow: (S.shadow || []).filter(x => !x.done)};
   S = fresh(); Object.assign(S, keep); log("INFO", "–", "Testgeld zurückgesetzt – Gehirn, Gelerntes, Schatten-Trades und Sperrliste bleiben erhalten"); save(); render(); };
 $("#recap").onclick = () => {
   const eq = equity(), best = [...S.trades].sort((a, b) => b.ret - a.ret)[0], worst = [...S.trades].sort((a, b) => a.ret - b.ret)[0];
@@ -976,6 +1003,7 @@ async function serverView() {
     $("#srvAge").textContent = ago <= 1 ? "gerade eben" : `vor ${ago} Min.`;
     $("#srv").innerHTML = `<div class="row"><b>Konto: <span class="${d.equity >= d.startBal ? "up" : "down"}">${usd(d.equity)}</span> (Start ${usd(d.startBal)}, ${pct(r)})</b><span class="mut">${esc(d.version)} · seit ${new Date(d.since).toLocaleString("de-DE", {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"})}</span></div>
       <div class="row mut"><span>${d.trades} Trades · ${d.wins} Gewinne / ${d.losses} Verluste · Bilanz ${usd(d.pnl)}</span><span>Gehirn ${d.brain.n} gelernt · ${d.brain.acc}% richtig · Markt ${esc(d.lage)}</span></div>
+      ${d.minProb ? `<div class="mut">Kaufschwelle ${d.minProb}%${d.tune ? " (selbst eingestellt)" : ""}${(d.days || []).length ? " · Tage: " + d.days.map(([k, v]) => `${k.slice(8, 10)}.${k.slice(5, 7)}. <span class="${v.pnl >= 0 ? "up" : "down"}">${usd(v.pnl)}</span> (${v.n})`).join(" · ") : ""}</div>` : ""}
       ${d.open.length ? `<div class="mut">Offen: ${d.open.map(o => `<b>$${esc(o.sym)}</b> ${o.mode === "lern" ? "(Lern-Trade) " : ""}<span class="${o.gain >= 0 ? "up" : "down"}">${pct(o.gain)}</span> seit ${o.min} Min.`).join(" · ")}</div>` : ""}
       ${d.last.length ? `<div class="log" style="height:auto;max-height:180px;margin-top:6px">${d.last.map(t => `<div style="grid-template-columns:60px 90px 70px minmax(0,1fr)"><span class="mut">${hhmm(t.t1)}</span><span><b>$${esc(t.sym)}</b></span><span class="${t.ret >= 0 ? "up" : "down"}">${pct(t.ret)}</span><span class="mut">${t.mode === "lern" ? "Lern-Trade · " : ""}${esc(t.why)}</span></div>`).join("")}</div>` : `<div class="note">Noch kein abgeschlossener Trade auf dem Server.</div>`}`;
   } catch (e) { $("#srv").innerHTML = `<div class="note">Server-Stand gerade nicht erreichbar.</div>`; }
