@@ -756,7 +756,7 @@ async function cycle() {
       if (!bought) shadowAdd(p, key, ch?.atr, f, prob, reason);   // alles verfolgen – auch Aussortiertes
     }
     S.eq.push([Date.now(), Math.round(equity() * 100) / 100]);
-    setPhase(S.paused ? "Pause – Tageslimit erreicht" : S.pos.length ? `überwacht ${S.pos.length} Position${S.pos.length > 1 ? "en" : ""} alle 5 Sek.` : "wartet auf ein sauberes Setup");
+    setPhase(S.paused ? "Pause – Tageslimit erreicht" : S.pos.length ? `überwacht ${S.pos.length} Position${S.pos.length > 1 ? "en" : ""} alle ${C.fastSec} Sek.` : "wartet auf ein sauberes Setup");
     $("#lastScan").textContent = "letzter Scan " + hhmm(Date.now());
     save(); vaultFlush();
   } catch (e) { log("INFO", "–", "Fehler im Durchlauf: " + e.message + " – nächster Versuch gleich"); }
