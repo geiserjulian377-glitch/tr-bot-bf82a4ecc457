@@ -1,5 +1,5 @@
 {
- "updated": 1795735576365,
+ "updated": 1795736777456,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -61,8 +61,43 @@
   ]
  ],
  "shadows": 7,
- "scanned": 171056,
+ "scanned": 187354,
  "log": [
+  [
+   1795736523519,
+   "INFO",
+   "–",
+   "Scan: 133 frische Coins · 0 mit Kaufsignal · aussortiert: 64× zu alt · 30× Liquidität zu dünn · 12× Pump.fun-Startphase · 12× zu wenig Liquidität · 7× zu wenig Volumen · 2× zu jung · 1× keine Website/Socials · 1× nicht j",
+   ""
+  ],
+  [
+   1795736213543,
+   "INFO",
+   "–",
+   "Scan: 138 frische Coins · 1 mit Kaufsignal · aussortiert: 70× zu alt · 26× Liquidität zu dünn · 13× zu wenig Liquidität · 12× Pump.fun-Startphase · 7× zu wenig Volumen · 3× zu jung · 2× gesperrt (früher Verlust) · 2× kei",
+   ""
+  ],
+  [
+   1795735904305,
+   "INFO",
+   "–",
+   "Scan: 137 frische Coins · 0 mit Kaufsignal · aussortiert: 68× zu alt · 28× Liquidität zu dünn · 13× zu wenig Liquidität · 12× Pump.fun-Startphase · 6× zu wenig Volumen · 3× keine Website/Socials · 2× gesperrt (früher Ver",
+   ""
+  ],
+  [
+   1795735765398,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 64%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795735603580,
+   "INFO",
+   "–",
+   "Scan: 135 frische Coins · 0 mit Kaufsignal · aussortiert: 66× zu alt · 27× Liquidität zu dünn · 14× zu wenig Liquidität · 12× Pump.fun-Startphase · 8× zu wenig Volumen · 2× keine Website/Socials · 2× gesperrt (früher Ver",
+   ""
+  ],
   [
    1795735303518,
    "INFO",
@@ -201,41 +236,6 @@
    "INFO",
    "–",
    "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 73× zu alt · 18× Liquidität zu dünn · 15× zu wenig Liquidität · 11× Pump.fun-Startphase · 6× zu wenig Volumen · 2× zu jung · 2× gesperrt (früher Verlust) · 1× Dat",
-   ""
-  ],
-  [
-   1795733463566,
-   "INFO",
-   "HOLD",
-   "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen zu wild: 25.2% Schwankung je Minute, Setup „buyers“, Gehirn schätzte 20%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795733174207,
-   "INFO",
-   "–",
-   "Scan: 135 frische Coins · 0 mit Kaufsignal · aussortiert: 64× zu alt · 25× Liquidität zu dünn · 16× zu wenig Liquidität · 11× Pump.fun-Startphase · 9× zu wenig Volumen · 2× zu jung · 2× gesperrt (früher Verlust) · 1× kei",
-   ""
-  ],
-  [
-   1795733093531,
-   "INFO",
-   "BIRB",
-   "Schatten-Trade ausgewertet: wäre −3.9% gewesen (aussortiert wegen hart: Top-10-Halter 88%, Setup „buyers“, Gehirn schätzte 0%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795733023496,
-   "INFO",
-   "–",
-   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795732973548,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
    ""
   ]
  ]
