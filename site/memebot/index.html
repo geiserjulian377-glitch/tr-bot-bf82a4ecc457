@@ -348,6 +348,7 @@ function chartReason(ch, sig) {
   if (ch.last < ch.ema21) return "Chart: unter der Trendlinie (EMA21)";
   if (ch.ema9 < ch.ema21 && !sig.some(s => s.k === "pullback")) return "Chart: kein Aufwärtstrend (EMA9 < EMA21)";
   if (ch.t5 === false) return "Chart: 5-Min.-Trend zeigt nach unten";
+  if (ch.volUp < 0.5) return `Chart: Verkäufer dominieren stark (${ch.volUp.toFixed(1)}× Kauf- zu Verkaufsvolumen) – zu riskant`;
   if (ch.volUp < 1) return `Chart: mehr Volumen auf roten Kerzen (${ch.volUp.toFixed(1)}×)`;
   if (ch.last > ch.ema21 * (1 + 3 * ch.atr / 100)) return `Chart: überdehnt (${pct((ch.last / ch.ema21 - 1) * 100)} über Trendlinie) – warte`;
   return null;
@@ -801,7 +802,7 @@ async function cycle() {
       const m = p.baseToken.address, key = setupKey(sig);
       let ch = null;
       try { ch = await chart(p.pairAddress); } catch (e) {}
-      const cr = chartReason(ch, sig), hardChart = !!cr && /zu wild|überdehnt/.test(cr);
+      const cr = chartReason(ch, sig), hardChart = !!cr && /zu wild|überdehnt|Verkäufer dominieren/.test(cr);
       let sz = sizeFor(key);
       setPhase(`Rug-Check ${p.baseToken.symbol} …`); agentNote.rug = `prüft ${p.baseToken.symbol}`;
       let rc;
@@ -1083,7 +1084,7 @@ async function serverView() {
 }
 serverView(); setInterval(serverView, 60000);
 
-window.__memebot = {think: f => think(f), train: (f, w) => train(f, w), FEAT, rugCheck, filterReason, signals, manage, get S(){ return S; }, C};   // für Tests
+window.__memebot = {rtInfo: () => ({key: !!KEYS.helius, jup: !!KEYS.jup, note: agentNote.rt || "", updates: RT.n}), think: f => think(f), train: (f, w) => train(f, w), FEAT, rugCheck, filterReason, signals, manage, get S(){ return S; }, C};   // für Tests
 renderSettings(); render();
 }
 </script>
