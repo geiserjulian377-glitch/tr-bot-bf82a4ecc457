@@ -92,7 +92,7 @@ a{color:var(--b)}
   <div class="head">
     <div class="logo" aria-hidden="true"></div>
     <div>
-      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v9 · test</span></div>
+      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v10 · test</span></div>
       <div class="status" id="status"><span class="dot"></span>gestoppt</div>
       <div class="chip" id="phase">bereit</div>
     </div>
@@ -110,7 +110,7 @@ a{color:var(--b)}
     <button class="btn" id="recap">Zusammenfassung</button>
     <button class="btn" id="reset">Testgeld zurücksetzen</button>
     <button class="btn" id="vault">📓 Obsidian-Vault verbinden</button>
-    <button class="btn" id="pretrain">🎓 Vortraining</button>
+    <button class="btn" id="pretrain">🎓 Großes Training</button>
     <button class="btn" id="live">👻 Phantom (gesperrt)</button>
     <span class="mode" id="mode" title="Im Testmodus werden Käufe nur simuliert – mit echten Live-Kursen.">TESTMODUS · Spielgeld · echte Kurse</span>
   </div>
@@ -182,7 +182,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const DEF = {startBal: 70, minAgeMin: 20, maxAgeH: 24, minLiq: 15000, minVolH1: 20000, minLiqMc: 8, minHolders: 300, buyRatio: 60, spikeX: 2.5,
   noChase5m: 12, maxH1: 300, sizePct: 20, maxOpen: 2, maxBuysH: 4, top1Max: 10, top10Max: 35, devMax: 5, lpMin: 90, maxImpact: 8,
   tp1: 35, tp1Pct: 50, tp2: 100, tp2Pct: 25, trail: 20, stop: 12, crash: 25, confirmSec: 6, sellPressure: 1.6, liqDrop: 20,
-  timeStopMin: 40, ddLimit: 25, fee: 0.5, cooldownH: 6, minOrganic: 15, minNetBuyers: 3, needSocials: 1, solDrop: 1.5, estLiq: 150000, estOrganic: 60, maxAtr: 9, atrStop: 3, shadowMin: 30, maxRugScore: 60, maxPriceDiff: 5, confirmScans: 2, dayLock: 15, minProb: 58, scanSec: 10, fastSec: 3, maxDrift: 5, explore: 1, exploreProb: 35, exploreSize: 8, exploreMaxH: 4, ntfy: ""};
+  timeStopMin: 40, ddLimit: 25, fee: 0.85, fixFee: 0.02, cooldownH: 6, minOrganic: 15, minNetBuyers: 3, needSocials: 1, solDrop: 1.5, estLiq: 150000, estOrganic: 60, maxAtr: 9, atrStop: 3, shadowMin: 30, maxRugScore: 60, maxPriceDiff: 5, confirmScans: 2, dayLock: 15, minProb: 58, scanSec: 10, fastSec: 3, maxDrift: 5, explore: 1, exploreProb: 35, exploreSize: 15, exploreMaxH: 4, ntfy: ""};
 const LABEL = {startBal: "Startkapital ($)", minAgeMin: "Min. Alter (Min.)", maxAgeH: "Max. Alter (Std.)", minLiq: "Min. Liquidität ($)",
   minVolH1: "Min. Volumen 1 Std. ($)", minLiqMc: "Liquidität/Marktwert min. (%)", minHolders: "Min. Halter", buyRatio: "Kaufdruck min. (%)",
   spikeX: "Volumen-Spike (×)", noChase5m: "Nicht kaufen über (+% in 5 Min.)", maxH1: "Nicht jagen über (+% 1 Std.)", sizePct: "Größe je Trade (% Konto)",
@@ -191,14 +191,17 @@ const LABEL = {startBal: "Startkapital ($)", minAgeMin: "Min. Alter (Min.)", max
   tp1: "Gewinn sichern ab (+%)", tp1Pct: "dann verkaufen (%)", tp2: "2. Stufe ab (+%)", tp2Pct: "dann verkaufen (% vom Start)",
   trail: "Trailing-Stop (% unter Hoch)", stop: "Stop-Loss (−%)", crash: "Sofort raus bei Absturz (−%)", confirmSec: "Stop bestätigen nach (Sek.)",
   sellPressure: "Verkaufsdruck-Ausstieg (Verk./Käufe)", liqDrop: "Raus bei Liquiditätsverlust (%)", timeStopMin: "Zeit-Stop (Min.)",
-  ddLimit: "Tageslimit (−% vom Hoch)", fee: "Gebühren je Seite (%)", cooldownH: "Sperre nach Verlust (Std.)", minOrganic: "Echtheits-Score min. (0–100)", minNetBuyers: "Netto-Käufer 5 Min. min.", needSocials: "Website/Socials Pflicht (1=ja)", solDrop: "Pause wenn SOL fällt (−% 1 Std.)", estLiq: "Etablierte Coins: Liquidität min. ($)", estOrganic: "Etablierte Coins: Echtheit min.", maxAtr: "Max. Schwankung je Minute (%)", atrStop: "Stop = Schwankung × (dynamisch)", shadowMin: "Schatten-Trade auswerten nach (Min.)", maxRugScore: "RugCheck-Risiko max. (0–100)", maxPriceDiff: "Max. Preisabweichung der Quellen (%)", confirmScans: "Bestätigung über Scans", dayLock: "Ab Tagesgewinn (+%) halbe Größe", minProb: "Gehirn: Gewinnchance min. (%)", scanSec: "Scan alle (Sek.)", fastSec: "Positionen prüfen alle (Sek.)", maxDrift: "Kurs-Check vor Kauf: max. Abweichung (%)", explore: "Lern-Trades im Testmodus (1=an)", exploreProb: "Lern-Trade ab Chance (%)", exploreSize: "Lern-Trade Größe (% Konto)", exploreMaxH: "Max. Lern-Trades pro Std.", ntfy: "ntfy-Thema (Push)"};
+  ddLimit: "Tageslimit (−% vom Hoch)", fee: "Phantom-Gebühr je Swap (%)", fixFee: "Netzwerk-/Prioritätsgebühr je Swap ($)", cooldownH: "Sperre nach Verlust (Std.)", minOrganic: "Echtheits-Score min. (0–100)", minNetBuyers: "Netto-Käufer 5 Min. min.", needSocials: "Website/Socials Pflicht (1=ja)", solDrop: "Pause wenn SOL fällt (−% 1 Std.)", estLiq: "Etablierte Coins: Liquidität min. ($)", estOrganic: "Etablierte Coins: Echtheit min.", maxAtr: "Max. Schwankung je Minute (%)", atrStop: "Stop = Schwankung × (dynamisch)", shadowMin: "Schatten-Trade auswerten nach (Min.)", maxRugScore: "RugCheck-Risiko max. (0–100)", maxPriceDiff: "Max. Preisabweichung der Quellen (%)", confirmScans: "Bestätigung über Scans", dayLock: "Ab Tagesgewinn (+%) halbe Größe", minProb: "Gehirn: Gewinnchance min. (%)", scanSec: "Scan alle (Sek.)", fastSec: "Positionen prüfen alle (Sek.)", maxDrift: "Kurs-Check vor Kauf: max. Abweichung (%)", explore: "Lern-Trades im Testmodus (1=an)", exploreProb: "Lern-Trade ab Chance (%)", exploreSize: "Lern-Trade Größe (% Konto)", exploreMaxH: "Max. Lern-Trades pro Std.", ntfy: "ntfy-Thema (Push)"};
 let C = {...DEF, ...store.get("cfg", {})};
+if (store.get("cfgVer", 1) === 4) {   // v10: echte Phantom-Kosten
+  C.fee = DEF.fee; C.fixFee = DEF.fixFee; C.exploreSize = DEF.exploreSize; store.set("cfg", C); store.set("cfgVer", 5);
+}
 if (store.get("cfgVer", 1) >= 3 && store.get("cfgVer", 1) < 4) {   // v9: schneller reagieren
-  C.scanSec = DEF.scanSec; C.confirmSec = DEF.confirmSec; C.fastSec = DEF.fastSec; store.set("cfg", C); store.set("cfgVer", 4);
+  C.scanSec = DEF.scanSec; C.confirmSec = DEF.confirmSec; C.fastSec = DEF.fastSec; C.fee = DEF.fee; C.fixFee = DEF.fixFee; C.exploreSize = DEF.exploreSize; store.set("cfg", C); store.set("cfgVer", 5);
 }
 if (store.get("cfgVer", 1) < 3) {   // v2: neue, ruhigere Ausstiegsregeln übernehmen
   const keep = {startBal: C.startBal, ntfy: C.ntfy};
-  C = {...DEF, ...keep}; store.set("cfg", C); store.set("cfgVer", 4);
+  C = {...DEF, ...keep}; store.set("cfg", C); store.set("cfgVer", 5);
 }
 
 // ---------------- Zustand
@@ -397,32 +400,40 @@ function situation(pairs, mk) {
   return {score, name, breadth, form, mult: {heiß: 1, normal: 0.85, kalt: 0.5, gefährlich: 0}[name], probAdd: {heiß: -2, normal: 0, kalt: 5, gefährlich: 99}[name]};
 }
 
+// Gesamtkosten eines Trades (Kauf + Verkauf) in % bei typischer Trade-Größe – wie bei Phantom
+function costPct() { const size = Math.max(1, equity() * C.sizePct / 100); return 2 * C.fee + 2 * C.fixFee / size * 100 + 1; }
+
 // ---------------- VORTRAINING: lernt aus dem Kursverlauf der letzten Stunden vieler Coins
-async function pretrain(manual) {
+async function pretrain(big) {
   if (S.pretrainBusy) return; S.pretrainBusy = true;
+  const maxPools = big ? 150 : 24, limit = big ? 1000 : 300, perMax = big ? 60 : 25, label = big ? "Großes Training" : "Vortraining";
   try {
-    setPhase("Vortraining: lade Verlaufsdaten …");
+    setPhase(`${label}: lade Coin-Listen …`);
     const lists = [];
-    for (const x of ["toptrending/1h", "toptraded/1h", "toptrending/6h"]) { await sleep(1500); const r = await getJSON(`https://lite-api.jup.ag/tokens/v2/${x}?limit=50`).catch(() => []); if (Array.isArray(r)) lists.push(...r); }
-    const mints = [...new Set([...lists.map(t => t && t.id), ...Object.keys(lastPairs)].filter(Boolean))].filter(m => m !== SOL && m !== USDC);
-    const pairs = Object.values({...(await pairsFor(mints)), ...lastPairs}).filter(p => (p.liquidity?.usd || 0) >= C.minLiq && Date.now() - (p.pairCreatedAt || 0) < 14 * 86400000)   // nur junge Coins, kein BTC & Co..sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0)).slice(0, 24);
+    const jl = big ? ["toptrending/1h", "toptraded/1h", "toptrending/6h", "toptraded/6h", "toptrending/24h", "toptraded/24h", "toporganicscore/1h", "recent"] : ["toptrending/1h", "toptraded/1h", "toptrending/6h"];
+    for (const x of jl) { await sleep(1500); const r = await getJSON(`https://lite-api.jup.ag/tokens/v2/${x}${x === "recent" ? "" : "?limit=100"}`).catch(() => []); if (Array.isArray(r)) lists.push(...r.map(t => t && t.id)); }
+    if (big) for (const u of ["token-profiles/latest/v1", "token-boosts/latest/v1", "token-boosts/top/v1", "community-takeovers/latest/v1"]) {   // auch Coins, die NICHT gestiegen sind (gegen Schönfärberei)
+      const r = await getJSON("https://api.dexscreener.com/" + u).catch(() => []); if (Array.isArray(r)) lists.push(...r.filter(x => x.chainId === "solana").map(x => x.tokenAddress));
+    }
+    const mints = [...new Set([...lists, ...Object.keys(lastPairs)].filter(Boolean))].filter(m => m !== SOL && m !== USDC);
+    const pairs = Object.values({...(await pairsFor(mints)), ...lastPairs}).filter(p => (p.liquidity?.usd || 0) >= C.minLiq && Date.now() - (p.pairCreatedAt || 0) < 14 * 86400000)   /* nur junge Coins, kein BTC & Co. */.sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0)).slice(0, maxPools);
     let n = 0, wins = 0, sum = 0, pools = 0;
     for (const p of pairs) {
       if ((S.pretrainSeen || {})[p.pairAddress] > Date.now() - 4 * 3600000) continue;   // denselben Verlauf nicht doppelt lernen
       await sleep(4000);   // GeckoTerminal-Limit einhalten
       let k;
       for (let tries = 0; tries < 2 && !k; tries++) {
-        try { const j = await getJSON(`https://api.geckoterminal.com/api/v2/networks/solana/pools/${p.pairAddress}/ohlcv/minute?aggregate=1&limit=300`); k = (j?.data?.attributes?.ohlcv_list || []).slice().reverse(); }
+        try { const j = await getJSON(`https://api.geckoterminal.com/api/v2/networks/solana/pools/${p.pairAddress}/ohlcv/minute?aggregate=1&limit=${limit}`); k = (j?.data?.attributes?.ohlcv_list || []).slice().reverse(); }
         catch (e) { await sleep(12000); }
       }
       if (!k) continue;
       S.pretrainSeen = S.pretrainSeen || {}; S.pretrainSeen[p.pairAddress] = Date.now();
       if (!k || k.length < 120) continue;
-      pools++; setPhase(`Vortraining: ${p.baseToken.symbol} (${pools}/${pairs.length}) – ${n} Lernbeispiele`);
+      pools++; setPhase(`${label}: ${p.baseToken.symbol} (${pools}/${pairs.length}) – ${n} Lernbeispiele`); agentNote.train = `${label} ${pools}/${pairs.length}`;
       const c = k.map(x => x[4]); let e9 = c[0], e21 = c[0]; const E9 = [], E21 = [];
       c.forEach(x => { e9 = x * 0.2 + e9 * 0.8; e21 = x * (2 / 22) + e21 * (20 / 22); E9.push(e9); E21.push(e21); });
       let last = -99, per = 0;
-      for (let t = 61; t < k.length - 31 && per < 25; t++) {
+      for (let t = 61; t < k.length - 31 && per < perMax; t++) {
         if (t - last < 4) continue;
         const atr = k.slice(t - 13, t + 1).reduce((a, x, i, arr) => { const pc = i ? arr[i - 1][4] : x[1]; return a + Math.max(x[2] - x[3], Math.abs(x[2] - pc), Math.abs(x[3] - pc)) / x[4] * 100; }, 0) / 14;
         const m5 = (c[t] / c[t - 5] - 1) * 100, h1 = (c[t] / c[t - 60] - 1) * 100;
@@ -438,7 +449,7 @@ async function pretrain(manual) {
           if (hi >= C.tp1) { r = C.tp1 * C.tp1Pct / 100 + Math.max((k[Math.min(u + 10, k.length - 1)][4] / c[t] - 1) * 100, 0) * (1 - C.tp1Pct / 100); break; }
         }
         if (r == null) r = (c[t + 30] / c[t] - 1) * 100;
-        r -= 2 * C.fee + 1;
+        r -= costPct();
         const f = FEAT.map(() => 0);
         f[5] = clip((c[t] / E21[t] - 1) * 100 / Math.max(atr, 0.5) / 3); f[6] = E9[t] > E21[t] ? 1 : -1; f[7] = clip((up / Math.max(dn, 1e-9) - 1.5) / 2);
         f[8] = clip(m5 / 12); f[9] = clip(h1 / 150); f[12] = pull ? 1 : 0; f[14] = clip((atr - 4) / 4);
@@ -448,13 +459,13 @@ async function pretrain(manual) {
     if (!n) { log("INFO", "–", "Vortraining: Datenquellen gerade überlastet – neuer Versuch in 5 Min."); S.pretrainBusy = false; setTimeout(() => pretrain(false), 300000); return; }
     const prevN = S.pretrained?.total || 0;
     S.pretrained = {total: prevN + n, t: Date.now(), n, pools, wr: n ? wins / n * 100 : 0, avg: n ? sum / n : 0};
-    log("INFO", "–", `Vortraining fertig: ${n} Lernbeispiele aus ${pools} Coins (letzte 5 Std.) · ${n ? Math.round(wins / n * 100) : 0}% wären Gewinner gewesen, Ø ${pct(n ? sum / n : 0)} – Gehirn angepasst`);
+    log("INFO", "–", `${label} fertig: ${n} Lernbeispiele aus ${pools} Coins (letzte ${big ? 16 : 5} Std., mit Phantom-Kosten ${costPct().toFixed(1)}% je Trade) · ${n ? Math.round(wins / n * 100) : 0}% wären Gewinner gewesen, Ø ${pct(n ? sum / n : 0)} – Gehirn angepasst`);
     vaultQueue.push({path: "MemeBot/Lernen.md", append: false, text: learnMarkdown()});
     save();
   } catch (e) { log("INFO", "–", "Vortraining-Fehler: " + e.message); }
   S.pretrainBusy = false; render();
 }
-$("#pretrain").onclick = () => pretrain(true);
+$("#pretrain").onclick = () => pretrain(true);   // Knopf = großes Training
 
 // ---------------- SCHATTEN-TRADES: verfolgt Setups, die nicht gekauft wurden, und lernt daraus
 function shadowAdd(p, key, atr, f, prob, reason) {
@@ -476,7 +487,7 @@ async function shadowUpdate(pairs) {
     else if (x.hi >= C.tp1) r = C.tp1 * C.tp1Pct / 100 + Math.max(g, 0) * (1 - C.tp1Pct / 100);   // Hälfte gesichert
     else if (Date.now() - x.t0 > C.shadowMin * 60000) r = g;
     if (r == null) continue;
-    r -= 2 * C.fee + 1;                                                      // Gebühren + Slippage
+    r -= costPct();                                                          // Phantom-Gebühren + Netzwerk + Slippage
     x.done = true; x.ret = r;
     const L = S.slearn[x.key] = S.slearn[x.key] || {n: 0, w: 0, sum: 0};
     L.n++; L.w += r > 0 ? 1 : 0; L.sum += r;
@@ -560,7 +571,7 @@ function setupBlocked(key) { const L = learned(key); return L && L.n >= 6 && (L.
 // ---------------- 4 EXECUTOR (Testmodus: simulierte Ausführung mit Live-Kursen)
 function buy(p, sz, rc, sig, ch, f, prob, mode) {
   const price = parseFloat(p.priceUsd), slip = Math.max(rc.impact, 0.5) / 100, fee = C.fee / 100;
-  const fill = price * (1 + slip), qty = sz.size * (1 - fee) / fill, key = setupKey(sig);
+  const fill = price * (1 + slip), qty = Math.max(0, sz.size * (1 - fee) - C.fixFee) / fill, key = setupKey(sig);
   S.bal -= sz.size; S.buys.push(Date.now());
   S.pos.push({mint: p.baseToken.address, pair: p.pairAddress, sym: p.baseToken.symbol, name: p.baseToken.name, url: p.url, entry: fill, qty, qty0: qty,
     cost: sz.size, t0: Date.now(), peak: price, last: price, liq0: p.liquidity?.usd || 0, tp1: false, tp2: false, got: 0,
@@ -574,7 +585,7 @@ function buy(p, sz, rc, sig, ch, f, prob, mode) {
 function sell(pos, share, price, why, type) {
   const fee = C.fee / 100, slip = 0.01;
   const q = Math.min(pos.qty, pos.qty0 * share);
-  const out = q * price * (1 - slip) * (1 - fee);
+  const out = Math.max(0, q * price * (1 - slip) * (1 - fee) - C.fixFee);
   pos.qty -= q; pos.got += out; S.bal += out;
   const done = pos.qty <= pos.qty0 * 0.001;
   log("EXIT", pos.sym, `${done ? "Verkauf Rest" : "Teilverkauf " + Math.round(share * 100) + "%"} zu $${px(price)} – ${why}`, done ? pct((pos.got / pos.cost - 1) * 100) : "");
@@ -937,7 +948,7 @@ function renderSettings() {
 }
 
 // ---------------- Bedienung
-$("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus, v9)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render();
+$("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus, v10)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render();
   if (!S.pretrained || Date.now() - S.pretrained.t > 2 * 3600000) setTimeout(() => pretrain(false), 3000);
   clearInterval(window.__ptI); window.__ptI = setInterval(() => { if (running) pretrain(false); }, 2 * 3600000); };
 $("#stop").onclick = () => { running = false; if (worker) worker.postMessage("stop"); $("#start").hidden = false; $("#stop").hidden = true; log("INFO", "–", "Bot gestoppt"); save(); render(); setPhase("gestoppt"); };
