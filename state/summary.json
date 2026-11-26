@@ -1,0 +1,66 @@
+{
+ "updated": 1795719967504,
+ "version": "v10 · test",
+ "startBal": 20,
+ "since": 1795719905877,
+ "equity": 19.83,
+ "cash": 17.45,
+ "trades": 0,
+ "wins": 0,
+ "losses": 0,
+ "pnl": 0,
+ "open": [
+  {
+   "sym": "NORFEATH",
+   "mode": "normal",
+   "cost": 2.55,
+   "gain": -5.283926021013308,
+   "min": 1
+  }
+ ],
+ "last": [],
+ "brain": {
+  "n": 489,
+  "acc": 67
+ },
+ "lage": "normal",
+ "shadows": 0,
+ "scanned": 809,
+ "log": [
+  [
+   1795719939448,
+   "FILTER",
+   "pippin",
+   "Kaufdruck 65%, Trending bei Jupiter – aber (hart): größter Halter besitzt 33%; Top-10-Halter 63%",
+   ""
+  ],
+  [
+   1795719918705,
+   "INFO",
+   "NORFEATH",
+   "Gehirn: Gewinnchance 66% (Abzug für: Chart: mehr Volumen auf roten Kerzen (0.3×)) – Gründe: +Kaufdruck 5 Min., +Top-10-Konzentration, +Netto-Käufer · Markt normal",
+   ""
+  ],
+  [
+   1795719918700,
+   "ENTER",
+   "NORFEATH",
+   "Kauf $2.55 zu $0.0003259 · Setup „buyers+momentum“ · Kaufdruck 76%, Momentum +9.2% in 5 Min., Trending (Boost), Trending bei Jupiter, Halter +7% in 1 Std. · Stop −18% / Trailing 25% (an Schwankung angepasst) · Rug-Check ",
+   "Größe 20% (Chance 66%, Ø Gewinn 30% / Ø Verlust 13%) ×0,85 (Markt normal) ×0,75 (Setup noch unerprobt)"
+  ],
+  [
+   1795719908636,
+   "INFO",
+   "–",
+   "Scan: 135 frische Coins · 1 mit Kaufsignal · aussortiert: 66× zu alt · 33× Liquidität zu dünn · 15× zu wenig Liquidität · 10× Pump.fun-Startphase · 4× zu wenig Volumen · 1× nicht jagen · 1× zu jung · 1× keine Website/Soc",
+   ""
+  ],
+  [
+   1795719907438,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v10)",
+   ""
+  ]
+ ]
+}
