@@ -1,5 +1,5 @@
 {
- "updated": 1795723161123,
+ "updated": 1795723633410,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -24,12 +24,13 @@
   "n": 496,
   "acc": 67
  },
- "lage": "kalt",
+ "lage": "normal",
  "tune": null,
  "minProb": 58,
  "rt": {
   "key": true,
-  "jup": true,
+  "jup": false,
+  "jupFails": 3,
   "note": "",
   "updates": 0
  },
@@ -44,8 +45,36 @@
   ]
  ],
  "shadows": 5,
- "scanned": 22321,
+ "scanned": 23107,
  "log": [
+  [
+   1795723613908,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795723575052,
+   "INFO",
+   "–",
+   "Scan: 131 frische Coins · 0 mit Kaufsignal · aussortiert: 71× zu alt · 22× Liquidität zu dünn · 15× zu wenig Liquidität · 6× Pump.fun-Startphase · 4× zu wenig Volumen · 3× zu jung · 2× nicht jagen · 2× keine Website/Soci",
+   ""
+  ],
+  [
+   1795723574282,
+   "INFO",
+   "–",
+   "Jupiter-Schlüssel wird abgelehnt (HTTP 401) – nutze wieder die schlüssellose Adresse. Bitte Schlüssel prüfen.",
+   ""
+  ],
+  [
+   1795723573361,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v12)",
+   ""
+  ],
   [
    1795723131275,
    "INFO",
@@ -191,34 +220,6 @@
    "FILTER",
    "SPCX",
    "Volumen-Spike 6.4×, Kaufdruck 67% – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control Enabled; Gefahr: Freeze ",
-   ""
-  ],
-  [
-   1795720668126,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 70%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795720639736,
-   "FILTER",
-   "pippin",
-   "Kaufdruck 80%, Trending bei Jupiter – aber (hart): größter Halter besitzt 33%; Top-10-Halter 63%",
-   ""
-  ],
-  [
-   1795720519001,
-   "INFO",
-   "–",
-   "Scan: 128 frische Coins · 0 mit Kaufsignal · aussortiert: 63× zu alt · 30× Liquidität zu dünn · 12× zu wenig Liquidität · 8× Pump.fun-Startphase · 6× zu wenig Volumen · 3× zu jung · 2× keine Website/Socials · 1× Fake-Han",
-   ""
-  ],
-  [
-   1795720218405,
-   "INFO",
-   "–",
-   "Scan: 136 frische Coins · 0 mit Kaufsignal · aussortiert: 70× zu alt · 27× Liquidität zu dünn · 14× zu wenig Liquidität · 10× Pump.fun-Startphase · 7× zu wenig Volumen · 2× zu jung · 1× Fake-Handel · 1× Halter springen a",
    ""
   ]
  ]
