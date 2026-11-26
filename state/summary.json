@@ -1,24 +1,24 @@
 {
- "updated": 1795727165058,
+ "updated": 1795728366034,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
- "equity": 18.41,
- "cash": 15.96,
- "trades": 2,
+ "equity": 18.25,
+ "cash": 18.25,
+ "trades": 3,
  "wins": 0,
- "losses": 2,
- "pnl": -1.23,
- "open": [
+ "losses": 3,
+ "pnl": -1.75,
+ "open": [],
+ "last": [
   {
    "sym": "duk",
    "mode": "lern",
+   "ret": -18.444327541542947,
    "cost": 2.815780964656631,
-   "gain": -11.428771634783818,
-   "min": 12
-  }
- ],
- "last": [
+   "why": "Stop bestätigt ($0.0001254)",
+   "t1": 1795727384932
+  },
   {
    "sym": "bolphante",
    "mode": "lern",
@@ -37,10 +37,10 @@
   }
  ],
  "brain": {
-  "n": 500,
+  "n": 502,
   "acc": 67
  },
- "lage": "kalt",
+ "lage": "normal",
  "tune": null,
  "minProb": 58,
  "rt": {
@@ -54,15 +54,71 @@
   [
    "2026-11-26",
    {
-    "n": 2,
+    "n": 3,
     "w": 0,
-    "pnl": -1.2281269022891232
+    "pnl": -1.74747876626281
    }
   ]
  ],
  "shadows": 7,
- "scanned": 56284,
+ "scanned": 72559,
  "log": [
+  [
+   1795728273628,
+   "INFO",
+   "–",
+   "Scan: 144 frische Coins · 0 mit Kaufsignal · aussortiert: 76× zu alt · 24× Liquidität zu dünn · 19× zu wenig Liquidität · 6× zu jung · 6× Pump.fun-Startphase · 5× zu wenig Volumen · 2× Fake-Handel · 2× gesperrt (früher V",
+   ""
+  ],
+  [
+   1795727973326,
+   "INFO",
+   "–",
+   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 66× zu alt · 23× Liquidität zu dünn · 18× zu wenig Liquidität · 6× Pump.fun-Startphase · 6× zu wenig Volumen · 4× zu jung · 2× gesperrt (früher Verlust) · 1× nich",
+   ""
+  ],
+  [
+   1795727673006,
+   "INFO",
+   "–",
+   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 73× zu alt · 22× Liquidität zu dünn · 17× zu wenig Liquidität · 6× Pump.fun-Startphase · 2× zu jung · 2× Fake-Handel · 2× gesperrt (früher Verlust) · 2× zu wenig ",
+   ""
+  ],
+  [
+   1795727623009,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795727483372,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 83%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795727384932,
+   "INFO",
+   "duk",
+   "Coin für 6 Std. gesperrt (Verlust)",
+   ""
+  ],
+  [
+   1795727384932,
+   "EXIT",
+   "duk",
+   "Verkauf Rest zu $0.0001215 – Stop bestätigt ($0.0001254)",
+   "−18.4%"
+  ],
+  [
+   1795727364122,
+   "INFO",
+   "–",
+   "Scan: 129 frische Coins · 1 mit Kaufsignal · aussortiert: 65× zu alt · 22× Liquidität zu dünn · 18× zu wenig Liquidität · 6× Pump.fun-Startphase · 6× zu wenig Volumen · 4× zu jung · 1× Fake-Handel · 1× nicht jagen · 1× g",
+   ""
+  ],
   [
    1795727103025,
    "INFO",
@@ -180,62 +236,6 @@
    "INFO",
    "bolphante",
    "Coin für 6 Std. gesperrt (Verlust)",
-   ""
-  ],
-  [
-   1795725656933,
-   "EXIT",
-   "bolphante",
-   "Verkauf Rest zu $0.00004505 – Stop bestätigt ($0.00004629)",
-   "−21.1%"
-  ],
-  [
-   1795725653403,
-   "INFO",
-   "bolphante",
-   "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen Insider-Netzwerk erkannt, Setup „pullback“, Gehirn schätzte 21%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795725533006,
-   "INFO",
-   "–",
-   "Scan: 127 frische Coins · 2 mit Kaufsignal · aussortiert: 63× zu alt · 25× Liquidität zu dünn · 16× zu wenig Liquidität · 7× Pump.fun-Startphase · 6× zu wenig Volumen · 1× Fake-Handel · 1× zu jung · 1× gesperrt (früher V",
-   ""
-  ],
-  [
-   1795725483119,
-   "INFO",
-   "bolphante",
-   "Gehirn: Gewinnchance 52% (Abzug für: Insider-Netzwerk erkannt; Chart: unter der Trendlinie (EMA21)) – Gründe: +Liquidität/Marktwert, +Abstand zur Trendlinie, +Anstieg 5 Min. · Markt kalt",
-   ""
-  ],
-  [
-   1795725483118,
-   "ENTER",
-   "bolphante",
-   "LERN-TRADE (klein, zum Dazulernen) – Kauf $2.91 zu $0.00005468 · Setup „pullback“ · Rücksetzer im Aufwärtstrend (1h +32.7%, 5m −7.5%), Halter +6% in 1 Std. · Stop −15% / Trailing 21% (an Schwankung angepasst) · Rug-Check",
-   "Größe 15% Lern-Trade (Chance 52%)"
-  ],
-  [
-   1795725404962,
-   "FILTER",
-   "pippin",
-   "Kaufdruck 100%, Trending bei Jupiter – aber (hart): größter Halter besitzt 33%; Top-10-Halter 63%",
-   ""
-  ],
-  [
-   1795725343006,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795725333783,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
    ""
   ]
  ]
