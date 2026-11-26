@@ -1,5 +1,5 @@
 {
- "updated": 1795728366034,
+ "updated": 1795729567079,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -61,8 +61,71 @@
   ]
  ],
  "shadows": 7,
- "scanned": 72559,
+ "scanned": 88955,
  "log": [
+  [
+   1795729503806,
+   "INFO",
+   "–",
+   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 68× zu alt · 24× Liquidität zu dünn · 22× zu wenig Liquidität · 8× Pump.fun-Startphase · 2× gesperrt (früher Verlust) · 2× zu wenig Volumen · 1× zu jung · 1× Entw",
+   ""
+  ],
+  [
+   1795729203017,
+   "INFO",
+   "–",
+   "Scan: 140 frische Coins · 0 mit Kaufsignal · aussortiert: 72× zu alt · 29× Liquidität zu dünn · 20× zu wenig Liquidität · 8× Pump.fun-Startphase · 4× zu wenig Volumen · 2× zu jung · 2× gesperrt (früher Verlust) · 1× kein",
+   ""
+  ],
+  [
+   1795729033016,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795729003005,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795728893178,
+   "INFO",
+   "–",
+   "Scan: 135 frische Coins · 1 mit Kaufsignal · aussortiert: 60× zu alt · 30× Liquidität zu dünn · 20× zu wenig Liquidität · 8× Pump.fun-Startphase · 6× zu wenig Volumen · 3× zu jung · 2× gesperrt (früher Verlust) · 1× Fake",
+   ""
+  ],
+  [
+   1795728583167,
+   "INFO",
+   "–",
+   "Scan: 137 frische Coins · 0 mit Kaufsignal · aussortiert: 67× zu alt · 23× Liquidität zu dünn · 20× zu wenig Liquidität · 8× Pump.fun-Startphase · 7× zu wenig Volumen · 4× zu jung · 2× gesperrt (früher Verlust) · 1× nich",
+   ""
+  ],
+  [
+   1795728583166,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795728563012,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795728414385,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 63%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
   [
    1795728273628,
    "INFO",
@@ -173,69 +236,6 @@
    "INFO",
    "duk",
    "Gehirn: Gewinnchance 51% (Abzug für: Insider-Netzwerk erkannt; Chart: unter der Trendlinie (EMA21)) – Gründe: +Kaufdruck 5 Min., +Abstand zur Trendlinie, −Top-10-Konzentration · Markt kalt",
-   ""
-  ],
-  [
-   1795726453828,
-   "ENTER",
-   "duk",
-   "LERN-TRADE (klein, zum Dazulernen) – Kauf $2.82 zu $0.0001427 · Setup „buyers+momentum“ · Kaufdruck 80%, Momentum +5.0% in 5 Min., Trending bei Jupiter, 38 Netto-Käufer, Kaufvol. 1.4× Verkauf, Halter +7% in 1 Std. · Stop",
-   "Größe 15% Lern-Trade (Chance 51%)"
-  ],
-  [
-   1795726453494,
-   "INFO",
-   "–",
-   "Scan: 126 frische Coins · 1 mit Kaufsignal · aussortiert: 69× zu alt · 17× zu wenig Liquidität · 17× Liquidität zu dünn · 7× Pump.fun-Startphase · 7× zu wenig Volumen · 3× Fake-Handel · 2× gesperrt (früher Verlust) · 2× ",
-   ""
-  ],
-  [
-   1795726213293,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795726143785,
-   "INFO",
-   "–",
-   "Scan: 123 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 20× Liquidität zu dünn · 17× zu wenig Liquidität · 7× Pump.fun-Startphase · 7× zu wenig Volumen · 2× nicht jagen · 2× gesperrt (früher Verlust) · 2× ",
-   ""
-  ],
-  [
-   1795726034555,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 69%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795726023017,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795725863452,
-   "INFO",
-   "duk",
-   "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen Insider-Netzwerk erkannt, Setup „buyers+pullback“, Gehirn schätzte 18%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795725833007,
-   "INFO",
-   "–",
-   "Scan: 126 frische Coins · 0 mit Kaufsignal · aussortiert: 65× zu alt · 21× Liquidität zu dünn · 17× zu wenig Liquidität · 7× Pump.fun-Startphase · 6× zu wenig Volumen · 2× gesperrt (früher Verlust) · 2× zu wenig Netto-Kä",
-   ""
-  ],
-  [
-   1795725656934,
-   "INFO",
-   "bolphante",
-   "Coin für 6 Std. gesperrt (Verlust)",
    ""
   ]
  ]
