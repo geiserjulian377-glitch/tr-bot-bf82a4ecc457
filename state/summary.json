@@ -1,5 +1,5 @@
 {
- "updated": 1795743987968,
+ "updated": 1795744532021,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -61,8 +61,29 @@
   ]
  ],
  "shadows": 5,
- "scanned": 286327,
+ "scanned": 293891,
  "log": [
+  [
+   1795744528997,
+   "INFO",
+   "–",
+   "Bot gestoppt",
+   ""
+  ],
+  [
+   1795744503927,
+   "INFO",
+   "–",
+   "Scan: 141 frische Coins · 0 mit Kaufsignal · aussortiert: 69× zu alt · 29× Liquidität zu dünn · 13× zu wenig Liquidität · 10× zu wenig Volumen · 9× Pump.fun-Startphase · 4× keine Website/Socials · 2× Fake-Handel · 1× zu ",
+   ""
+  ],
+  [
+   1795744193866,
+   "INFO",
+   "–",
+   "Scan: 139 frische Coins · 0 mit Kaufsignal · aussortiert: 65× zu alt · 30× Liquidität zu dünn · 14× zu wenig Liquidität · 10× zu wenig Volumen · 9× Pump.fun-Startphase · 3× keine Website/Socials · 2× nicht jagen · 2× ges",
+   ""
+  ],
   [
    1795743884586,
    "INFO",
@@ -215,27 +236,6 @@
    "INFO",
    "–",
    "Scan: 136 frische Coins · 1 mit Kaufsignal · aussortiert: 69× zu alt · 25× Liquidität zu dünn · 13× Pump.fun-Startphase · 10× zu wenig Volumen · 8× zu wenig Liquidität · 2× zu jung · 2× Fake-Handel · 2× gesperrt (früher ",
-   ""
-  ],
-  [
-   1795740805607,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 66%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795740804941,
-   "INFO",
-   "–",
-   "Scan: 140 frische Coins · 1 mit Kaufsignal · aussortiert: 68× zu alt · 29× Liquidität zu dünn · 14× Pump.fun-Startphase · 11× zu wenig Volumen · 8× zu wenig Liquidität · 3× zu jung · 2× keine Website/Socials · 1× Verkauf",
-   ""
-  ],
-  [
-   1795740495273,
-   "INFO",
-   "–",
-   "Scan: 137 frische Coins · 0 mit Kaufsignal · aussortiert: 61× zu alt · 32× Liquidität zu dünn · 12× Pump.fun-Startphase · 9× zu wenig Volumen · 9× zu wenig Liquidität · 5× zu jung · 2× Fake-Handel · 2× keine Website/Soci",
    ""
   ]
  ]
