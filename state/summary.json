@@ -1,5 +1,5 @@
 {
- "updated": 1795808850486,
+ "updated": 1795810051541,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -58,15 +58,15 @@
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 14,
-   "api.bsky.app": 59,
-   "a.4cdn.org": 17
+   "api.coingecko.com": 17,
+   "api.bsky.app": 73,
+   "a.4cdn.org": 20
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 30,
+   "frontend-api-v3.pump.fun": 35,
    "public.api.bsky.app": 1
   },
-  "last": "Split: 48 Bluesky-Beiträge/Std. (48 Leute)"
+  "last": "Zhaki: kaum Erwähnungen"
  },
  "days": [
   [
@@ -79,8 +79,50 @@
   ]
  ],
  "shadows": 8,
- "scanned": 1074501,
+ "scanned": 1090371,
  "log": [
+  [
+   1795809819303,
+   "INFO",
+   "–",
+   "Scan: 132 frische Coins · 1 mit Kaufsignal · aussortiert: 65× zu alt · 28× Liquidität zu dünn · 13× zu wenig Liquidität · 8× Pump.fun-Startphase · 7× zu jung · 3× zu wenig Volumen · 3× Daten widersprüchlich · 2× keine We",
+   ""
+  ],
+  [
+   1795809506884,
+   "INFO",
+   "–",
+   "Scan: 136 frische Coins · 1 mit Kaufsignal · aussortiert: 71× zu alt · 26× Liquidität zu dünn · 14× zu wenig Liquidität · 8× Pump.fun-Startphase · 5× zu wenig Volumen · 3× zu jung · 2× keine Website/Socials · 1× Fake-Han",
+   ""
+  ],
+  [
+   1795809378255,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 75%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795809206507,
+   "INFO",
+   "–",
+   "Scan: 131 frische Coins · 0 mit Kaufsignal · aussortiert: 67× zu alt · 26× Liquidität zu dünn · 14× zu wenig Liquidität · 8× Pump.fun-Startphase · 4× zu wenig Volumen · 3× nicht jagen · 2× keine Website/Socials · 1× zu j",
+   ""
+  ],
+  [
+   1795809068142,
+   "FILTER",
+   "RUSH",
+   "Kaufdruck 61%, Momentum +2.3% in 5 Min. – aber (hart): Gefahr: Mint Authority still enabled; Top-10-Halter 89%; Liquidität nur 0% gesperrt",
+   ""
+  ],
+  [
+   1795808896523,
+   "INFO",
+   "–",
+   "Scan: 129 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 27× Liquidität zu dünn · 14× zu wenig Liquidität · 8× Pump.fun-Startphase · 6× zu wenig Volumen · 2× zu wenig Netto-Käufer · 2× nicht jagen · 2× kein",
+   ""
+  ],
   [
    1795808596505,
    "INFO",
@@ -212,48 +254,6 @@
    "INFO",
    "–",
    "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795805976516,
-   "INFO",
-   "WINSTON",
-   "Schatten-Trade ausgewertet: wäre −13.9% gewesen (aussortiert wegen Insider-Netzwerk erkannt, Setup „buyers“, Gehirn schätzte 6%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795805836514,
-   "INFO",
-   "–",
-   "Scan: 130 frische Coins · 2 mit Kaufsignal · aussortiert: 65× zu alt · 28× Liquidität zu dünn · 14× zu wenig Liquidität · 7× Pump.fun-Startphase · 3× nicht jagen · 3× keine Website/Socials · 2× zu wenig Volumen · 2× zu w",
-   ""
-  ],
-  [
-   1795805687629,
-   "INFO",
-   "Zhaki",
-   "Schatten-Trade ausgewertet: wäre +31.9% gewesen (aussortiert wegen zu wild: 13.6% Schwankung je Minute, Setup „pullback“, Gehirn schätzte 23%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795805528772,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 74%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795805528244,
-   "INFO",
-   "–",
-   "Scan: 125 frische Coins · 3 mit Kaufsignal · aussortiert: 58× zu alt · 29× Liquidität zu dünn · 14× zu wenig Liquidität · 8× Pump.fun-Startphase · 3× nicht jagen · 3× zu wenig Volumen · 3× keine Website/Socials · 1× Verk",
-   ""
-  ],
-  [
-   1795805216787,
-   "INFO",
-   "–",
-   "Scan: 133 frische Coins · 3 mit Kaufsignal · aussortiert: 68× zu alt · 26× Liquidität zu dünn · 14× zu wenig Liquidität · 8× Pump.fun-Startphase · 3× nicht jagen · 3× keine Website/Socials · 2× zu jung · 2× zu wenig Volu",
    ""
   ]
  ]
