@@ -550,6 +550,15 @@ async function social(p) {
   return v;
 }
 
+async function socialSelftest() {
+  const T = [["CoinGecko", "https://api.coingecko.com/api/v3/search/trending"], ["pump.fun", "https://frontend-api-v3.pump.fun/coins/latest"],
+    ["Bluesky", "https://public.api.bsky.app/xrpc/app.bsky.feed.searchPosts?q=solana&limit=1"], ["4chan /biz/", "https://a.4cdn.org/biz/catalog.json"]];
+  const res = [];
+  for (const [n, u] of T) { if (n !== "CoinGecko" && !window.__socialFetch) { res.push(n + " – (nur Server)"); continue; } res.push(n + ((await sfetch(u)) ? " ✓" : " ✗")); }
+  SOC.selftest = res.join(" · "); log("INFO", "–", "Social-Quellen: " + SOC.selftest);
+}
+setTimeout(() => socialSelftest().catch(() => {}), 5000);
+
 // ---------------- SELBST-OPTIMIERER: stellt die Kaufschwelle nach den eigenen Ergebnissen ein
 function autotune() {
   const E = (S.evals || []).filter(e => Date.now() - e.t < 3 * 86400000);
@@ -1182,7 +1191,7 @@ async function serverView() {
 }
 serverView(); setInterval(serverView, 60000);
 
-window.__memebot = {socialInfo: () => ({ok: SOC.ok, fail: SOC.fail, last: agentNote.social || ""}), rtInfo: () => ({key: !!KEYS.helius, jup: !!KEYS.jup && !JUP.bad, jupFails: JUP.fails || 0, note: agentNote.rt || "", updates: RT.n}), think: f => think(f), train: (f, w) => train(f, w), FEAT, rugCheck, filterReason, signals, manage, get S(){ return S; }, C};   // für Tests
+window.__memebot = {socialInfo: () => ({test: SOC.selftest || "", ok: SOC.ok, fail: SOC.fail, last: agentNote.social || ""}), rtInfo: () => ({key: !!KEYS.helius, jup: !!KEYS.jup && !JUP.bad, jupFails: JUP.fails || 0, note: agentNote.rt || "", updates: RT.n}), think: f => think(f), train: (f, w) => train(f, w), FEAT, rugCheck, filterReason, signals, manage, get S(){ return S; }, C};   // für Tests
 renderSettings(); render();
 }
 </script>
