@@ -1,5 +1,5 @@
 {
- "updated": 1795736777456,
+ "updated": 1795737978490,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -40,7 +40,7 @@
   "n": 568,
   "acc": 69
  },
- "lage": "kalt",
+ "lage": "normal",
  "tune": null,
  "minProb": 58,
  "rt": {
@@ -61,8 +61,57 @@
   ]
  ],
  "shadows": 7,
- "scanned": 187354,
+ "scanned": 203874,
  "log": [
+  [
+   1795737873507,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795737753508,
+   "INFO",
+   "–",
+   "Scan: 134 frische Coins · 0 mit Kaufsignal · aussortiert: 58× zu alt · 31× Liquidität zu dünn · 13× Pump.fun-Startphase · 11× zu wenig Volumen · 10× zu wenig Liquidität · 3× nicht jagen · 3× keine Website/Socials · 1× zu",
+   ""
+  ],
+  [
+   1795737444187,
+   "INFO",
+   "–",
+   "Scan: 142 frische Coins · 0 mit Kaufsignal · aussortiert: 68× zu alt · 32× Liquidität zu dünn · 12× Pump.fun-Startphase · 11× zu wenig Liquidität · 7× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 1× nicht j",
+   ""
+  ],
+  [
+   1795737135916,
+   "INFO",
+   "–",
+   "Scan: 141 frische Coins · 0 mit Kaufsignal · aussortiert: 70× zu alt · 30× Liquidität zu dünn · 12× Pump.fun-Startphase · 11× zu wenig Liquidität · 5× zu wenig Volumen · 4× zu jung · 2× gesperrt (früher Verlust) · 2× kei",
+   ""
+  ],
+  [
+   1795736913515,
+   "INFO",
+   "–",
+   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795736884538,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
+   ""
+  ],
+  [
+   1795736823521,
+   "INFO",
+   "–",
+   "Scan: 136 frische Coins · 0 mit Kaufsignal · aussortiert: 67× zu alt · 27× Liquidität zu dünn · 12× Pump.fun-Startphase · 12× zu wenig Liquidität · 8× zu wenig Volumen · 4× zu jung · 2× keine Website/Socials · 1× Entwick",
+   ""
+  ],
   [
    1795736523519,
    "INFO",
@@ -187,55 +236,6 @@
    "INFO",
    "–",
    "Scan: 135 frische Coins · 0 mit Kaufsignal · aussortiert: 71× zu alt · 25× Liquidität zu dünn · 15× zu wenig Liquidität · 12× Pump.fun-Startphase · 4× zu wenig Volumen · 2× zu jung · 2× Verkaufsdruck · 2× gesperrt (frühe",
-   ""
-  ],
-  [
-   1795733903555,
-   "INFO",
-   "–",
-   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795733874154,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
-   ""
-  ],
-  [
-   1795733823553,
-   "INFO",
-   "–",
-   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795733783574,
-   "INFO",
-   "–",
-   "Scan: 138 frische Coins · 0 mit Kaufsignal · aussortiert: 67× zu alt · 29× Liquidität zu dünn · 15× zu wenig Liquidität · 12× Pump.fun-Startphase · 6× zu wenig Volumen · 2× zu jung · 2× gesperrt (früher Verlust) · 1× nic",
-   ""
-  ],
-  [
-   1795733713537,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
-   ""
-  ],
-  [
-   1795733525636,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 61%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795733483498,
-   "INFO",
-   "–",
-   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 73× zu alt · 18× Liquidität zu dünn · 15× zu wenig Liquidität · 11× Pump.fun-Startphase · 6× zu wenig Volumen · 2× zu jung · 2× gesperrt (früher Verlust) · 1× Dat",
    ""
   ]
  ]
