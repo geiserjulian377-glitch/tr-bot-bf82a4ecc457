@@ -6,7 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
 
-const URL = "https://geiserjulian377-glitch.github.io/tr-bot-bf82a4ecc457/memebot/?server=1";
+const PAGE_URL = "https://geiserjulian377-glitch.github.io/tr-bot-bf82a4ecc457/memebot/?server=1";
 const RUN_MIN = +(process.env.RUN_MIN || 330);
 const DATA = path.resolve("data");
 const ST = path.join(DATA, "state");
@@ -58,7 +58,7 @@ async function main() {
   page.on("pageerror", e => log("Seitenfehler:", e.message));
 
   async function open() {
-    await page.goto(URL, { waitUntil: "networkidle2", timeout: 90000 }).catch(e => log("Ladefehler", e.message));
+    await page.goto(PAGE_URL, { waitUntil: "networkidle2", timeout: 90000 }).catch(e => log("Ladefehler", e.message));
     await page.waitForSelector("#start", { timeout: 60000 });
     if (!seedState && brainSeed) {   // erster Lauf: frisches Testkonto, aber mit dem gelernten Gehirn
       await page.evaluate(seed => { const S = window.__memebot.S; if (!S.trades.length) Object.assign(S, JSON.parse(seed)); }, brainSeed);
