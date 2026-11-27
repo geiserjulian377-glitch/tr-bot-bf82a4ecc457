@@ -1,5 +1,5 @@
 {
- "updated": 1795772744213,
+ "updated": 1795773945473,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -79,8 +79,85 @@
   ]
  ],
  "shadows": 3,
- "scanned": 616443,
+ "scanned": 632071,
  "log": [
+  [
+   1795773943398,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795773913457,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795773724383,
+   "INFO",
+   "–",
+   "Scan: 142 frische Coins · 0 mit Kaufsignal · aussortiert: 68× zu alt · 32× Liquidität zu dünn · 15× Pump.fun-Startphase · 11× zu wenig Liquidität · 9× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 1× Entwick",
+   ""
+  ],
+  [
+   1795773483920,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795773423521,
+   "INFO",
+   "–",
+   "Scan: 127 frische Coins · 1 mit Kaufsignal · aussortiert: 63× zu alt · 25× Liquidität zu dünn · 16× Pump.fun-Startphase · 8× zu wenig Liquidität · 7× zu wenig Volumen · 4× keine Website/Socials · 1× zu jung · 1× Entwickl",
+   ""
+  ],
+  [
+   1795773304638,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795773183386,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795773153371,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795773143895,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 65%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795773123370,
+   "INFO",
+   "–",
+   "Scan: 133 frische Coins · 1 mit Kaufsignal · aussortiert: 67× zu alt · 27× Liquidität zu dünn · 18× Pump.fun-Startphase · 9× zu wenig Liquidität · 5× zu wenig Volumen · 4× keine Website/Socials · 1× nicht jagen · 1× Verk",
+   ""
+  ],
+  [
+   1795772813805,
+   "INFO",
+   "–",
+   "Scan: 130 frische Coins · 0 mit Kaufsignal · aussortiert: 65× zu alt · 24× Liquidität zu dünn · 16× Pump.fun-Startphase · 9× zu wenig Liquidität · 8× zu wenig Volumen · 4× keine Website/Socials · 1× zu jung · 1× Liquidit",
+   ""
+  ],
   [
    1795772535139,
    "FILTER",
@@ -177,83 +254,6 @@
    "INFO",
    "–",
    "Social-Quellen: CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
-   ""
-  ],
-  [
-   1795771484617,
-   "FILTER",
-   "SPCX",
-   "Volumen-Spike 3.8×, Kaufdruck 86%, Trending bei Jupiter, 104 Netto-Käufer, Kaufvol. 2.1× Verkauf – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority st",
-   ""
-  ],
-  [
-   1795771482970,
-   "INFO",
-   "–",
-   "Bot gestartet (Testmodus, v14)",
-   ""
-  ],
-  [
-   1795771478666,
-   "INFO",
-   "–",
-   "Bot gestoppt",
-   ""
-  ],
-  [
-   1795771461416,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795771312919,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 82%, 88 Netto-Käufer, Kaufvol. 1.6× Verkauf – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control Enab",
-   ""
-  ],
-  [
-   1795771301394,
-   "INFO",
-   "–",
-   "Scan: 133 frische Coins · 0 mit Kaufsignal · aussortiert: 67× zu alt · 27× Liquidität zu dünn · 16× Pump.fun-Startphase · 11× zu wenig Liquidität · 6× zu wenig Volumen · 3× keine Website/Socials · 1× nicht jagen",
-   ""
-  ],
-  [
-   1795771261546,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795771201947,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795771181359,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 72%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795770992168,
-   "INFO",
-   "–",
-   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 68× zu alt · 26× Liquidität zu dünn · 15× Pump.fun-Startphase · 11× zu wenig Liquidität · 6× zu wenig Volumen · 2× keine Website/Socials · 1× zu jung · 1× Liquidi",
-   ""
-  ],
-  [
-   1795770911537,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
    ""
   ]
  ]
