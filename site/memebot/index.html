@@ -531,7 +531,7 @@ async function social(p) {
     if (/pump$/.test(m)) { const d = await sfetch(`https://frontend-api-v3.pump.fun/coins/${m}`); if (d) { v.pumpReplies = d.reply_count ?? null; v.live = !!d.is_currently_live; v.src.push("pump.fun"); } }
     // Bluesky: Beiträge der letzten Stunde (Ticker + Adresse)
     if (sym.length >= 2) {
-      const bs = SOC.bsky || "https://public.api.bsky.app";
+      const bs = SOC.bsky || "https://api.bsky.app";
       const q = encodeURIComponent(`$${sym}`); let d = SOC.bskyOff ? null : await sfetch(`${bs}/xrpc/app.bsky.feed.searchPosts?q=${q}&limit=50&sort=latest`);
       if (!d && !SOC.bsky && !SOC.bskyOff) { SOC.bsky = "https://api.bsky.app"; d = await sfetch(`${SOC.bsky}/xrpc/app.bsky.feed.searchPosts?q=${q}&limit=50&sort=latest`); if (!d) SOC.bskyOff = true; }
       const d2 = d ? await sfetch(`${SOC.bsky || bs}/xrpc/app.bsky.feed.searchPosts?q=${m}&limit=25&sort=latest`) : null;
