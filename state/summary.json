@@ -1,5 +1,5 @@
 {
- "updated": 1795823815116,
+ "updated": 1795823912765,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -45,7 +45,7 @@
   }
  ],
  "brain": {
-  "n": 1014,
+  "n": 1018,
   "acc": 69
  },
  "lage": "kalt",
@@ -61,17 +61,17 @@
  "social": {
   "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
   "err": {
-   "frontend-api-v3.pump.fun": "HTTP 403 {\n  \"error\": \"access_denied\",\n  \"rule_id\": \"0.07\",\n  \"host\": \"pump.fun\",\n  \"mess",
+   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-27T23:58:14.270Z\",\"path\":\"/coins/2YAfPhCr",
    "public.api.bsky.app": "HTTP 403 <html><head><title>403 Forbidden</title><link href='//fonts.bunny.net/css?family"
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 19,
-   "api.bsky.app": 79,
-   "a.4cdn.org": 19
+   "api.coingecko.com": 2,
+   "api.bsky.app": 5,
+   "a.4cdn.org": 2
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 40,
+   "frontend-api-v3.pump.fun": 3,
    "public.api.bsky.app": 1
   },
   "last": "Zhaki: kaum Erwähnungen"
@@ -95,8 +95,36 @@
   ]
  ],
  "shadows": 12,
- "scanned": 1276817,
+ "scanned": 1277579,
  "log": [
+  [
+   1795823891571,
+   "INFO",
+   "–",
+   "Social-Quellen: CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
+   ""
+  ],
+  [
+   1795823854715,
+   "FILTER",
+   "SPCX",
+   "Kaufdruck 61%, echter Handel (Score 95, 23 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control E",
+   ""
+  ],
+  [
+   1795823854033,
+   "INFO",
+   "–",
+   "Scan: 127 frische Coins · 2 mit Kaufsignal · aussortiert: 59× zu alt · 26× Liquidität zu dünn · 14× Pump.fun-Startphase · 10× zu wenig Liquidität · 8× zu wenig Volumen · 3× zu jung · 1× Liquidität fällt · 1× keine Websit",
+   ""
+  ],
+  [
+   1795823852538,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v14)",
+   ""
+  ],
   [
    1795823812092,
    "INFO",
@@ -242,34 +270,6 @@
    "INFO",
    "–",
    "Scan: 127 frische Coins · 3 mit Kaufsignal · aussortiert: 67× zu alt · 18× Liquidität zu dünn · 12× Pump.fun-Startphase · 11× zu wenig Liquidität · 6× zu wenig Volumen · 3× nicht jagen · 2× keine Website/Socials · 1× Liq",
-   ""
-  ],
-  [
-   1795821987510,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795821787264,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795821717276,
-   "INFO",
-   "–",
-   "Scan: 129 frische Coins · 2 mit Kaufsignal · aussortiert: 65× zu alt · 24× Liquidität zu dünn · 10× zu wenig Liquidität · 10× Pump.fun-Startphase · 6× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 2× Liquidi",
-   ""
-  ],
-  [
-   1795821717275,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
    ""
   ]
  ]
