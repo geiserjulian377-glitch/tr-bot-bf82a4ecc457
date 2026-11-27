@@ -1,5 +1,5 @@
 {
- "updated": 1795778755173,
+ "updated": 1795779956437,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -37,7 +37,7 @@
   }
  ],
  "brain": {
-  "n": 798,
+  "n": 799,
   "acc": 70
  },
  "lage": "kalt",
@@ -53,20 +53,20 @@
  "social": {
   "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
   "err": {
-   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-27T11:25:34.411Z\",\"path\":\"/coins/4tqzkSWA",
+   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-27T11:37:47.990Z\",\"path\":\"/coins/4tqzkSWA",
    "public.api.bsky.app": "HTTP 403 <html><head><title>403 Forbidden</title><link href='//fonts.bunny.net/css?family"
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 1,
-   "api.bsky.app": 1,
-   "a.4cdn.org": 1
+   "api.coingecko.com": 2,
+   "api.bsky.app": 3,
+   "a.4cdn.org": 2
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 1,
+   "frontend-api-v3.pump.fun": 2,
    "public.api.bsky.app": 1
   },
-  "last": ""
+  "last": "VAULT: 17 Bluesky-Beiträge/Std. (16 Leute)"
  },
  "days": [
   [
@@ -79,8 +79,71 @@
   ]
  ],
  "shadows": 3,
- "scanned": 693748,
+ "scanned": 709311,
  "log": [
+  [
+   1795779805535,
+   "INFO",
+   "–",
+   "Scan: 131 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 30× Liquidität zu dünn · 14× zu wenig Liquidität · 8× zu wenig Volumen · 7× Pump.fun-Startphase · 3× zu jung · 3× keine Website/Socials · 1× nicht ja",
+   ""
+  ],
+  [
+   1795779755522,
+   "INFO",
+   "VAULT",
+   "Schatten-Trade ausgewertet: wäre +33.0% gewesen (aussortiert wegen zu wild: 17.5% Schwankung je Minute, Setup „pullback“, Gehirn schätzte 31%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795779555515,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795779495470,
+   "INFO",
+   "–",
+   "Scan: 130 frische Coins · 1 mit Kaufsignal · aussortiert: 66× zu alt · 29× Liquidität zu dünn · 13× zu wenig Liquidität · 9× Pump.fun-Startphase · 5× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 1× Entwickl",
+   ""
+  ],
+  [
+   1795779397650,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795779186128,
+   "INFO",
+   "–",
+   "Scan: 130 frische Coins · 0 mit Kaufsignal · aussortiert: 69× zu alt · 28× Liquidität zu dünn · 13× zu wenig Liquidität · 10× Pump.fun-Startphase · 3× zu wenig Volumen · 3× keine Website/Socials · 1× zu jung · 1× nicht j",
+   ""
+  ],
+  [
+   1795778895538,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795778885520,
+   "INFO",
+   "–",
+   "Scan: 127 frische Coins · 1 mit Kaufsignal · aussortiert: 65× zu alt · 28× Liquidität zu dünn · 10× zu wenig Liquidität · 9× Pump.fun-Startphase · 6× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 2× Verkaufs",
+   ""
+  ],
+  [
+   1795778795492,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
   [
    1795778735140,
    "INFO",
@@ -191,69 +254,6 @@
    "INFO",
    "–",
    "Scan: 138 frische Coins · 0 mit Kaufsignal · aussortiert: 70× zu alt · 29× Liquidität zu dünn · 14× Pump.fun-Startphase · 11× zu wenig Liquidität · 7× zu wenig Volumen · 4× keine Website/Socials · 1× Liquidität fällt · 1",
-   ""
-  ],
-  [
-   1795777063443,
-   "INFO",
-   "–",
-   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 69× zu alt · 26× Liquidität zu dünn · 14× Pump.fun-Startphase · 12× zu wenig Liquidität · 5× zu wenig Volumen · 3× keine Website/Socials · 1× zu wenig Netto-Käufe",
-   ""
-  ],
-  [
-   1795777063442,
-   "INFO",
-   "–",
-   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795777003368,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
-   ""
-  ],
-  [
-   1795776933367,
-   "INFO",
-   "–",
-   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795776893377,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
-   ""
-  ],
-  [
-   1795776783585,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795776763335,
-   "INFO",
-   "–",
-   "Scan: 121 frische Coins · 0 mit Kaufsignal · aussortiert: 58× zu alt · 24× Liquidität zu dünn · 14× Pump.fun-Startphase · 11× zu wenig Liquidität · 7× zu wenig Volumen · 4× keine Website/Socials · 1× zu jung · 1× nicht j",
-   ""
-  ],
-  [
-   1795776734193,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795776453900,
-   "INFO",
-   "–",
-   "Scan: 121 frische Coins · 0 mit Kaufsignal · aussortiert: 59× zu alt · 24× Liquidität zu dünn · 14× Pump.fun-Startphase · 9× zu wenig Liquidität · 7× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 2× nicht ja",
    ""
   ]
  ]
