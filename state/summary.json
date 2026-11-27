@@ -1,5 +1,5 @@
 {
- "updated": 1795816060996,
+ "updated": 1795817261989,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -45,7 +45,7 @@
   }
  ],
  "brain": {
-  "n": 1011,
+  "n": 1012,
   "acc": 69
  },
  "lage": "kalt",
@@ -55,8 +55,8 @@
   "key": true,
   "jup": true,
   "jupFails": 0,
-  "note": "Echtzeit: 1 Position(en) · 1208 Updates",
-  "updates": 1208
+  "note": "Echtzeit: 1 Position(en) · 3486 Updates",
+  "updates": 3486
  },
  "social": {
   "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
@@ -66,15 +66,15 @@
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 13,
-   "api.bsky.app": 45,
-   "a.4cdn.org": 14
+   "api.coingecko.com": 16,
+   "api.bsky.app": 51,
+   "a.4cdn.org": 17
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 18,
+   "frontend-api-v3.pump.fun": 21,
    "public.api.bsky.app": 1
   },
-  "last": "Split: 50 Bluesky-Beiträge/Std. (49 Leute)"
+  "last": "Fireball: 3 Bluesky-Beiträge/Std. (3 Leute)"
  },
  "days": [
   [
@@ -95,8 +95,57 @@
   ]
  ],
  "shadows": 10,
- "scanned": 1172858,
+ "scanned": 1189062,
  "log": [
+  [
+   1795817147706,
+   "INFO",
+   "–",
+   "Scan: 141 frische Coins · 1 mit Kaufsignal · aussortiert: 68× zu alt · 26× Liquidität zu dünn · 14× Pump.fun-Startphase · 10× zu wenig Liquidität · 8× zu wenig Volumen · 3× zu jung · 2× Liquidität fällt · 1× nicht jagen ",
+   ""
+  ],
+  [
+   1795816937670,
+   "INFO",
+   "FLOAT",
+   "Schatten-Trade ausgewertet: wäre −5.0% gewesen (aussortiert wegen Insider-Netzwerk erkannt, Setup „buyers+spike“, Gehirn schätzte 20%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795816847306,
+   "INFO",
+   "–",
+   "Scan: 133 frische Coins · 0 mit Kaufsignal · aussortiert: 63× zu alt · 23× Liquidität zu dünn · 14× Pump.fun-Startphase · 11× zu wenig Liquidität · 4× nicht jagen · 4× zu wenig Volumen · 3× zu jung · 3× keine Website/Soc",
+   ""
+  ],
+  [
+   1795816727366,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795816587637,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795816546876,
+   "INFO",
+   "–",
+   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 61× zu alt · 23× Liquidität zu dünn · 15× Pump.fun-Startphase · 11× zu wenig Liquidität · 4× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 2× Fake-Ha",
+   ""
+  ],
+  [
+   1795816237414,
+   "INFO",
+   "–",
+   "Scan: 138 frische Coins · 1 mit Kaufsignal · aussortiert: 69× zu alt · 21× Liquidität zu dünn · 15× Pump.fun-Startphase · 12× zu wenig Liquidität · 4× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 2× Liquidi",
+   ""
+  ],
   [
    1795816038439,
    "FILTER",
@@ -221,55 +270,6 @@
    "INFO",
    "–",
    "Scan: 138 frische Coins · 2 mit Kaufsignal · aussortiert: 64× zu alt · 24× Liquidität zu dünn · 15× zu wenig Liquidität · 13× Pump.fun-Startphase · 8× zu wenig Volumen · 3× keine Website/Socials · 2× Fake-Handel · 2× zu ",
-   ""
-  ],
-  [
-   1795814507195,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 63%, echter Handel (Score 95, 111 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control ",
-   ""
-  ],
-  [
-   1795814506995,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795814497212,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795814418842,
-   "INFO",
-   "rice",
-   "Echtzeit-Wächter aktiv (Helius) – Kurs wird bei jeder Pool-Änderung neu berechnet (abgeglichen mit DexScreener, Faktor 1.034)",
-   ""
-  ],
-  [
-   1795814418605,
-   "INFO",
-   "rice",
-   "Gehirn: Gewinnchance 35% – Gründe: +Kaufdruck 5 Min., +Social-Media-Hype, +Liquidität/Marktwert · Markt normal",
-   ""
-  ],
-  [
-   1795814418604,
-   "ENTER",
-   "rice",
-   "LERN-TRADE (klein, zum Dazulernen) – Kauf $2.74 zu $0.00006783 · Setup „buyers+pullback“ · Kaufdruck 63%, Rücksetzer im Aufwärtstrend (1h +38.5%, 5m −5.4%), Social-Hype: 50 Bluesky-Beiträge/Std. (47 Leute) · Stop −12% / ",
-   "Größe 15% Lern-Trade (Chance 35%)"
-  ],
-  [
-   1795814397466,
-   "INFO",
-   "–",
-   "Scan: 135 frische Coins · 3 mit Kaufsignal · aussortiert: 57× zu alt · 25× Liquidität zu dünn · 14× Pump.fun-Startphase · 14× zu wenig Liquidität · 8× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 2× Liquidi",
    ""
   ]
  ]
