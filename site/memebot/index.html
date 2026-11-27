@@ -92,7 +92,7 @@ a{color:var(--b)}
   <div class="head">
     <div class="logo" aria-hidden="true"></div>
     <div>
-      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v12 · test</span></div>
+      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v13 · test</span></div>
       <div class="status" id="status"><span class="dot"></span>gestoppt</div>
       <div class="chip" id="phase">bereit</div>
     </div>
@@ -632,8 +632,8 @@ function buy(p, sz, rc, sig, ch, f, prob, mode) {
   S.bal -= sz.size; S.buys.push(Date.now());
   S.pos.push({mint: p.baseToken.address, pair: p.pairAddress, sym: p.baseToken.symbol, name: p.baseToken.name, url: p.url, entry: fill, qty, qty0: qty,
     cost: sz.size, t0: Date.now(), peak: price, last: price, liq0: p.liquidity?.usd || 0, tp1: false, tp2: false, got: 0,
-    stopPct: ch ? Math.min(18, Math.max(8, ch.atr * C.atrStop)) : C.stop, trailPct: ch ? Math.min(30, Math.max(15, ch.atr * C.atrStop * 1.4)) : C.trail,
-    stopAt: fill * (1 - (ch ? Math.min(18, Math.max(8, ch.atr * C.atrStop)) : C.stop) / 100),
+    stopPct: ch ? Math.min(12, Math.max(8, ch.atr * C.atrStop)) : C.stop, trailPct: ch ? Math.min(30, Math.max(15, ch.atr * C.atrStop * 1.4)) : C.trail,
+    stopAt: fill * (1 - (ch ? Math.min(12, Math.max(8, ch.atr * C.atrStop)) : C.stop) / 100),
     below: 0, key, sig: sig.map(s => s.t), creatorBal: rc.creatorBal, top1Addr: rc.top1Addr, top1Amt: rc.top1Amt, f, prob, mode: mode || "normal", impact: rc.impact || 0});
   if (mode === "lern") S.explores.push(Date.now());
   log("ENTER", p.baseToken.symbol, `${mode === "lern" ? "LERN-TRADE (klein, zum Dazulernen) – " : ""}Kauf ${usd(sz.size)} zu $${px(fill)} · Setup „${key}“ · ${sig.map(s => s.t).join(", ")} · Stop −${S.pos[S.pos.length - 1].stopPct.toFixed(0)}% / Trailing ${S.pos[S.pos.length - 1].trailPct.toFixed(0)}% (an Schwankung angepasst) · Rug-Check ok (größter Halter ${rc.top1.toFixed(0)}%, Top10 ${rc.top10.toFixed(0)}%, ${rc.holders} Halter, Echtheit ${Math.round(rc.org || 0)})`, "Größe " + sz.note);
@@ -687,6 +687,7 @@ function manage(pairs) {
     if (!pos.tp1 && peakGain >= 20 && gain <= 5) { sell(pos, 1, price, `war schon ${pct(peakGain)} im Plus, fällt zurück – Gewinn gesichert, bevor er verschwindet`); continue; }
     if (peakGain >= 20 && b + s >= 20 && s >= b * C.sellPressure && price < pos.peak * 0.88) { sell(pos, 1, price, `Verkaufsdruck (${s} Verkäufe vs. ${b} Käufe) – Gewinne gesichert`); continue; }
     // Stop nur mit Bestätigung (nicht panisch bei kurzen Ausreißern)
+    if (price <= pos.stopAt * 0.97) { sell(pos, 1, price, `deutlich unter den Stop gefallen (${pct(gain)}) – sofort raus, ohne Warten`); continue; }
     if (price <= pos.stopAt) {
       pos.below = pos.below || Date.now();
       if (Date.now() - pos.below >= C.confirmSec * 1000) { sell(pos, 1, price, pos.tp1 ? `Trailing-Stop bestätigt (${(pos.trailPct || C.trail).toFixed(0)}% unter Hoch)` : `Stop bestätigt ($${px(pos.stopAt)})`); continue; }
@@ -725,7 +726,8 @@ const RT = {ws: null, subs: {}, ids: {}, amt: {}, n: 0, last: 0, key: ""};
 function rtWanted() { return S.pos.filter(p => p.rt && p.rt.ok); }
 function rtPrice(pos) {
   const a = RT.amt[pos.rt.vA], b = RT.amt[pos.rt.vB]; if (!(a > 0) || !(b > 0) || !(pos.solUsd > 0)) return null;
-  return {price: b / a * pos.solUsd, liq: b * pos.solUsd * 2};
+  const k = pos.rt.k || 1;   // Abgleich-Faktor zu DexScreener (Pool-Konten enthalten z. B. Gebühren-Rücklagen)
+  return {price: b / a * k * pos.solUsd, liq: b * pos.solUsd * 2};
 }
 function rtOnUpdate() {
   if (Date.now() - RT.last < 400) return; RT.last = Date.now();
@@ -757,22 +759,33 @@ function rtConnect() {
   ws.onerror = () => {};
 }
 async function rtSetup(pos) {   // beim Kauf / Start: Pool-Konten finden und Formel prüfen
-  if (!KEYS.helius || pos.rt) return;
-  pos.rt = {ok: false};
+  if (!KEYS.helius) return;
+  if (pos.rt && (pos.rt.ok || pos.rt.final || Date.now() - (pos.rt.t || 0) < 30000)) return;   // bei vorübergehenden Fehlern alle 30 Sek. neu versuchen
+  const tries = (pos.rt?.tries || 0) + 1;
+  pos.rt = {ok: false, t: Date.now(), tries};
+  const fail = (why, final) => { pos.rt.why = why; pos.rt.final = final || tries >= 5; if (pos.rt.final) log("INFO", pos.sym, `Echtzeit-Wächter nicht möglich: ${why} – Überwachung alle ${C.fastSec} Sek. über DexScreener`); };
   try {
     const rep = rugCache[pos.mint]?.r || await getJSON(`https://api.rugcheck.xyz/v1/tokens/${pos.mint}/report`);
-    const m = (rep.markets || []).find(k => k.pubkey === pos.pair && k.mintA === pos.mint && k.mintB === SOL && /pump_fun_amm|raydium$|raydium_cpmm|cpmm/i.test(k.marketType || ""));
-    if (!m || typeof m.liquidityA !== "string") { pos.rt.why = "Pool-Typ ohne Echtzeit"; return; }
+    const mk = (rep.markets || []).filter(k => (k.mintA === pos.mint && k.mintB === SOL) || (k.mintB === pos.mint && k.mintA === SOL));
+    const m = mk.find(k => k.pubkey === pos.pair) || null;
+    if (!m) return fail(`Handelspool nicht in den RugCheck-Daten (${mk.length} andere Pools)`, true);
+    if (/clmm|dlmm|whirlpool|orca|concentrated/i.test(m.marketType || "")) return fail(`Pool-Typ „${m.marketType}“ (konzentrierte Liquidität) – Formel passt nicht`, true);
+    if (typeof m.liquidityA !== "string" || typeof m.liquidityB !== "string") return fail("Pool-Konten fehlen", true);
+    const flip = m.mintA === SOL;   // manche Pools führen SOL zuerst
+    const vTok = flip ? m.liquidityB : m.liquidityA, vSol = flip ? m.liquidityA : m.liquidityB;
     const r = await fetch("https://mainnet.helius-rpc.com/?api-key=" + KEYS.helius, {method: "POST", headers: {"content-type": "application/json"},
-      body: JSON.stringify({jsonrpc: "2.0", id: 1, method: "getMultipleAccounts", params: [[m.liquidityA, m.liquidityB], {encoding: "jsonParsed", commitment: "processed"}]})}).then(x => x.json());
+      body: JSON.stringify({jsonrpc: "2.0", id: 1, method: "getMultipleAccounts", params: [[vTok, vSol], {encoding: "jsonParsed", commitment: "processed"}]})}).then(x => x.json());
+    if (r.error) return fail("Helius: " + (r.error.message || "Fehler"));
     const [a, b] = r.result.value.map(v => v?.data?.parsed?.info?.tokenAmount?.uiAmount);
     const native = b / a, dexNative = parseFloat(pos.lastPair?.priceNative || 0);
-    if (!(native > 0) || !(dexNative > 0) || Math.abs(native / dexNative - 1) > 0.05) { pos.rt.why = "Formel passt nicht zu diesem Pool"; return; }
-    RT.amt[m.liquidityA] = a; RT.amt[m.liquidityB] = b;
-    pos.rt = {ok: true, vA: m.liquidityA, vB: m.liquidityB};
-    log("INFO", pos.sym, `Echtzeit-Wächter aktiv (Helius) – Kurs wird bei jeder Pool-Änderung neu berechnet (Abweichung zu DexScreener ${pct((native / dexNative - 1) * 100)})`);
+    if (!(dexNative > 0)) return fail("noch kein DexScreener-Vergleichskurs");
+    const k = dexNative / native;
+    if (!(native > 0) || k < 0.6 || k > 1.6) return fail(`Pool-Werte passen nicht (Faktor ${k.toFixed(2)})`, tries >= 3);
+    RT.amt[vTok] = a; RT.amt[vSol] = b;
+    pos.rt = {ok: true, vA: vTok, vB: vSol, k};
+    log("INFO", pos.sym, `Echtzeit-Wächter aktiv (Helius) – Kurs wird bei jeder Pool-Änderung neu berechnet (abgeglichen mit DexScreener, Faktor ${k.toFixed(3)})`);
     rtConnect();
-  } catch (e) { pos.rt = {ok: false, why: e.message}; }
+  } catch (e) { fail(e.message); }
 }
 
 // ---------------- Schnelle Positions-Überwachung (alle 5 Sek.)
@@ -780,7 +793,11 @@ async function fast() {
   if (fastBusy || !S.pos.length) return; fastBusy = true;
   try {
     const pairs = await pairsFor(S.pos.map(p => p.mint));
-    for (const pos of S.pos) { const p = pairs[pos.mint]; if (p) { pos.lastPair = p; if (p.priceNative > 0) pos.solUsd = parseFloat(p.priceUsd) / parseFloat(p.priceNative); if (!pos.rt) rtSetup(pos); } }
+    for (const pos of S.pos) { const p = pairs[pos.mint]; if (p) {
+      const changed = !pos.lastPair || pos.lastPair.priceNative !== p.priceNative;
+      pos.lastPair = p; if (p.priceNative > 0) pos.solUsd = parseFloat(p.priceUsd) / parseFloat(p.priceNative);
+      if (pos.rt && pos.rt.ok && changed) { const a = RT.amt[pos.rt.vA], b = RT.amt[pos.rt.vB]; if (a > 0 && b > 0) { const k = parseFloat(p.priceNative) / (b / a); if (k > 0.6 && k < 1.6) pos.rt.k = pos.rt.k * 0.85 + k * 0.15; } }
+      rtSetup(pos); } }
     manage(pairs); rtConnect(); render(true); save();
   } catch (e) {}
   fastBusy = false;
@@ -856,7 +873,8 @@ async function cycle() {
         if (bl) { flow.push({p, st: `Setup „${key}“ gesperrt (gelernt)`, c: "var(--r)"}); return; }
         let mode = null;
         if (prob >= need && sig.length >= 3 && !weak) mode = "normal";
-        else if (C.explore && prob >= C.exploreProb / 100 && S.explores.length < C.exploreMaxH && !S.pos.some(x => x.mode === "lern")) mode = "lern";
+        else if (C.explore && !soft.length && prob >= C.exploreProb / 100 && S.explores.length < C.exploreMaxH && !S.pos.some(x => x.mode === "lern")) mode = "lern";   // Lern-Trades nur bei „sauberen“ Coins
+        if (mode === "normal" && soft.some(x => /Insider|unter der Trendlinie/.test(x)) && prob < need + 0.10) mode = null;   // gelernt: diese Warnungen kosten Geld
         if (!mode) { flow.push({p, st: `🧠 Chance ${Math.round(prob * 100)}% < ${Math.round(need * 100)}%${soft.length ? " · " + soft[0] : ""} (${brainWhy(f)})`, c: "var(--mut)"}); return; }
         sz = mode === "normal" ? sizeFor(key, prob, lage) : {size: Math.min(equity() * C.exploreSize / 100, S.bal * 0.98), note: `${C.exploreSize}% Lern-Trade (Chance ${Math.round(prob * 100)}%)`};
         if (sz.size < 0.5) { flow.push({p, st: "zu wenig Guthaben", c: "var(--a)"}); return; }
@@ -1078,7 +1096,7 @@ document.addEventListener("change", e => {
 });
 
 // ---------------- Bedienung
-$("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus, v12)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render();
+$("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus, v13)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render();
   if (!S.pretrained || Date.now() - S.pretrained.t > 2 * 3600000) setTimeout(() => pretrain(false), 3000);
   clearInterval(window.__ptI); window.__ptI = setInterval(() => { if (running) pretrain(false); }, 2 * 3600000); };
 $("#stop").onclick = () => { running = false; if (worker) worker.postMessage("stop"); $("#start").hidden = false; $("#stop").hidden = true; log("INFO", "–", "Bot gestoppt"); save(); render(); setPhase("gestoppt"); };
