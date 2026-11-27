@@ -1,6 +1,6 @@
 {
- "updated": 1795760252866,
- "version": "v12 · test",
+ "updated": 1795761047233,
+ "version": "v13 · test",
  "startBal": 20,
  "since": 1795719905877,
  "equity": 18.25,
@@ -61,8 +61,22 @@
   ]
  ],
  "shadows": 5,
- "scanned": 501132,
+ "scanned": 501888,
  "log": [
+  [
+   1795760988846,
+   "INFO",
+   "–",
+   "Scan: 126 frische Coins · 0 mit Kaufsignal · aussortiert: 59× zu alt · 25× Liquidität zu dünn · 17× zu wenig Liquidität · 11× Pump.fun-Startphase · 10× zu wenig Volumen · 3× keine Website/Socials · 1× zu jung",
+   ""
+  ],
+  [
+   1795760987114,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v13)",
+   ""
+  ],
   [
    1795760162062,
    "INFO",
@@ -222,20 +236,6 @@
    "FILTER",
    "BIRB",
    "Kaufdruck 69%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795756727748,
-   "INFO",
-   "–",
-   "Scan: 144 frische Coins · 0 mit Kaufsignal · aussortiert: 66× zu alt · 30× Liquidität zu dünn · 16× zu wenig Liquidität · 11× Pump.fun-Startphase · 10× zu wenig Volumen · 4× keine Website/Socials · 2× zu jung · 2× Fake-H",
-   ""
-  ],
-  [
-   1795756657751,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 72%, Trending bei Jupiter – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control Enabled; Gefahr: Freez",
    ""
   ]
  ]
