@@ -1,5 +1,5 @@
 {
- "updated": 1795763228069,
+ "updated": 1795763428564,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -51,20 +51,19 @@
   "updates": 0
  },
  "social": {
-  "test": "CoinGecko ✗ · pump.fun ✗ · Bluesky ✗ · 4chan /biz/ ✗",
+  "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky ✗ · 4chan /biz/ ✓",
   "err": {
-   "api.coingecko.com": "HTTP 599 URL is not a constructor",
-   "frontend-api-v3.pump.fun": "HTTP 599 URL is not a constructor",
-   "public.api.bsky.app": "HTTP 599 URL is not a constructor",
-   "a.4cdn.org": "HTTP 599 URL is not a constructor"
+   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-27T07:09:32.800Z\",\"path\":\"/coins/latest\",",
+   "public.api.bsky.app": "HTTP 403 <html><head><title>403 Forbidden</title><link href='//fonts.bunny.net/css?family"
   },
   "via": "function",
-  "ok": {},
-  "fail": {
+  "ok": {
    "api.coingecko.com": 1,
-   "frontend-api-v3.pump.fun": 1,
-   "public.api.bsky.app": 1,
    "a.4cdn.org": 1
+  },
+  "fail": {
+   "frontend-api-v3.pump.fun": 1,
+   "public.api.bsky.app": 1
   },
   "last": ""
  },
@@ -79,8 +78,22 @@
   ]
  ],
  "shadows": 5,
- "scanned": 503538,
+ "scanned": 504390,
  "log": [
+  [
+   1795763373180,
+   "INFO",
+   "–",
+   "Social-Quellen: CoinGecko ✓ · pump.fun ✗ · Bluesky ✗ · 4chan /biz/ ✓",
+   ""
+  ],
+  [
+   1795763368491,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v14)",
+   ""
+  ],
   [
    1795763171517,
    "INFO",
@@ -240,20 +253,6 @@
    "FILTER",
    "BIRB",
    "Kaufdruck 62%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795758247765,
-   "INFO",
-   "–",
-   "Scan: 137 frische Coins · 0 mit Kaufsignal · aussortiert: 61× zu alt · 27× Liquidität zu dünn · 18× zu wenig Liquidität · 10× Pump.fun-Startphase · 10× zu wenig Volumen · 4× keine Website/Socials · 3× zu jung · 1× Daten ",
-   ""
-  ],
-  [
-   1795758127817,
-   "INFO",
-   "VOLALITY",
-   "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen zu wild: 21.7% Schwankung je Minute, Setup „buyers+pullback“, Gehirn schätzte 33%) – Gehirn lernt daraus",
    ""
   ]
  ]
