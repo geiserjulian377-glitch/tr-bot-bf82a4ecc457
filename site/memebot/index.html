@@ -92,7 +92,7 @@ a{color:var(--b)}
   <div class="head">
     <div class="logo" aria-hidden="true"></div>
     <div>
-      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v13 · test</span></div>
+      <div class="title"><b>Meme-Bot</b> Terminal<span class="ver">v14 · test</span></div>
       <div class="status" id="status"><span class="dot"></span>gestoppt</div>
       <div class="chip" id="phase">bereit</div>
     </div>
@@ -387,9 +387,9 @@ const FEAT = [
   ["kauf", "Kaufdruck 5 Min.", 1.2], ["netto", "Netto-Käufer", 0.9], ["echt", "Echtheits-Score", 0.8], ["spike", "Volumen-Spike", 0.4],
   ["halter", "Halter-Wachstum", 0.6], ["trend", "Abstand zur Trendlinie", -0.7], ["ema", "Aufwärtstrend (EMA)", 0.7], ["vol", "Volumen grün/rot", 0.6],
   ["m5", "Anstieg 5 Min.", -0.6], ["h1", "Anstieg 1 Std.", -0.3], ["liq", "Liquidität/Marktwert", 0.6], ["alter", "Alter", 0.2],
-  ["rueck", "Rücksetzer-Setup", 0.5], ["top10", "Top-10-Konzentration", -0.6], ["wild", "Schwankung", -0.5], ["lage", "Marktlage", 0.8]];
+  ["rueck", "Rücksetzer-Setup", 0.5], ["top10", "Top-10-Konzentration", -0.6], ["wild", "Schwankung", -0.5], ["lage", "Marktlage", 0.8], ["social", "Social-Media-Hype", 0.5]];
 const clip = (x, a = -1, b = 1) => Math.max(a, Math.min(b, isFinite(x) ? x : 0));
-function features(p, j, ch, sig, rc, lage) {
+function features(p, j, ch, sig, rc, lage, so) {
   const tx = p.txns?.m5 || {}, b = tx.buys || 0, s = tx.sells || 0, v = p.volume || {}, s5 = j?.stats5m || {};
   const ageH = (Date.now() - (p.pairCreatedAt || Date.now())) / 3600000;
   return [
@@ -397,9 +397,13 @@ function features(p, j, ch, sig, rc, lage) {
     clip(((v.m5 || 0) / Math.max((v.h1 || 0) / 12, 1) - 1.5) / 3), clip((j?.stats1h?.holderChange || 0) / 15),
     ch ? clip((ch.last / ch.ema21 - 1) * 100 / Math.max(ch.atr, 0.5) / 3) : 0, ch ? (ch.ema9 > ch.ema21 ? 1 : -1) : 0, ch ? clip((ch.volUp - 1.5) / 2) : 0,
     clip((p.priceChange?.m5 || 0) / 12), clip((p.priceChange?.h1 || 0) / 150), clip(((p.liquidity?.usd || 0) / Math.max(p.marketCap || 1, 1) - 0.15) * 5),
-    clip(Math.log10(Math.max(ageH, 0.3) + 1) - 0.7), sig.some(x => x.k === "pullback") ? 1 : 0, rc ? clip((rc.top10 - 20) / 15) : 0, ch ? clip((ch.atr - 4) / 4) : 0, clip(lage)];
+    clip(Math.log10(Math.max(ageH, 0.3) + 1) - 0.7), sig.some(x => x.k === "pullback") ? 1 : 0, rc ? clip((rc.top10 - 20) / 15) : 0, ch ? clip((ch.atr - 4) / 4) : 0, clip(lage), so ? clip(so.score) : 0];
 }
-function brain() { if (!S.brain || S.brain.w.length !== FEAT.length) S.brain = {w: FEAT.map(f => f[2]), b: -0.2, n: 0, hits: 0, seen: 0}; return S.brain; }
+function brain() {
+  if (S.brain && S.brain.w.length < FEAT.length) for (let i = S.brain.w.length; i < FEAT.length; i++) S.brain.w.push(FEAT[i][2]);   // neues Merkmal anhängen, Gelerntes behalten
+  if (!S.brain || S.brain.w.length !== FEAT.length) S.brain = {w: FEAT.map(f => f[2]), b: -0.2, n: 0, hits: 0, seen: 0};
+  return S.brain;
+}
 const sigm = z => 1 / (1 + Math.exp(-z));
 function rawThink(f) { const B = brain(); return sigm(B.b + f.reduce((a, x, i) => a + x * B.w[i], 0)); }
 // Kalibrierung: vergleicht, was das Gehirn vorhergesagt hat, mit dem, was wirklich passiert ist (je 10-%-Stufe)
@@ -500,6 +504,51 @@ async function pretrain(big) {
   S.pretrainBusy = false; render();
 }
 $("#pretrain").onclick = () => pretrain(true);   // Knopf = großes Training
+
+// ---------------- SOCIAL-AGENT: sucht in sozialen Netzwerken nach dem Coin
+// Auf dem Server (Node) über window.__socialFetch: pump.fun, Bluesky, 4chan /biz/. Überall: CoinGecko-Trends.
+const SOC = {cache: {}, biz: null, cg: null, ok: {}, fail: {}};
+async function sfetch(url, json = true) {
+  const host = new URL(url).host;
+  try {
+    let txt, st;
+    if (window.__socialFetch) { const r = await window.__socialFetch(url); st = r.status; txt = r.text; }
+    else { const r = await fetch(url, {cache: "no-store"}); st = r.status; txt = await r.text(); }
+    if (st !== 200) throw new Error("HTTP " + st);
+    SOC.ok[host] = (SOC.ok[host] || 0) + 1; return json ? JSON.parse(txt) : txt;
+  } catch (e) { SOC.fail[host] = (SOC.fail[host] || 0) + 1; return null; }
+}
+async function social(p) {
+  const m = p.baseToken.address, sym = (p.baseToken.symbol || "").replace(/[^\w]/g, ""), c = SOC.cache[m];
+  if (c && Date.now() - c.t < 5 * 60000) return c.v;
+  const v = {posts: 0, authors: 0, likes: 0, biz: 0, bizReplies: 0, pumpReplies: null, live: false, cg: false, src: []};
+  const server = !!window.__socialFetch;
+  // CoinGecko: suchen viele Leute gerade danach?
+  if (!SOC.cg || Date.now() - SOC.cg.t > 5 * 60000) { const d = await sfetch("https://api.coingecko.com/api/v3/search/trending"); if (d) SOC.cg = {t: Date.now(), set: new Set((d.coins || []).flatMap(x => [String(x.item?.symbol || "").toUpperCase(), String(x.item?.name || "").toUpperCase()]))}; }
+  if (SOC.cg) { v.cg = SOC.cg.set.has(sym.toUpperCase()) || SOC.cg.set.has(String(p.baseToken.name || "").toUpperCase()); v.src.push("CoinGecko"); }
+  if (server) {
+    // pump.fun: Kommentare + Livestream
+    if (/pump$/.test(m)) { const d = await sfetch(`https://frontend-api-v3.pump.fun/coins/${m}`); if (d) { v.pumpReplies = d.reply_count ?? null; v.live = !!d.is_currently_live; v.src.push("pump.fun"); } }
+    // Bluesky: Beiträge der letzten Stunde (Ticker + Adresse)
+    if (sym.length >= 2) {
+      const q = encodeURIComponent(`$${sym}`), d = await sfetch(`https://public.api.bsky.app/xrpc/app.bsky.feed.searchPosts?q=${q}&limit=50&sort=latest`);
+      const d2 = await sfetch(`https://public.api.bsky.app/xrpc/app.bsky.feed.searchPosts?q=${m}&limit=25&sort=latest`);
+      const posts = [...(d?.posts || []), ...(d2?.posts || [])].filter(x => Date.now() - new Date(x.indexedAt || x.record?.createdAt || 0) < 3600000);
+      if (d || d2) { v.posts = posts.length; v.authors = new Set(posts.map(x => x.author?.did)).size; v.likes = posts.reduce((a, x) => a + (x.likeCount || 0) + (x.repostCount || 0), 0); v.src.push("Bluesky"); }
+    }
+    // 4chan /biz/: wird der Coin in Krypto-Threads erwähnt? (nur gezählt, Inhalte werden nicht gespeichert)
+    if (!SOC.biz || Date.now() - SOC.biz.t > 3 * 60000) { const d = await sfetch("https://a.4cdn.org/biz/catalog.json"); if (d) SOC.biz = {t: Date.now(), th: d.flatMap(pg => pg.threads || []).map(t => ({txt: ((t.sub || "") + " " + (t.com || "")).replace(/<[^>]+>/g, " "), r: t.replies || 0, time: t.time || 0}))}; }
+    if (SOC.biz && sym.length >= 3) {
+      const re = new RegExp(`(\\$${sym}\\b|${m})`, "i");
+      const hits = SOC.biz.th.filter(t => re.test(t.txt)); v.biz = hits.length; v.bizReplies = hits.reduce((a, t) => a + t.r, 0); v.src.push("4chan /biz/");
+    }
+  }
+  v.score = Math.log10(1 + v.posts * 2 + v.authors * 3 + v.likes / 5 + v.biz * 8 + v.bizReplies / 5 + (v.pumpReplies || 0) / 25 + (v.live ? 15 : 0) + (v.cg ? 20 : 0)) / 1.5 - 0.3;
+  v.hype = v.authors >= 3 || v.biz >= 1 || (v.pumpReplies || 0) >= 80 || v.live || v.cg;
+  v.text = [v.posts ? `${v.posts} Bluesky-Beiträge/Std. (${v.authors} Leute)` : "", v.biz ? `${v.biz}× auf /biz/ (${v.bizReplies} Antworten)` : "", v.pumpReplies != null ? `${v.pumpReplies} pump.fun-Kommentare` : "", v.live ? "Livestream läuft" : "", v.cg ? "CoinGecko-Trend" : ""].filter(Boolean).join(", ");
+  SOC.cache[m] = {t: Date.now(), v}; agentNote.social = `${p.baseToken.symbol}: ${v.text || "kaum Erwähnungen"}`;
+  return v;
+}
 
 // ---------------- SELBST-OPTIMIERER: stellt die Kaufschwelle nach den eigenen Ergebnissen ein
 function autotune() {
@@ -852,7 +901,9 @@ async function cycle() {
       setPhase(`Rug-Check ${p.baseToken.symbol} …`); agentNote.rug = `prüft ${p.baseToken.symbol}`;
       let rc;
       try { rc = await rugCheck(m, Math.max(sz.size, 3), parseFloat(p.priceUsd), p.dexId); } catch (e) { flow.push({p, st: "Rug-Check nicht erreichbar", c: "var(--a)"}); continue; }
-      const f = features(p, j, ch, sig, rc, lage.score), soft = [...rc.soft, ...(cr && !hardChart ? [cr] : [])];
+      const so = rc.ok ? await social(p).catch(() => null) : null;
+      if (so && so.hype && !sig.some(x => x.k === "social")) sig.push({k: "social", t: "Social-Hype: " + so.text});
+      const f = features(p, j, ch, sig, rc, lage.score, so), soft = [...rc.soft, ...(cr && !hardChart ? [cr] : [])];
       const prob = Math.max(0, think(f) - 0.06 * soft.length), need = (C.minProb + lage.probAdd) / 100;
       const reason = !rc.ok ? "hart: " + rc.hard[0] : hardChart ? cr : soft.length ? soft[0] : null;
       let bought = false;
@@ -1039,6 +1090,7 @@ function render(light) {
     ["📈", "CHART", "1-Min.-Kerzen: Trend, Schwankung, Überdehnung", "dynamischer Stop", "#60a5fa"],
     ["⚡", "ECHTZEIT", "Helius: Kurs live aus dem Pool, Reaktion in < 1 Sek.", agentNote.rt || (KEYS.helius ? "bereit" : "kein Helius-Schlüssel"), "#fde047"],
     ["🛡", "WÄCHTER", "Entwickler-/Großhalter-Verkauf, Käuferstrom", S.pos.length ? "bewacht " + S.pos.length : "bereit", "#34d399"],
+    ["📣", "SOCIAL", window.__socialFetch ? "pump.fun, Bluesky, 4chan /biz/, CoinGecko-Trends" : "CoinGecko-Trends (mehr Quellen nur auf dem Server)", agentNote.social || "wartet auf Kandidaten", "#fb7185"],
     ["🧠", "GEHIRN", `${FEAT.length} Merkmale → Gewinnchance, lernt aus jedem Ergebnis`, `${Math.round(brain().n)} gelernt`, "#e879f9"],
     ["👻", "SCHATTEN", "verfolgt nicht gekaufte Setups → lernt schneller", `${(S.shadow || []).filter(x => !x.done).length} laufen`, "#94a3b8"],
     ["🧠", "LERNEN", "Setup-Statistik, Sperrliste", `${Object.keys(S.learn).length} Setups · ${Object.keys(S.block).length} gesperrt`, "#f472b6"],
@@ -1096,7 +1148,7 @@ document.addEventListener("change", e => {
 });
 
 // ---------------- Bedienung
-$("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus, v13)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render();
+$("#start").onclick = () => { running = true; $("#start").hidden = true; $("#stop").hidden = false; log("INFO", "–", "Bot gestartet (Testmodus, v14)"); try { Notification.requestPermission(); } catch (e) {} startLoop(); render();
   if (!S.pretrained || Date.now() - S.pretrained.t > 2 * 3600000) setTimeout(() => pretrain(false), 3000);
   clearInterval(window.__ptI); window.__ptI = setInterval(() => { if (running) pretrain(false); }, 2 * 3600000); };
 $("#stop").onclick = () => { running = false; if (worker) worker.postMessage("stop"); $("#start").hidden = false; $("#stop").hidden = true; log("INFO", "–", "Bot gestoppt"); save(); render(); setPhase("gestoppt"); };
@@ -1130,7 +1182,7 @@ async function serverView() {
 }
 serverView(); setInterval(serverView, 60000);
 
-window.__memebot = {rtInfo: () => ({key: !!KEYS.helius, jup: !!KEYS.jup && !JUP.bad, jupFails: JUP.fails || 0, note: agentNote.rt || "", updates: RT.n}), think: f => think(f), train: (f, w) => train(f, w), FEAT, rugCheck, filterReason, signals, manage, get S(){ return S; }, C};   // für Tests
+window.__memebot = {socialInfo: () => ({ok: SOC.ok, fail: SOC.fail, last: agentNote.social || ""}), rtInfo: () => ({key: !!KEYS.helius, jup: !!KEYS.jup && !JUP.bad, jupFails: JUP.fails || 0, note: agentNote.rt || "", updates: RT.n}), think: f => think(f), train: (f, w) => train(f, w), FEAT, rugCheck, filterReason, signals, manage, get S(){ return S; }, C};   // für Tests
 renderSettings(); render();
 }
 </script>

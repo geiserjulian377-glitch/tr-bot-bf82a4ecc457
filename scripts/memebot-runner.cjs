@@ -46,6 +46,15 @@ async function main() {
   const keys = {}; if (process.env.HELIUS_KEY) keys.helius = process.env.HELIUS_KEY; if (process.env.JUP_KEY) keys.jup = process.env.JUP_KEY;
   await page.evaluateOnNewDocument(k => { try { localStorage.setItem("mb_keys", k); } catch (e) {} }, JSON.stringify(keys));
   log("Schlüssel:", Object.keys(keys).join(", ") || "keine");
+  // Social-Abfragen laufen über Node (keine Browser-Sperre) – nur für diese öffentlichen Quellen
+  const SOCIAL_HOSTS = ["frontend-api-v3.pump.fun", "public.api.bsky.app", "a.4cdn.org", "api.coingecko.com"];
+  await page.exposeFunction("__socialFetch", async url => {
+    try {
+      if (!SOCIAL_HOSTS.includes(new URL(url).host)) return {status: 403, text: ""};
+      const r = await fetch(url, {headers: {"user-agent": "Mozilla/5.0 (memebot-dauertest)", "accept": "application/json"}, signal: AbortSignal.timeout(10000)});
+      return {status: r.status, text: (await r.text()).slice(0, 3000000)};
+    } catch (e) { return {status: 599, text: String(e.message || e)}; }
+  });
   page.on("pageerror", e => log("Seitenfehler:", e.message));
 
   async function open() {
@@ -74,6 +83,7 @@ async function main() {
           brain: { n: Math.round(B.n || 0), acc: B.seen ? Math.round(B.hits / B.seen * 100) : 0 }, lage: S.lage ? S.lage.name : "",
           tune: S.tune || null, minProb: window.__memebot.C.minProb,
           rt: window.__memebot.rtInfo ? window.__memebot.rtInfo() : null,
+          social: window.__memebot.socialInfo ? window.__memebot.socialInfo() : null,
           days: Object.entries(S.trades.reduce((m, t) => { const k = new Date(t.t1).toISOString().slice(0, 10); m[k] = m[k] || {n: 0, w: 0, pnl: 0}; m[k].n++; m[k].w += t.ret > 0 ? 1 : 0; m[k].pnl += t.got - t.cost; return m; }, {})).slice(-7),
           shadows: (S.shadow || []).filter(x => x.done).length, scanned: S.stats.scan,
           log: S.log.slice(-25).reverse().map(l => [l.t, l.type, l.sym, l.text.slice(0, 220), l.val])
