@@ -1,5 +1,5 @@
 {
- "updated": 1795812457696,
+ "updated": 1795813658873,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -37,10 +37,10 @@
   }
  ],
  "brain": {
-  "n": 1003,
-  "acc": 69
+  "n": 1005,
+  "acc": 70
  },
- "lage": "kalt",
+ "lage": "normal",
  "tune": null,
  "minProb": 58,
  "rt": {
@@ -58,15 +58,15 @@
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 5,
-   "api.bsky.app": 17,
-   "a.4cdn.org": 6
+   "api.coingecko.com": 7,
+   "api.bsky.app": 25,
+   "a.4cdn.org": 8
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 7,
+   "frontend-api-v3.pump.fun": 10,
    "public.api.bsky.app": 1
   },
-  "last": "Zhaki: kaum Erwähnungen"
+  "last": "rice: 50 Bluesky-Beiträge/Std. (48 Leute)"
  },
  "days": [
   [
@@ -78,9 +78,86 @@
    }
   ]
  ],
- "shadows": 7,
- "scanned": 1122675,
+ "shadows": 9,
+ "scanned": 1139459,
  "log": [
+  [
+   1795813548303,
+   "FILTER",
+   "RUSH",
+   "Volumen-Spike 2.8×, Kaufdruck 74% – aber (hart): Gefahr: Mint Authority still enabled; Top-10-Halter 89%; Liquidität nur 0% gesperrt",
+   ""
+  ],
+  [
+   1795813486933,
+   "INFO",
+   "–",
+   "Scan: 144 frische Coins · 0 mit Kaufsignal · aussortiert: 74× zu alt · 25× Liquidität zu dünn · 16× zu wenig Liquidität · 12× Pump.fun-Startphase · 5× zu wenig Volumen · 2× nicht jagen · 2× Halter springen ab · 1× zu jun",
+   ""
+  ],
+  [
+   1795813337420,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795813298443,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 89%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795813297711,
+   "INFO",
+   "Fireball",
+   "Schatten-Trade ausgewertet: wäre +35.2% gewesen (aussortiert wegen Chart: 5-Min.-Trend zeigt nach unten, Setup „buyers“, Gehirn schätzte 10%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795813186872,
+   "INFO",
+   "–",
+   "Scan: 141 frische Coins · 0 mit Kaufsignal · aussortiert: 68× zu alt · 23× Liquidität zu dünn · 16× zu wenig Liquidität · 12× Pump.fun-Startphase · 7× zu wenig Volumen · 2× zu jung · 2× nicht jagen · 2× Daten widersprüch",
+   ""
+  ],
+  [
+   1795813076864,
+   "INFO",
+   "pippin",
+   "Schatten-Trade ausgewertet: wäre −3.7% gewesen (aussortiert wegen hart: Top-10-Halter 61%, Setup „buyers“, Gehirn schätzte 17%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795812877773,
+   "INFO",
+   "–",
+   "Scan: 138 frische Coins · 1 mit Kaufsignal · aussortiert: 63× zu alt · 27× Liquidität zu dünn · 17× zu wenig Liquidität · 12× Pump.fun-Startphase · 5× zu wenig Volumen · 3× Liquidität fällt · 2× zu jung · 1× Fake-Handel ",
+   ""
+  ],
+  [
+   1795812706940,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795812686871,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795812576988,
+   "INFO",
+   "–",
+   "Scan: 137 frische Coins · 0 mit Kaufsignal · aussortiert: 63× zu alt · 26× Liquidität zu dünn · 17× zu wenig Liquidität · 12× Pump.fun-Startphase · 7× zu wenig Volumen · 2× Liquidität fällt · 1× zu jung · 1× Fake-Handel ",
+   ""
+  ],
   [
    1795812398808,
    "FILTER",
@@ -177,83 +254,6 @@
    "INFO",
    "–",
    "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795811347210,
-   "INFO",
-   "–",
-   "Scan: 131 frische Coins · 2 mit Kaufsignal · aussortiert: 61× zu alt · 23× Liquidität zu dünn · 15× zu wenig Liquidität · 11× Pump.fun-Startphase · 6× zu wenig Volumen · 4× zu jung · 2× Liquidität fällt · 2× keine Websit",
-   ""
-  ],
-  [
-   1795811269229,
-   "FILTER",
-   "pippin",
-   "Kaufdruck 97%, Trending bei Jupiter – aber (hart): Top-10-Halter 61%",
-   ""
-  ],
-  [
-   1795811235990,
-   "INFO",
-   "–",
-   "Social-Quellen: CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
-   ""
-  ],
-  [
-   1795811199118,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 67%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795811196744,
-   "INFO",
-   "–",
-   "Bot gestartet (Testmodus, v14)",
-   ""
-  ],
-  [
-   1795811192609,
-   "INFO",
-   "–",
-   "Bot gestoppt",
-   ""
-  ],
-  [
-   1795811188478,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795811166982,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795811046514,
-   "INFO",
-   "–",
-   "Scan: 135 frische Coins · 1 mit Kaufsignal · aussortiert: 66× zu alt · 21× Liquidität zu dünn · 15× zu wenig Liquidität · 9× Pump.fun-Startphase · 7× zu wenig Volumen · 6× zu jung · 2× Daten widersprüchlich · 2× Liquidit",
-   ""
-  ],
-  [
-   1795810906592,
-   "INFO",
-   "Fullball",
-   "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen zu wild: 27.3% Schwankung je Minute, Setup „buyers+momentum+spike“, Gehirn schätzte 21%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795810887942,
-   "FILTER",
-   "RUSH",
-   "Volumen-Spike 4.1×, Kaufdruck 81% – aber (hart): Gefahr: Mint Authority still enabled; Top-10-Halter 89%; Liquidität nur 0% gesperrt",
    ""
   ]
  ]
