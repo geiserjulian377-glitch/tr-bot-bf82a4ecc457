@@ -1,5 +1,5 @@
 {
- "updated": 1795823271187,
+ "updated": 1795823815116,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -48,7 +48,7 @@
   "n": 1014,
   "acc": 69
  },
- "lage": "normal",
+ "lage": "kalt",
  "tune": null,
  "minProb": 58,
  "rt": {
@@ -66,15 +66,15 @@
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 17,
-   "api.bsky.app": 71,
-   "a.4cdn.org": 17
+   "api.coingecko.com": 19,
+   "api.bsky.app": 79,
+   "a.4cdn.org": 19
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 36,
+   "frontend-api-v3.pump.fun": 40,
    "public.api.bsky.app": 1
   },
-  "last": "WINTER: 50 Bluesky-Beiträge/Std. (48 Leute)"
+  "last": "Zhaki: kaum Erwähnungen"
  },
  "days": [
   [
@@ -95,8 +95,50 @@
   ]
  ],
  "shadows": 12,
- "scanned": 1269903,
+ "scanned": 1276817,
  "log": [
+  [
+   1795823812092,
+   "INFO",
+   "–",
+   "Bot gestoppt",
+   ""
+  ],
+  [
+   1795823728193,
+   "FILTER",
+   "SPCX",
+   "Kaufdruck 60%, echter Handel (Score 95, 23 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control E",
+   ""
+  ],
+  [
+   1795823707274,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795823547261,
+   "INFO",
+   "–",
+   "Scan: 130 frische Coins · 3 mit Kaufsignal · aussortiert: 68× zu alt · 22× Liquidität zu dünn · 13× Pump.fun-Startphase · 11× zu wenig Liquidität · 3× zu wenig Volumen · 3× zu jung · 1× Liquidität fällt · 1× keine Websit",
+   ""
+  ],
+  [
+   1795823367378,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795823277597,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
   [
    1795823238771,
    "FILTER",
@@ -228,48 +270,6 @@
    "INFO",
    "–",
    "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795821617369,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795821407266,
-   "INFO",
-   "–",
-   "Scan: 132 frische Coins · 3 mit Kaufsignal · aussortiert: 71× zu alt · 25× Liquidität zu dünn · 11× Pump.fun-Startphase · 8× zu wenig Liquidität · 4× zu wenig Volumen · 2× zu jung · 2× nicht jagen · 2× Liquidität fällt ·",
-   ""
-  ],
-  [
-   1795821139210,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 62%, Trending bei Jupiter, 97 Netto-Käufer, Kaufvol. 1.3× Verkauf, echter Handel (Score 95, 17 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gef",
-   ""
-  ],
-  [
-   1795821097368,
-   "INFO",
-   "–",
-   "Scan: 135 frische Coins · 2 mit Kaufsignal · aussortiert: 67× zu alt · 29× Liquidität zu dünn · 11× Pump.fun-Startphase · 9× zu wenig Liquidität · 4× zu jung · 4× zu wenig Volumen · 2× Liquidität fällt · 2× keine Website",
-   ""
-  ],
-  [
-   1795821057388,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795821007283,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
    ""
   ]
  ]
