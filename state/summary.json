@@ -1,5 +1,5 @@
 {
- "updated": 1795769135928,
+ "updated": 1795770337104,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -78,9 +78,58 @@
    }
   ]
  ],
- "shadows": 1,
- "scanned": 569124,
+ "shadows": 0,
+ "scanned": 584274,
  "log": [
+  [
+   1795770082050,
+   "INFO",
+   "–",
+   "Scan: 125 frische Coins · 1 mit Kaufsignal · aussortiert: 64× zu alt · 23× Liquidität zu dünn · 14× Pump.fun-Startphase · 11× zu wenig Liquidität · 7× zu wenig Volumen · 3× keine Website/Socials · 1× Entwickler hat 445 C",
+   ""
+  ],
+  [
+   1795770053322,
+   "FILTER",
+   "SPCX",
+   "Kaufdruck 93%, 27 Netto-Käufer, Kaufvol. 1.8× Verkauf – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control Enab",
+   ""
+  ],
+  [
+   1795769781388,
+   "INFO",
+   "–",
+   "Scan: 125 frische Coins · 0 mit Kaufsignal · aussortiert: 64× zu alt · 23× Liquidität zu dünn · 13× Pump.fun-Startphase · 10× zu wenig Liquidität · 8× zu wenig Volumen · 4× keine Website/Socials · 1× zu jung · 1× Entwick",
+   ""
+  ],
+  [
+   1795769481336,
+   "INFO",
+   "–",
+   "Scan: 129 frische Coins · 0 mit Kaufsignal · aussortiert: 63× zu alt · 26× Liquidität zu dünn · 13× Pump.fun-Startphase · 10× zu wenig Liquidität · 8× zu wenig Volumen · 3× keine Website/Socials · 2× zu wenig Netto-Käufe",
+   ""
+  ],
+  [
+   1795769191402,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795769172205,
+   "INFO",
+   "–",
+   "Scan: 122 frische Coins · 0 mit Kaufsignal · aussortiert: 58× zu alt · 27× Liquidität zu dünn · 12× Pump.fun-Startphase · 11× zu wenig Liquidität · 5× zu wenig Volumen · 4× keine Website/Socials · 2× zu jung · 1× Entwick",
+   ""
+  ],
+  [
+   1795769151396,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
   [
    1795768862001,
    "INFO",
@@ -205,55 +254,6 @@
    "INFO",
    "–",
    "Scan: 140 frische Coins · 0 mit Kaufsignal · aussortiert: 68× zu alt · 30× Liquidität zu dünn · 14× Pump.fun-Startphase · 13× zu wenig Liquidität · 8× zu wenig Volumen · 3× keine Website/Socials · 1× Entwickler hat 445 C",
-   ""
-  ],
-  [
-   1795766092131,
-   "INFO",
-   "–",
-   "Scan: 133 frische Coins · 0 mit Kaufsignal · aussortiert: 66× zu alt · 28× Liquidität zu dünn · 14× Pump.fun-Startphase · 11× zu wenig Liquidität · 7× zu wenig Volumen · 3× keine Website/Socials · 1× zu jung · 1× Entwick",
-   ""
-  ],
-  [
-   1795765941402,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795765911390,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795765883180,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 68%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795765791421,
-   "INFO",
-   "–",
-   "Scan: 138 frische Coins · 0 mit Kaufsignal · aussortiert: 69× zu alt · 29× Liquidität zu dünn · 15× Pump.fun-Startphase · 13× zu wenig Liquidität · 5× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 1× nicht j",
-   ""
-  ],
-  [
-   1795765491388,
-   "INFO",
-   "–",
-   "Scan: 151 frische Coins · 0 mit Kaufsignal · aussortiert: 79× zu alt · 28× Liquidität zu dünn · 14× Pump.fun-Startphase · 12× zu wenig Liquidität · 10× zu wenig Volumen · 3× keine Website/Socials · 1× zu jung · 1× Entwic",
-   ""
-  ],
-  [
-   1795765182212,
-   "INFO",
-   "–",
-   "Scan: 147 frische Coins · 0 mit Kaufsignal · aussortiert: 71× zu alt · 33× Liquidität zu dünn · 15× Pump.fun-Startphase · 12× zu wenig Liquidität · 8× zu wenig Volumen · 4× keine Website/Socials · 2× zu jung · 1× nicht j",
    ""
   ]
  ]
