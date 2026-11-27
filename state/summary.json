@@ -1,5 +1,5 @@
 {
- "updated": 1795754240684,
+ "updated": 1795755442287,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -37,7 +37,7 @@
   }
  ],
  "brain": {
-  "n": 622,
+  "n": 623,
   "acc": 68
  },
  "lage": "normal",
@@ -60,9 +60,65 @@
    }
   ]
  ],
- "shadows": 7,
- "scanned": 421049,
+ "shadows": 8,
+ "scanned": 437394,
  "log": [
+  [
+   1795755278615,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795755267705,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795755208327,
+   "INFO",
+   "–",
+   "Scan: 139 frische Coins · 1 mit Kaufsignal · aussortiert: 68× zu alt · 25× Liquidität zu dünn · 15× zu wenig Liquidität · 10× Pump.fun-Startphase · 9× zu wenig Volumen · 3× zu jung · 3× Fake-Handel · 2× Liquidität fällt ",
+   ""
+  ],
+  [
+   1795754929382,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 64%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795754917699,
+   "INFO",
+   "LEVER",
+   "Schatten-Trade ausgewertet: wäre −8.0% gewesen (aussortiert wegen zu wild: 14.5% Schwankung je Minute, Setup „buyers“, Gehirn schätzte 16%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795754898397,
+   "INFO",
+   "–",
+   "Scan: 134 frische Coins · 0 mit Kaufsignal · aussortiert: 66× zu alt · 24× Liquidität zu dünn · 15× zu wenig Liquidität · 11× Pump.fun-Startphase · 9× zu wenig Volumen · 3× Fake-Handel · 2× Liquidität fällt · 1× nicht ja",
+   ""
+  ],
+  [
+   1795754587903,
+   "INFO",
+   "–",
+   "Scan: 139 frische Coins · 0 mit Kaufsignal · aussortiert: 66× zu alt · 29× Liquidität zu dünn · 15× zu wenig Liquidität · 10× zu wenig Volumen · 9× Pump.fun-Startphase · 3× Fake-Handel · 2× keine Website/Socials · 1× zu ",
+   ""
+  ],
+  [
+   1795754287753,
+   "INFO",
+   "–",
+   "Scan: 132 frische Coins · 2 mit Kaufsignal · aussortiert: 58× zu alt · 32× Liquidität zu dünn · 12× zu wenig Liquidität · 10× zu wenig Volumen · 8× Pump.fun-Startphase · 3× zu jung · 2× Fake-Handel · 2× keine Website/Soc",
+   ""
+  ],
   [
    1795754229172,
    "FILTER",
@@ -180,62 +236,6 @@
    "INFO",
    "–",
    "Scan: 133 frische Coins · 0 mit Kaufsignal · aussortiert: 64× zu alt · 31× Liquidität zu dünn · 15× zu wenig Liquidität · 8× Pump.fun-Startphase · 7× zu wenig Volumen · 3× keine Website/Socials · 2× Fake-Handel · 1× zu w",
-   ""
-  ],
-  [
-   1795752667745,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795752457712,
-   "INFO",
-   "–",
-   "Scan: 126 frische Coins · 1 mit Kaufsignal · aussortiert: 59× zu alt · 26× Liquidität zu dünn · 15× zu wenig Liquidität · 9× zu wenig Volumen · 8× Pump.fun-Startphase · 3× keine Website/Socials · 2× Fake-Handel · 1× nich",
-   ""
-  ],
-  [
-   1795752449300,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 66%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795752247947,
-   "INFO",
-   "Scat",
-   "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen zu wild: 24.1% Schwankung je Minute, Setup „pullback“, Gehirn schätzte 17%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795752169335,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 64%, echter Handel (Score 95, 25 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control E",
-   ""
-  ],
-  [
-   1795752157709,
-   "INFO",
-   "–",
-   "Scan: 126 frische Coins · 0 mit Kaufsignal · aussortiert: 59× zu alt · 25× Liquidität zu dünn · 15× zu wenig Liquidität · 9× zu wenig Volumen · 8× Pump.fun-Startphase · 3× keine Website/Socials · 2× Fake-Handel · 2× zu j",
-   ""
-  ],
-  [
-   1795752157708,
-   "INFO",
-   "SPCX",
-   "Schatten-Trade ausgewertet: wäre −3.8% gewesen (aussortiert wegen hart: Mint-Recht offen (neue Coins druckbar), Setup „buyers“, Gehirn schätzte 21%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795751848498,
-   "INFO",
-   "–",
-   "Scan: 136 frische Coins · 0 mit Kaufsignal · aussortiert: 65× zu alt · 33× Liquidität zu dünn · 13× zu wenig Liquidität · 8× zu wenig Volumen · 7× Pump.fun-Startphase · 4× nicht jagen · 2× zu jung · 2× keine Website/Soci",
    ""
   ]
  ]
