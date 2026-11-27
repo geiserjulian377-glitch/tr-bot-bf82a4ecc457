@@ -514,9 +514,9 @@ async function sfetch(url, json = true) {
     let txt, st;
     if (window.__socialFetch) { const r = await window.__socialFetch(url); st = r.status; txt = r.text; }
     else { const r = await fetch(url, {cache: "no-store"}); st = r.status; txt = await r.text(); }
-    if (st !== 200) throw new Error("HTTP " + st);
+    if (st !== 200) throw new Error("HTTP " + st + " " + String(txt || "").slice(0, 80));
     SOC.ok[host] = (SOC.ok[host] || 0) + 1; return json ? JSON.parse(txt) : txt;
-  } catch (e) { SOC.fail[host] = (SOC.fail[host] || 0) + 1; return null; }
+  } catch (e) { SOC.fail[host] = (SOC.fail[host] || 0) + 1; SOC.err = SOC.err || {}; SOC.err[host] = String(e.message || e).slice(0, 120); return null; }
 }
 async function social(p) {
   const m = p.baseToken.address, sym = (p.baseToken.symbol || "").replace(/[^\w]/g, ""), c = SOC.cache[m];
@@ -1191,7 +1191,7 @@ async function serverView() {
 }
 serverView(); setInterval(serverView, 60000);
 
-window.__memebot = {socialInfo: () => ({test: SOC.selftest || "", ok: SOC.ok, fail: SOC.fail, last: agentNote.social || ""}), rtInfo: () => ({key: !!KEYS.helius, jup: !!KEYS.jup && !JUP.bad, jupFails: JUP.fails || 0, note: agentNote.rt || "", updates: RT.n}), think: f => think(f), train: (f, w) => train(f, w), FEAT, rugCheck, filterReason, signals, manage, get S(){ return S; }, C};   // für Tests
+window.__memebot = {socialInfo: () => ({test: SOC.selftest || "", err: SOC.err || {}, via: typeof window.__socialFetch, ok: SOC.ok, fail: SOC.fail, last: agentNote.social || ""}), rtInfo: () => ({key: !!KEYS.helius, jup: !!KEYS.jup && !JUP.bad, jupFails: JUP.fails || 0, note: agentNote.rt || "", updates: RT.n}), think: f => think(f), train: (f, w) => train(f, w), FEAT, rugCheck, filterReason, signals, manage, get S(){ return S; }, C};   // für Tests
 renderSettings(); render();
 }
 </script>
