@@ -1,5 +1,5 @@
 {
- "updated": 1795783560118,
+ "updated": 1795784104404,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -53,20 +53,20 @@
  "social": {
   "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
   "err": {
-   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-27T12:42:25.848Z\",\"path\":\"/coins/4tqzkSWA",
+   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-27T12:47:47.407Z\",\"path\":\"/coins/4tqzkSWA",
    "public.api.bsky.app": "HTTP 403 <html><head><title>403 Forbidden</title><link href='//fonts.bunny.net/css?family"
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 9,
-   "api.bsky.app": 17,
-   "a.4cdn.org": 9
+   "api.coingecko.com": 10,
+   "api.bsky.app": 19,
+   "a.4cdn.org": 10
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 9,
+   "frontend-api-v3.pump.fun": 10,
    "public.api.bsky.app": 1
   },
-  "last": "VAULT: 22 Bluesky-Beiträge/Std. (20 Leute)"
+  "last": "VAULT: 20 Bluesky-Beiträge/Std. (18 Leute)"
  },
  "days": [
   [
@@ -79,8 +79,57 @@
   ]
  ],
  "shadows": 3,
- "scanned": 754580,
+ "scanned": 761226,
  "log": [
+  [
+   1795784101374,
+   "INFO",
+   "–",
+   "Bot gestoppt",
+   ""
+  ],
+  [
+   1795784055983,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795783987374,
+   "FILTER",
+   "SPCX",
+   "Kaufdruck 61%, Trending bei Jupiter, 141 Netto-Käufer, Kaufvol. 2.7× Verkauf – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr:",
+   ""
+  ],
+  [
+   1795783806096,
+   "INFO",
+   "–",
+   "Scan: 125 frische Coins · 0 mit Kaufsignal · aussortiert: 69× zu alt · 26× Liquidität zu dünn · 9× zu wenig Liquidität · 8× Pump.fun-Startphase · 4× zu wenig Volumen · 2× zu jung · 2× keine Website/Socials · 1× Fake-Hand",
+   ""
+  ],
+  [
+   1795783755533,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795783685531,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795783605529,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
   [
    1795783495766,
    "INFO",
@@ -205,55 +254,6 @@
    "INFO",
    "–",
    "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795782045535,
-   "INFO",
-   "pippin",
-   "Schatten-Trade ausgewertet: wäre −3.9% gewesen (aussortiert wegen hart: Top-10-Halter 61%, Setup „buyers“, Gehirn schätzte 15%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795781987153,
-   "FILTER",
-   "pippin",
-   "Kaufdruck 100%, Trending bei Jupiter – aber (hart): Top-10-Halter 61%",
-   ""
-  ],
-  [
-   1795781955794,
-   "INFO",
-   "–",
-   "Scan: 121 frische Coins · 2 mit Kaufsignal · aussortiert: 60× zu alt · 26× Liquidität zu dünn · 9× Pump.fun-Startphase · 9× zu wenig Liquidität · 7× zu wenig Volumen · 3× keine Website/Socials · 1× zu jung · 1× Fake-Hand",
-   ""
-  ],
-  [
-   1795781825516,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795781777245,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 91%, Trending bei Jupiter, 19 Netto-Käufer, Kaufvol. 3.7× Verkauf – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: ",
-   ""
-  ],
-  [
-   1795781715521,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795781645659,
-   "INFO",
-   "–",
-   "Scan: 119 frische Coins · 1 mit Kaufsignal · aussortiert: 62× zu alt · 25× Liquidität zu dünn · 9× Pump.fun-Startphase · 9× zu wenig Liquidität · 5× zu wenig Volumen · 3× keine Website/Socials · 1× zu jung · 1× Fake-Hand",
    ""
   ]
  ]
