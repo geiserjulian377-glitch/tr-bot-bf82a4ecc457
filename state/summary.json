@@ -1,5 +1,5 @@
 {
- "updated": 1795742786854,
+ "updated": 1795743987968,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -61,8 +61,50 @@
   ]
  ],
  "shadows": 5,
- "scanned": 270283,
+ "scanned": 286327,
  "log": [
+  [
+   1795743884586,
+   "INFO",
+   "–",
+   "Scan: 140 frische Coins · 0 mit Kaufsignal · aussortiert: 68× zu alt · 30× Liquidität zu dünn · 12× zu wenig Liquidität · 11× zu wenig Volumen · 10× Pump.fun-Startphase · 3× keine Website/Socials · 2× gesperrt (früher Ve",
+   ""
+  ],
+  [
+   1795743574200,
+   "INFO",
+   "–",
+   "Scan: 133 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 29× Liquidität zu dünn · 13× zu wenig Liquidität · 11× Pump.fun-Startphase · 11× zu wenig Volumen · 3× keine Website/Socials · 1× Fake-Handel · 1× En",
+   ""
+  ],
+  [
+   1795743465134,
+   "FILTER",
+   "SPCX",
+   "Kaufdruck 61%, echter Handel (Score 94, 24 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control E",
+   ""
+  ],
+  [
+   1795743294901,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 61%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795743273970,
+   "INFO",
+   "–",
+   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 61× zu alt · 28× Liquidität zu dünn · 13× zu wenig Liquidität · 12× zu wenig Volumen · 10× Pump.fun-Startphase · 4× keine Website/Socials · 1× Fake-Handel · 1× En",
+   ""
+  ],
+  [
+   1795742963870,
+   "INFO",
+   "–",
+   "Scan: 134 frische Coins · 0 mit Kaufsignal · aussortiert: 61× zu alt · 28× Liquidität zu dünn · 14× zu wenig Liquidität · 11× Pump.fun-Startphase · 11× zu wenig Volumen · 3× keine Website/Socials · 1× Fake-Handel · 1× ni",
+   ""
+  ],
   [
    1795742723929,
    "INFO",
@@ -194,48 +236,6 @@
    "INFO",
    "–",
    "Scan: 137 frische Coins · 0 mit Kaufsignal · aussortiert: 61× zu alt · 32× Liquidität zu dünn · 12× Pump.fun-Startphase · 9× zu wenig Volumen · 9× zu wenig Liquidität · 5× zu jung · 2× Fake-Handel · 2× keine Website/Soci",
-   ""
-  ],
-  [
-   1795740193880,
-   "INFO",
-   "–",
-   "Scan: 133 frische Coins · 0 mit Kaufsignal · aussortiert: 65× zu alt · 26× Liquidität zu dünn · 12× Pump.fun-Startphase · 9× zu wenig Liquidität · 7× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 2× Fake-Han",
-   ""
-  ],
-  [
-   1795739883889,
-   "INFO",
-   "–",
-   "Scan: 131 frische Coins · 0 mit Kaufsignal · aussortiert: 63× zu alt · 27× Liquidität zu dünn · 13× Pump.fun-Startphase · 9× zu wenig Liquidität · 7× zu wenig Volumen · 3× keine Website/Socials · 2× Fake-Handel · 1× zu j",
-   ""
-  ],
-  [
-   1795739615049,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 65%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795739573892,
-   "INFO",
-   "–",
-   "Scan: 138 frische Coins · 1 mit Kaufsignal · aussortiert: 65× zu alt · 30× Liquidität zu dünn · 14× Pump.fun-Startphase · 12× zu wenig Liquidität · 7× zu wenig Volumen · 3× keine Website/Socials · 1× Entwickler hat 987 C",
-   ""
-  ],
-  [
-   1795739545008,
-   "FILTER",
-   "SPCX",
-   "Volumen-Spike 6.9×, Kaufdruck 60% – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control Enabled; Gefahr: Freeze ",
-   ""
-  ],
-  [
-   1795739363895,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
    ""
   ]
  ]
