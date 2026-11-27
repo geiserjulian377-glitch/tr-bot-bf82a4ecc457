@@ -531,8 +531,10 @@ async function social(p) {
     if (/pump$/.test(m)) { const d = await sfetch(`https://frontend-api-v3.pump.fun/coins/${m}`); if (d) { v.pumpReplies = d.reply_count ?? null; v.live = !!d.is_currently_live; v.src.push("pump.fun"); } }
     // Bluesky: Beiträge der letzten Stunde (Ticker + Adresse)
     if (sym.length >= 2) {
-      const q = encodeURIComponent(`$${sym}`), d = await sfetch(`https://public.api.bsky.app/xrpc/app.bsky.feed.searchPosts?q=${q}&limit=50&sort=latest`);
-      const d2 = await sfetch(`https://public.api.bsky.app/xrpc/app.bsky.feed.searchPosts?q=${m}&limit=25&sort=latest`);
+      const bs = SOC.bsky || "https://public.api.bsky.app";
+      const q = encodeURIComponent(`$${sym}`); let d = SOC.bskyOff ? null : await sfetch(`${bs}/xrpc/app.bsky.feed.searchPosts?q=${q}&limit=50&sort=latest`);
+      if (!d && !SOC.bsky && !SOC.bskyOff) { SOC.bsky = "https://api.bsky.app"; d = await sfetch(`${SOC.bsky}/xrpc/app.bsky.feed.searchPosts?q=${q}&limit=50&sort=latest`); if (!d) SOC.bskyOff = true; }
+      const d2 = d ? await sfetch(`${SOC.bsky || bs}/xrpc/app.bsky.feed.searchPosts?q=${m}&limit=25&sort=latest`) : null;
       const posts = [...(d?.posts || []), ...(d2?.posts || [])].filter(x => Date.now() - new Date(x.indexedAt || x.record?.createdAt || 0) < 3600000);
       if (d || d2) { v.posts = posts.length; v.authors = new Set(posts.map(x => x.author?.did)).size; v.likes = posts.reduce((a, x) => a + (x.likeCount || 0) + (x.repostCount || 0), 0); v.src.push("Bluesky"); }
     }
@@ -551,13 +553,14 @@ async function social(p) {
 }
 
 async function socialSelftest() {
-  const T = [["CoinGecko", "https://api.coingecko.com/api/v3/search/trending"], ["pump.fun", "https://frontend-api-v3.pump.fun/coins/latest"],
+  const pm = Object.keys(lastPairs).find(m => /pump$/.test(m)) || "3gmFG4sFDJErDV8pacFrL2uUPXeGJTYLjfRy4hFypump";
+  const T = [["CoinGecko", "https://api.coingecko.com/api/v3/search/trending"], ["pump.fun", `https://frontend-api-v3.pump.fun/coins/${pm}`], ["Bluesky (2)", "https://api.bsky.app/xrpc/app.bsky.feed.searchPosts?q=solana&limit=1"],
     ["Bluesky", "https://public.api.bsky.app/xrpc/app.bsky.feed.searchPosts?q=solana&limit=1"], ["4chan /biz/", "https://a.4cdn.org/biz/catalog.json"]];
   const res = [];
   for (const [n, u] of T) { if (n !== "CoinGecko" && !window.__socialFetch) { res.push(n + " – (nur Server)"); continue; } res.push(n + ((await sfetch(u)) ? " ✓" : " ✗")); }
   SOC.selftest = res.join(" · "); log("INFO", "–", "Social-Quellen: " + SOC.selftest);
 }
-setTimeout(() => socialSelftest().catch(() => {}), 5000);
+setTimeout(() => socialSelftest().catch(() => {}), 40000);   // nach dem ersten Scan (dann gibt es echte Coins zum Testen)
 
 // ---------------- SELBST-OPTIMIERER: stellt die Kaufschwelle nach den eigenen Ergebnissen ein
 function autotune() {

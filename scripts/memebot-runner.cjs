@@ -47,7 +47,7 @@ async function main() {
   await page.evaluateOnNewDocument(k => { try { localStorage.setItem("mb_keys", k); } catch (e) {} }, JSON.stringify(keys));
   log("Schlüssel:", Object.keys(keys).join(", ") || "keine");
   // Social-Abfragen laufen über Node (keine Browser-Sperre) – nur für diese öffentlichen Quellen
-  const SOCIAL_HOSTS = ["frontend-api-v3.pump.fun", "public.api.bsky.app", "a.4cdn.org", "api.coingecko.com"];
+  const SOCIAL_HOSTS = ["frontend-api-v3.pump.fun", "public.api.bsky.app", "api.bsky.app", "a.4cdn.org", "api.coingecko.com"];
   await page.exposeFunction("__socialFetch", async url => {
     try {
       if (!SOCIAL_HOSTS.includes(new URL(url).host)) return {status: 403, text: ""};
