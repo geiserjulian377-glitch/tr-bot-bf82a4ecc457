@@ -1,5 +1,5 @@
 {
- "updated": 1795747026714,
+ "updated": 1795748228367,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -37,7 +37,7 @@
   }
  ],
  "brain": {
-  "n": 615,
+  "n": 617,
   "acc": 68
  },
  "lage": "heiß",
@@ -60,9 +60,79 @@
    }
   ]
  ],
- "shadows": 1,
- "scanned": 327149,
+ "shadows": 3,
+ "scanned": 342745,
  "log": [
+  [
+   1795748224259,
+   "INFO",
+   "Santaball",
+   "Schatten-Trade ausgewertet: wäre +33.4% gewesen (aussortiert wegen zu wild: 14.1% Schwankung je Minute, Setup „buyers“, Gehirn schätzte 33%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795748183916,
+   "INFO",
+   "–",
+   "Scan: 131 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 31× Liquidität zu dünn · 11× zu wenig Liquidität · 9× zu wenig Volumen · 7× Pump.fun-Startphase · 3× keine Website/Socials · 1× zu jung · 1× Fake-Han",
+   ""
+  ],
+  [
+   1795748105132,
+   "FILTER",
+   "SPCX",
+   "Kaufdruck 62%, echter Handel (Score 95, 37 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control E",
+   ""
+  ],
+  [
+   1795747874902,
+   "INFO",
+   "–",
+   "Scan: 122 frische Coins · 0 mit Kaufsignal · aussortiert: 53× zu alt · 28× Liquidität zu dünn · 11× zu wenig Liquidität · 10× zu wenig Volumen · 8× Pump.fun-Startphase · 3× keine Website/Socials · 2× zu jung · 2× nicht j",
+   ""
+  ],
+  [
+   1795747633917,
+   "INFO",
+   "pippin",
+   "Schatten-Trade ausgewertet: wäre −3.0% gewesen (aussortiert wegen hart: größter Halter besitzt 33%, Setup „buyers“, Gehirn schätzte 23%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795747564126,
+   "INFO",
+   "–",
+   "Scan: 131 frische Coins · 2 mit Kaufsignal · aussortiert: 59× zu alt · 33× Liquidität zu dünn · 11× zu wenig Liquidität · 10× zu wenig Volumen · 7× Pump.fun-Startphase · 2× zu jung · 2× keine Website/Socials · 1× nicht j",
+   ""
+  ],
+  [
+   1795747504797,
+   "FILTER",
+   "SPCX",
+   "Kaufdruck 63%, Trending bei Jupiter, echter Handel (Score 95, 37 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefah",
+   ""
+  ],
+  [
+   1795747495864,
+   "FILTER",
+   "pippin",
+   "Kaufdruck 100%, Trending bei Jupiter – aber (hart): größter Halter besitzt 33%; Top-10-Halter 63%",
+   ""
+  ],
+  [
+   1795747253933,
+   "INFO",
+   "–",
+   "Scan: 135 frische Coins · 1 mit Kaufsignal · aussortiert: 61× zu alt · 31× Liquidität zu dünn · 12× zu wenig Volumen · 11× zu wenig Liquidität · 10× Pump.fun-Startphase · 3× zu jung · 2× keine Website/Socials · 2× gesper",
+   ""
+  ],
+  [
+   1795747085957,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 64%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
   [
    1795746944824,
    "INFO",
@@ -166,76 +236,6 @@
    "INFO",
    "–",
    "Marktlage wechselt: normal → heiß (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795745515403,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 61%, Trending bei Jupiter, echter Handel (Score 94, 33 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefah",
-   ""
-  ],
-  [
-   1795745514396,
-   "INFO",
-   "–",
-   "Marktlage wechselt: heiß → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795745424234,
-   "INFO",
-   "–",
-   "Scan: 129 frische Coins · 0 mit Kaufsignal · aussortiert: 55× zu alt · 33× Liquidität zu dünn · 13× zu wenig Liquidität · 10× Pump.fun-Startphase · 8× zu wenig Volumen · 5× keine Website/Socials · 1× gesperrt (früher Ver",
-   ""
-  ],
-  [
-   1795745383918,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → heiß (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795745113989,
-   "INFO",
-   "–",
-   "Scan: 129 frische Coins · 0 mit Kaufsignal · aussortiert: 56× zu alt · 31× Liquidität zu dünn · 13× zu wenig Liquidität · 10× Pump.fun-Startphase · 9× zu wenig Volumen · 5× keine Website/Socials · 2× zu jung · 1× gesperr",
-   ""
-  ],
-  [
-   1795744804020,
-   "INFO",
-   "–",
-   "Scan: 140 frische Coins · 0 mit Kaufsignal · aussortiert: 66× zu alt · 30× Liquidität zu dünn · 14× zu wenig Liquidität · 11× zu wenig Volumen · 9× Pump.fun-Startphase · 3× keine Website/Socials · 2× zu jung · 1× Fake-Ha",
-   ""
-  ],
-  [
-   1795744704738,
-   "INFO",
-   "–",
-   "Vortraining fertig: 92 Lernbeispiele aus 10 Coins (letzte 5 Std., mit Phantom-Kosten 3.8% je Trade) · 33% wären Gewinner gewesen, Ø −0.5% – Gehirn angepasst",
-   ""
-  ],
-  [
-   1795744563553,
-   "INFO",
-   "–",
-   "Bot gestartet (Testmodus, v12)",
-   ""
-  ],
-  [
-   1795744528997,
-   "INFO",
-   "–",
-   "Bot gestoppt",
-   ""
-  ],
-  [
-   1795744503927,
-   "INFO",
-   "–",
-   "Scan: 141 frische Coins · 0 mit Kaufsignal · aussortiert: 69× zu alt · 29× Liquidität zu dünn · 13× zu wenig Liquidität · 10× zu wenig Volumen · 9× Pump.fun-Startphase · 4× keine Website/Socials · 2× Fake-Handel · 1× zu ",
    ""
   ]
  ]
