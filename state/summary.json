@@ -1,5 +1,5 @@
 {
- "updated": 1795773945473,
+ "updated": 1795775146723,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -40,7 +40,7 @@
   "n": 798,
   "acc": 70
  },
- "lage": "normal",
+ "lage": "kalt",
  "tune": null,
  "minProb": 58,
  "rt": {
@@ -79,8 +79,78 @@
   ]
  ],
  "shadows": 3,
- "scanned": 632071,
+ "scanned": 647650,
  "log": [
+  [
+   1795774943338,
+   "INFO",
+   "–",
+   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 70× zu alt · 23× Liquidität zu dünn · 15× Pump.fun-Startphase · 13× zu wenig Liquidität · 4× zu wenig Volumen · 3× keine Website/Socials · 1× Liquidität fällt · 1",
+   ""
+  ],
+  [
+   1795774814744,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 71%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795774633779,
+   "INFO",
+   "–",
+   "Scan: 131 frische Coins · 0 mit Kaufsignal · aussortiert: 67× zu alt · 26× Liquidität zu dünn · 15× Pump.fun-Startphase · 11× zu wenig Liquidität · 6× zu wenig Volumen · 3× keine Website/Socials · 1× zu jung · 1× Entwick",
+   ""
+  ],
+  [
+   1795774583382,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795774333453,
+   "INFO",
+   "–",
+   "Scan: 126 frische Coins · 0 mit Kaufsignal · aussortiert: 60× zu alt · 26× Liquidität zu dünn · 16× Pump.fun-Startphase · 10× zu wenig Liquidität · 6× zu wenig Volumen · 3× keine Website/Socials · 1× nicht jagen · 1× zu ",
+   ""
+  ],
+  [
+   1795774303386,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795774063372,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795774033369,
+   "INFO",
+   "–",
+   "Scan: 129 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 27× Liquidität zu dünn · 15× Pump.fun-Startphase · 11× zu wenig Liquidität · 6× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 2× Verkauf",
+   ""
+  ],
+  [
+   1795774013312,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795774004020,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
   [
    1795773943398,
    "INFO",
@@ -184,76 +254,6 @@
    "INFO",
    "–",
    "Scan: 136 frische Coins · 0 mit Kaufsignal · aussortiert: 68× zu alt · 23× Liquidität zu dünn · 17× Pump.fun-Startphase · 11× zu wenig Liquidität · 11× zu wenig Volumen · 3× keine Website/Socials · 1× nicht jagen · 1× zu",
-   ""
-  ],
-  [
-   1795771904065,
-   "INFO",
-   "–",
-   "Scan: 142 frische Coins · 0 mit Kaufsignal · aussortiert: 71× zu alt · 29× Liquidität zu dünn · 16× Pump.fun-Startphase · 11× zu wenig Liquidität · 8× zu wenig Volumen · 4× keine Website/Socials · 2× zu wenig Netto-Käufe",
-   ""
-  ],
-  [
-   1795771853383,
-   "INFO",
-   "SPCX",
-   "Schatten-Trade ausgewertet: wäre −3.6% gewesen (aussortiert wegen hart: Mint-Recht offen (neue Coins druckbar), Setup „buyers“, Gehirn schätzte 15%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795771833981,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795771783388,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795771673478,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795771624121,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795771603426,
-   "INFO",
-   "–",
-   "Scan: 134 frische Coins · 0 mit Kaufsignal · aussortiert: 67× zu alt · 25× Liquidität zu dünn · 16× Pump.fun-Startphase · 11× zu wenig Liquidität · 7× zu wenig Volumen · 4× keine Website/Socials",
-   ""
-  ],
-  [
-   1795771599522,
-   "INFO",
-   "–",
-   "Vortraining fertig: 114 Lernbeispiele aus 10 Coins (letzte 5 Std., mit Phantom-Kosten 3.8% je Trade) · 26% wären Gewinner gewesen, Ø −4.4% – Gehirn angepasst",
-   ""
-  ],
-  [
-   1795771573378,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795771523096,
-   "INFO",
-   "–",
-   "Social-Quellen: CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
    ""
   ]
  ]
