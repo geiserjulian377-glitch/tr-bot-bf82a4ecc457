@@ -1,5 +1,5 @@
 {
- "updated": 1795762133869,
+ "updated": 1795763228069,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -52,6 +52,13 @@
  },
  "social": {
   "test": "CoinGecko ✗ · pump.fun ✗ · Bluesky ✗ · 4chan /biz/ ✗",
+  "err": {
+   "api.coingecko.com": "HTTP 599 URL is not a constructor",
+   "frontend-api-v3.pump.fun": "HTTP 599 URL is not a constructor",
+   "public.api.bsky.app": "HTTP 599 URL is not a constructor",
+   "a.4cdn.org": "HTTP 599 URL is not a constructor"
+  },
+  "via": "function",
   "ok": {},
   "fail": {
    "api.coingecko.com": 1,
@@ -72,8 +79,29 @@
   ]
  ],
  "shadows": 5,
- "scanned": 502722,
+ "scanned": 503538,
  "log": [
+  [
+   1795763171517,
+   "INFO",
+   "–",
+   "Social-Quellen: CoinGecko ✗ · pump.fun ✗ · Bluesky ✗ · 4chan /biz/ ✗",
+   ""
+  ],
+  [
+   1795763168852,
+   "INFO",
+   "–",
+   "Scan: 136 frische Coins · 2 mit Kaufsignal · aussortiert: 63× zu alt · 28× Liquidität zu dünn · 14× zu wenig Liquidität · 13× Pump.fun-Startphase · 8× zu wenig Volumen · 4× keine Website/Socials · 1× zu jung · 1× nicht j",
+   ""
+  ],
+  [
+   1795763167934,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v14)",
+   ""
+  ],
   [
    1795762084035,
    "INFO",
@@ -226,27 +254,6 @@
    "INFO",
    "VOLALITY",
    "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen zu wild: 21.7% Schwankung je Minute, Setup „buyers+pullback“, Gehirn schätzte 33%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795758009592,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 62%, Trending bei Jupiter, 83 Netto-Käufer, Kaufvol. 1.3× Verkauf – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: ",
-   ""
-  ],
-  [
-   1795757938237,
-   "INFO",
-   "–",
-   "Scan: 143 frische Coins · 1 mit Kaufsignal · aussortiert: 61× zu alt · 34× Liquidität zu dünn · 18× zu wenig Liquidität · 10× Pump.fun-Startphase · 9× zu wenig Volumen · 4× keine Website/Socials · 2× zu jung · 1× Halter ",
-   ""
-  ],
-  [
-   1795757637912,
-   "INFO",
-   "–",
-   "Scan: 131 frische Coins · 0 mit Kaufsignal · aussortiert: 54× zu alt · 31× Liquidität zu dünn · 17× zu wenig Liquidität · 10× Pump.fun-Startphase · 8× zu wenig Volumen · 4× keine Website/Socials · 2× nicht jagen · 1× zu ",
    ""
   ]
  ]
