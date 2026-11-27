@@ -1,6 +1,6 @@
 {
- "updated": 1795761047233,
- "version": "v13 · test",
+ "updated": 1795762133869,
+ "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
  "equity": 18.25,
@@ -40,7 +40,7 @@
   "n": 738,
   "acc": 70
  },
- "lage": "normal",
+ "lage": "kalt",
  "tune": null,
  "minProb": 58,
  "rt": {
@@ -49,6 +49,17 @@
   "jupFails": 0,
   "note": "",
   "updates": 0
+ },
+ "social": {
+  "test": "CoinGecko ✗ · pump.fun ✗ · Bluesky ✗ · 4chan /biz/ ✗",
+  "ok": {},
+  "fail": {
+   "api.coingecko.com": 1,
+   "frontend-api-v3.pump.fun": 1,
+   "public.api.bsky.app": 1,
+   "a.4cdn.org": 1
+  },
+  "last": ""
  },
  "days": [
   [
@@ -61,8 +72,36 @@
   ]
  ],
  "shadows": 5,
- "scanned": 501888,
+ "scanned": 502722,
  "log": [
+  [
+   1795762084035,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795762077825,
+   "INFO",
+   "–",
+   "Social-Quellen: CoinGecko ✗ · pump.fun ✗ · Bluesky ✗ · 4chan /biz/ ✗",
+   ""
+  ],
+  [
+   1795762074417,
+   "INFO",
+   "–",
+   "Scan: 139 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 30× Liquidität zu dünn · 18× zu wenig Liquidität · 11× Pump.fun-Startphase · 11× zu wenig Volumen · 2× zu jung · 2× zu wenig Netto-Käufer · 2× keine ",
+   ""
+  ],
+  [
+   1795762073805,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v14)",
+   ""
+  ],
   [
    1795760988846,
    "INFO",
@@ -208,34 +247,6 @@
    "INFO",
    "–",
    "Scan: 131 frische Coins · 0 mit Kaufsignal · aussortiert: 54× zu alt · 31× Liquidität zu dünn · 17× zu wenig Liquidität · 10× Pump.fun-Startphase · 8× zu wenig Volumen · 4× keine Website/Socials · 2× nicht jagen · 1× zu ",
-   ""
-  ],
-  [
-   1795757337715,
-   "INFO",
-   "–",
-   "Scan: 136 frische Coins · 0 mit Kaufsignal · aussortiert: 59× zu alt · 30× Liquidität zu dünn · 18× zu wenig Liquidität · 12× Pump.fun-Startphase · 9× zu wenig Volumen · 2× keine Website/Socials · 1× zu jung · 1× nicht j",
-   ""
-  ],
-  [
-   1795757267750,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 67%, Trending bei Jupiter, 54 Netto-Käufer, Kaufvol. 1.6× Verkauf – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: ",
-   ""
-  ],
-  [
-   1795757028225,
-   "INFO",
-   "–",
-   "Scan: 135 frische Coins · 2 mit Kaufsignal · aussortiert: 57× zu alt · 32× Liquidität zu dünn · 18× zu wenig Liquidität · 10× Pump.fun-Startphase · 9× zu wenig Volumen · 2× zu jung · 2× keine Website/Socials · 1× Fake-Ha",
-   ""
-  ],
-  [
-   1795756889229,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 69%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
    ""
   ]
  ]
