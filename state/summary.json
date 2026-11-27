@@ -1,5 +1,5 @@
 {
- "updated": 1795744532021,
+ "updated": 1795744623726,
  "version": "v12 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -37,7 +37,7 @@
   }
  ],
  "brain": {
-  "n": 569,
+  "n": 575,
   "acc": 69
  },
  "lage": "normal",
@@ -61,8 +61,15 @@
   ]
  ],
  "shadows": 5,
- "scanned": 293891,
+ "scanned": 294743,
  "log": [
+  [
+   1795744563553,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v12)",
+   ""
+  ],
   [
    1795744528997,
    "INFO",
@@ -229,13 +236,6 @@
    "INFO",
    "–",
    "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795741113881,
-   "INFO",
-   "–",
-   "Scan: 136 frische Coins · 1 mit Kaufsignal · aussortiert: 69× zu alt · 25× Liquidität zu dünn · 13× Pump.fun-Startphase · 10× zu wenig Volumen · 8× zu wenig Liquidität · 2× zu jung · 2× Fake-Handel · 2× gesperrt (früher ",
    ""
   ]
  ]
