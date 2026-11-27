@@ -1,5 +1,5 @@
 {
- "updated": 1795819668166,
+ "updated": 1795820869148,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -66,15 +66,15 @@
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 5,
-   "api.bsky.app": 13,
-   "a.4cdn.org": 5
+   "api.coingecko.com": 9,
+   "api.bsky.app": 33,
+   "a.4cdn.org": 10
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 7,
+   "frontend-api-v3.pump.fun": 17,
    "public.api.bsky.app": 1
   },
-  "last": "Fireball: 5 Bluesky-Beiträge/Std. (5 Leute)"
+  "last": "WINTER: 49 Bluesky-Beiträge/Std. (48 Leute)"
  },
  "days": [
   [
@@ -95,8 +95,50 @@
   ]
  ],
  "shadows": 12,
- "scanned": 1222226,
+ "scanned": 1238377,
  "log": [
+  [
+   1795820789527,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 82%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795820788219,
+   "INFO",
+   "–",
+   "Scan: 133 frische Coins · 4 mit Kaufsignal · aussortiert: 66× zu alt · 27× Liquidität zu dünn · 13× Pump.fun-Startphase · 9× zu wenig Liquidität · 5× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 1× Entwickl",
+   ""
+  ],
+  [
+   1795820487272,
+   "INFO",
+   "–",
+   "Scan: 129 frische Coins · 2 mit Kaufsignal · aussortiert: 57× zu alt · 29× Liquidität zu dünn · 14× Pump.fun-Startphase · 10× zu wenig Liquidität · 6× zu wenig Volumen · 4× keine Website/Socials · 1× zu jung · 1× Entwick",
+   ""
+  ],
+  [
+   1795820478530,
+   "FILTER",
+   "SPCX",
+   "Kaufdruck 61%, echter Handel (Score 95, 17 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control E",
+   ""
+  ],
+  [
+   1795820187271,
+   "INFO",
+   "–",
+   "Scan: 134 frische Coins · 2 mit Kaufsignal · aussortiert: 63× zu alt · 27× Liquidität zu dünn · 13× Pump.fun-Startphase · 10× zu wenig Liquidität · 8× zu wenig Volumen · 2× nicht jagen · 2× zu jung · 2× keine Website/Soc",
+   ""
+  ],
+  [
+   1795819877790,
+   "INFO",
+   "–",
+   "Scan: 133 frische Coins · 2 mit Kaufsignal · aussortiert: 59× zu alt · 31× Liquidität zu dünn · 13× Pump.fun-Startphase · 10× zu wenig Liquidität · 7× zu wenig Volumen · 3× zu jung · 1× Fake-Handel · 1× keine Website/Soc",
+   ""
+  ],
   [
    1795819598820,
    "FILTER",
@@ -228,48 +270,6 @@
    "INFO",
    "–",
    "Scan: 129 frische Coins · 1 mit Kaufsignal · aussortiert: 65× zu alt · 22× Liquidität zu dünn · 13× Pump.fun-Startphase · 10× zu wenig Liquidität · 4× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 2× zu weni",
-   ""
-  ],
-  [
-   1795817927309,
-   "INFO",
-   "–",
-   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795817858476,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
-   ""
-  ],
-  [
-   1795817757016,
-   "INFO",
-   "–",
-   "Scan: 141 frische Coins · 1 mit Kaufsignal · aussortiert: 75× zu alt · 24× Liquidität zu dünn · 14× Pump.fun-Startphase · 10× zu wenig Liquidität · 5× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 1× Fake-Ha",
-   ""
-  ],
-  [
-   1795817556883,
-   "INFO",
-   "Split",
-   "Schatten-Trade ausgewertet: wäre −5.6% gewesen (aussortiert wegen zu wild: 11.9% Schwankung je Minute, Setup „pullback“, Gehirn schätzte 25%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795817456894,
-   "INFO",
-   "–",
-   "Scan: 134 frische Coins · 1 mit Kaufsignal · aussortiert: 69× zu alt · 22× Liquidität zu dünn · 13× Pump.fun-Startphase · 11× zu wenig Liquidität · 6× zu wenig Volumen · 2× zu jung · 2× nicht jagen · 2× zu wenig Netto-Kä",
-   ""
-  ],
-  [
-   1795817338952,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 60%, echter Handel (Score 95, 20 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control E",
    ""
   ]
  ]
