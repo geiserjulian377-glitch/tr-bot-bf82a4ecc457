@@ -1,5 +1,5 @@
 {
- "updated": 1795766733501,
+ "updated": 1795767934732,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -79,8 +79,50 @@
   ]
  ],
  "shadows": 5,
- "scanned": 538369,
+ "scanned": 553233,
  "log": [
+  [
+   1795767843128,
+   "FILTER",
+   "SPCX",
+   "Kaufdruck 80%, Trending bei Jupiter – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control Enabled; Gefahr: Freez",
+   ""
+  ],
+  [
+   1795767632223,
+   "INFO",
+   "–",
+   "Scan: 118 frische Coins · 1 mit Kaufsignal · aussortiert: 53× zu alt · 31× Liquidität zu dünn · 13× Pump.fun-Startphase · 10× zu wenig Liquidität · 6× zu wenig Volumen · 2× keine Website/Socials · 1× Entwickler hat 445 C",
+   ""
+  ],
+  [
+   1795767563170,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 74%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795767321823,
+   "INFO",
+   "–",
+   "Scan: 121 frische Coins · 0 mit Kaufsignal · aussortiert: 57× zu alt · 27× Liquidität zu dünn · 12× Pump.fun-Startphase · 10× zu wenig Liquidität · 8× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 1× Entwick",
+   ""
+  ],
+  [
+   1795767021403,
+   "INFO",
+   "–",
+   "Scan: 126 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 27× Liquidität zu dünn · 12× Pump.fun-Startphase · 10× zu wenig Liquidität · 8× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 1× Entwick",
+   ""
+  ],
+  [
+   1795766793485,
+   "FILTER",
+   "SPCX",
+   "Volumen-Spike 2.5×, Kaufdruck 71%, Trending bei Jupiter, 151 Netto-Käufer, Kaufvol. 1.4× Verkauf – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority st",
+   ""
+  ],
   [
    1795766711581,
    "INFO",
@@ -212,48 +254,6 @@
    "INFO",
    "–",
    "Social-Quellen: CoinGecko ✓ · pump.fun ✗ · Bluesky ✗ · 4chan /biz/ ✓",
-   ""
-  ],
-  [
-   1795763368491,
-   "INFO",
-   "–",
-   "Bot gestartet (Testmodus, v14)",
-   ""
-  ],
-  [
-   1795763171517,
-   "INFO",
-   "–",
-   "Social-Quellen: CoinGecko ✗ · pump.fun ✗ · Bluesky ✗ · 4chan /biz/ ✗",
-   ""
-  ],
-  [
-   1795763168852,
-   "INFO",
-   "–",
-   "Scan: 136 frische Coins · 2 mit Kaufsignal · aussortiert: 63× zu alt · 28× Liquidität zu dünn · 14× zu wenig Liquidität · 13× Pump.fun-Startphase · 8× zu wenig Volumen · 4× keine Website/Socials · 1× zu jung · 1× nicht j",
-   ""
-  ],
-  [
-   1795763167934,
-   "INFO",
-   "–",
-   "Bot gestartet (Testmodus, v14)",
-   ""
-  ],
-  [
-   1795762084035,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795762077825,
-   "INFO",
-   "–",
-   "Social-Quellen: CoinGecko ✗ · pump.fun ✗ · Bluesky ✗ · 4chan /biz/ ✗",
    ""
   ]
  ]
