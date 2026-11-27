@@ -1,5 +1,5 @@
 {
- "updated": 1795777549631,
+ "updated": 1795778755173,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -53,7 +53,7 @@
  "social": {
   "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
   "err": {
-   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-27T09:25:22.304Z\",\"path\":\"/coins/DtcicPCK",
+   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-27T11:25:34.411Z\",\"path\":\"/coins/4tqzkSWA",
    "public.api.bsky.app": "HTTP 403 <html><head><title>403 Forbidden</title><link href='//fonts.bunny.net/css?family"
   },
   "via": "function",
@@ -79,8 +79,99 @@
   ]
  ],
  "shadows": 3,
- "scanned": 677941,
+ "scanned": 693748,
  "log": [
+  [
+   1795778735140,
+   "INFO",
+   "–",
+   "Social-Quellen: CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
+   ""
+  ],
+  [
+   1795778697924,
+   "FILTER",
+   "pippin",
+   "Kaufdruck 81%, Trending bei Jupiter – aber (hart): Top-10-Halter 61%",
+   ""
+  ],
+  [
+   1795778695124,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v14)",
+   ""
+  ],
+  [
+   1795778690879,
+   "INFO",
+   "–",
+   "Bot gestoppt",
+   ""
+  ],
+  [
+   1795778583439,
+   "INFO",
+   "–",
+   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 69× zu alt · 29× Liquidität zu dünn · 10× Pump.fun-Startphase · 9× zu wenig Liquidität · 7× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 1× nicht ja",
+   ""
+  ],
+  [
+   1795778524002,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795778513347,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795778283366,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795778273844,
+   "INFO",
+   "–",
+   "Scan: 130 frische Coins · 0 mit Kaufsignal · aussortiert: 69× zu alt · 26× Liquidität zu dünn · 12× Pump.fun-Startphase · 9× zu wenig Liquidität · 5× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 1× Entwickl",
+   ""
+  ],
+  [
+   1795778273843,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795777973452,
+   "INFO",
+   "–",
+   "Scan: 129 frische Coins · 1 mit Kaufsignal · aussortiert: 65× zu alt · 26× Liquidität zu dünn · 14× Pump.fun-Startphase · 10× zu wenig Liquidität · 5× zu wenig Volumen · 4× keine Website/Socials · 1× zu jung · 1× Entwick",
+   ""
+  ],
+  [
+   1795777673370,
+   "INFO",
+   "–",
+   "Scan: 140 frische Coins · 0 mit Kaufsignal · aussortiert: 70× zu alt · 27× Liquidität zu dünn · 15× Pump.fun-Startphase · 13× zu wenig Liquidität · 6× zu wenig Volumen · 5× keine Website/Socials · 1× Entwickler hat 445 C",
+   ""
+  ],
+  [
+   1795777615498,
+   "FILTER",
+   "pippin",
+   "Volumen-Spike 4.3×, Kaufdruck 95% – aber (hart): Top-10-Halter 61%",
+   ""
+  ],
   [
    1795777543640,
    "INFO",
@@ -163,97 +254,6 @@
    "INFO",
    "–",
    "Scan: 121 frische Coins · 0 mit Kaufsignal · aussortiert: 59× zu alt · 24× Liquidität zu dünn · 14× Pump.fun-Startphase · 9× zu wenig Liquidität · 7× zu wenig Volumen · 3× keine Website/Socials · 2× zu jung · 2× nicht ja",
-   ""
-  ],
-  [
-   1795776153425,
-   "INFO",
-   "–",
-   "Scan: 123 frische Coins · 0 mit Kaufsignal · aussortiert: 57× zu alt · 28× Liquidität zu dünn · 14× Pump.fun-Startphase · 9× zu wenig Liquidität · 6× zu wenig Volumen · 2× zu jung · 2× keine Website/Socials · 1× Fake-Han",
-   ""
-  ],
-  [
-   1795776093369,
-   "INFO",
-   "–",
-   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795776063367,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
-   ""
-  ],
-  [
-   1795776035197,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 76%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795775953366,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795775883367,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795775853343,
-   "INFO",
-   "–",
-   "Scan: 127 frische Coins · 0 mit Kaufsignal · aussortiert: 60× zu alt · 26× Liquidität zu dünn · 13× Pump.fun-Startphase · 9× zu wenig Liquidität · 8× zu wenig Volumen · 5× zu jung · 2× keine Website/Socials · 1× Fake-Han",
-   ""
-  ],
-  [
-   1795775853343,
-   "INFO",
-   "–",
-   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795775824283,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
-   ""
-  ],
-  [
-   1795775544200,
-   "INFO",
-   "–",
-   "Scan: 126 frische Coins · 0 mit Kaufsignal · aussortiert: 56× zu alt · 30× Liquidität zu dünn · 11× Pump.fun-Startphase · 10× zu wenig Liquidität · 7× zu wenig Volumen · 5× zu jung · 3× keine Website/Socials · 1× Fake-Ha",
-   ""
-  ],
-  [
-   1795775243454,
-   "INFO",
-   "–",
-   "Scan: 124 frische Coins · 0 mit Kaufsignal · aussortiert: 63× zu alt · 24× Liquidität zu dünn · 14× Pump.fun-Startphase · 11× zu wenig Liquidität · 4× zu wenig Volumen · 2× zu jung · 2× keine Website/Socials · 1× nicht j",
-   ""
-  ],
-  [
-   1795774943338,
-   "INFO",
-   "–",
-   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 70× zu alt · 23× Liquidität zu dünn · 15× Pump.fun-Startphase · 13× zu wenig Liquidität · 4× zu wenig Volumen · 3× keine Website/Socials · 1× Liquidität fällt · 1",
-   ""
-  ],
-  [
-   1795774814744,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 71%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
    ""
   ]
  ]
