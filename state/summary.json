@@ -1,5 +1,5 @@
 {
- "updated": 1795870854934,
+ "updated": 1795872056030,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -48,7 +48,7 @@
   "n": 1270,
   "acc": 70
  },
- "lage": "normal",
+ "lage": "kalt",
  "tune": null,
  "minProb": 58,
  "rt": {
@@ -61,20 +61,20 @@
  "social": {
   "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
   "err": {
-   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T13:00:33.956Z\",\"path\":\"/coins/EwUVBpdM",
+   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T13:18:06.094Z\",\"path\":\"/coins/HAP9FcXu",
    "public.api.bsky.app": "HTTP 403 <html><head><title>403 Forbidden</title><link href='//fonts.bunny.net/css?family"
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 2,
-   "api.bsky.app": 5,
-   "a.4cdn.org": 2
+   "api.coingecko.com": 5,
+   "api.bsky.app": 21,
+   "a.4cdn.org": 6
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 2,
+   "frontend-api-v3.pump.fun": 8,
    "public.api.bsky.app": 1
   },
-  "last": "Vicewire: kaum Erwähnungen"
+  "last": "Split: 50 Bluesky-Beiträge/Std. (42 Leute)"
  },
  "days": [
   [
@@ -95,8 +95,50 @@
   ]
  ],
  "shadows": 5,
- "scanned": 1911611,
+ "scanned": 1928173,
  "log": [
+  [
+   1795872025228,
+   "INFO",
+   "–",
+   "Scan: 139 frische Coins · 2 mit Kaufsignal · aussortiert: 70× zu alt · 23× Liquidität zu dünn · 22× zu wenig Liquidität · 8× Pump.fun-Startphase · 7× zu wenig Volumen · 2× zu jung · 1× Entwickler hat 35 Coins erstellt (S",
+   ""
+  ],
+  [
+   1795871715329,
+   "INFO",
+   "–",
+   "Scan: 145 frische Coins · 2 mit Kaufsignal · aussortiert: 76× zu alt · 25× Liquidität zu dünn · 19× zu wenig Liquidität · 10× Pump.fun-Startphase · 7× zu wenig Volumen · 1× keine Website/Socials · 1× zu jung · 1× Entwick",
+   ""
+  ],
+  [
+   1795871445173,
+   "FILTER",
+   "SPCX",
+   "Kaufdruck 63%, Trending bei Jupiter, echter Handel (Score 95, 28 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefah",
+   ""
+  ],
+  [
+   1795871415185,
+   "INFO",
+   "–",
+   "Scan: 137 frische Coins · 3 mit Kaufsignal · aussortiert: 69× zu alt · 26× Liquidität zu dünn · 18× zu wenig Liquidität · 10× Pump.fun-Startphase · 5× zu wenig Volumen · 1× zu jung · 1× Daten widersprüchlich · 1× keine W",
+   ""
+  ],
+  [
+   1795871105521,
+   "INFO",
+   "–",
+   "Scan: 127 frische Coins · 2 mit Kaufsignal · aussortiert: 64× zu alt · 22× Liquidität zu dünn · 20× zu wenig Liquidität · 9× Pump.fun-Startphase · 5× zu wenig Volumen · 1× zu jung · 1× nicht jagen · 1× keine Website/Soci",
+   ""
+  ],
+  [
+   1795870865387,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
   [
    1795870836600,
    "FILTER",
@@ -228,48 +270,6 @@
    "INFO",
    "–",
    "Scan: 139 frische Coins · 1 mit Kaufsignal · aussortiert: 70× zu alt · 20× Liquidität zu dünn · 19× zu wenig Liquidität · 12× zu wenig Volumen · 10× Pump.fun-Startphase · 1× nicht jagen · 1× zu jung · 1× Entwickler hat 1",
-   ""
-  ],
-  [
-   1795869804186,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795869584197,
-   "INFO",
-   "–",
-   "Scan: 134 frische Coins · 0 mit Kaufsignal · aussortiert: 63× zu alt · 24× Liquidität zu dünn · 20× zu wenig Liquidität · 10× Pump.fun-Startphase · 9× zu wenig Volumen · 2× nicht jagen · 2× zu jung · 1× Liquidität fällt ",
-   ""
-  ],
-  [
-   1795869464405,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795869414282,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795869284170,
-   "INFO",
-   "–",
-   "Scan: 127 frische Coins · 0 mit Kaufsignal · aussortiert: 57× zu alt · 24× Liquidität zu dünn · 19× zu wenig Liquidität · 10× Pump.fun-Startphase · 10× zu wenig Volumen · 2× zu jung · 1× keine Website/Socials · 1× nicht ",
-   ""
-  ],
-  [
-   1795869264203,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
    ""
   ]
  ]
