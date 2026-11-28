@@ -1,5 +1,5 @@
 {
- "updated": 1795852199587,
+ "updated": 1795853401060,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -45,10 +45,10 @@
   }
  ],
  "brain": {
-  "n": 1178,
+  "n": 1179,
   "acc": 70
  },
- "lage": "kalt",
+ "lage": "normal",
  "tune": null,
  "minProb": 58,
  "rt": {
@@ -61,20 +61,20 @@
  "social": {
   "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
   "err": {
-   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T07:47:40.434Z\",\"path\":\"/coins/7dc3gFoy",
+   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T08:09:20.502Z\",\"path\":\"/coins/HAP9FcXu",
    "public.api.bsky.app": "HTTP 403 <html><head><title>403 Forbidden</title><link href='//fonts.bunny.net/css?family"
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 5,
-   "api.bsky.app": 23,
-   "a.4cdn.org": 6
+   "api.coingecko.com": 8,
+   "api.bsky.app": 43,
+   "a.4cdn.org": 11
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 10,
+   "frontend-api-v3.pump.fun": 19,
    "public.api.bsky.app": 1
   },
-  "last": "WINTER: 50 Bluesky-Beiträge/Std. (38 Leute)"
+  "last": "Split: 48 Bluesky-Beiträge/Std. (45 Leute)"
  },
  "days": [
   [
@@ -95,8 +95,78 @@
   ]
  ],
  "shadows": 7,
- "scanned": 1656795,
+ "scanned": 1673061,
  "log": [
+  [
+   1795853389639,
+   "INFO",
+   "–",
+   "Scan: 144 frische Coins · 1 mit Kaufsignal · aussortiert: 71× zu alt · 27× Liquidität zu dünn · 14× Pump.fun-Startphase · 12× zu wenig Volumen · 10× zu wenig Liquidität · 1× nicht jagen · 1× Liquidität fällt · 1× Entwick",
+   ""
+  ],
+  [
+   1795853288792,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795853158312,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795853088261,
+   "INFO",
+   "–",
+   "Scan: 134 frische Coins · 1 mit Kaufsignal · aussortiert: 63× zu alt · 25× Liquidität zu dünn · 15× Pump.fun-Startphase · 9× zu wenig Liquidität · 8× zu wenig Volumen · 2× Verkaufsdruck · 1× Fake-Handel · 1× Entwickler h",
+   ""
+  ],
+  [
+   1795852939275,
+   "INFO",
+   "STEADY",
+   "Schatten-Trade ausgewertet: wäre +3.0% gewesen (aussortiert wegen zu wild: 10.6% Schwankung je Minute, Setup „buyers“, Gehirn schätzte 31%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795852808243,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795852788237,
+   "INFO",
+   "–",
+   "Scan: 135 frische Coins · 0 mit Kaufsignal · aussortiert: 64× zu alt · 24× Liquidität zu dünn · 14× Pump.fun-Startphase · 9× zu wenig Liquidität · 8× zu wenig Volumen · 4× nicht jagen · 2× Verkaufsdruck · 1× Entwickler h",
+   ""
+  ],
+  [
+   1795852488244,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795852479246,
+   "INFO",
+   "–",
+   "Scan: 137 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 28× Liquidität zu dünn · 14× Pump.fun-Startphase · 10× zu wenig Liquidität · 10× zu wenig Volumen · 2× nicht jagen · 1× Entwickler hat 1544 Coins ers",
+   ""
+  ],
+  [
+   1795852338918,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
   [
    1795852178245,
    "INFO",
@@ -197,76 +267,6 @@
   ],
   [
    1795851178246,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795851108122,
-   "INFO",
-   "–",
-   "Vortraining fertig: 88 Lernbeispiele aus 11 Coins (letzte 5 Std., mit Phantom-Kosten 3.8% je Trade) · 30% wären Gewinner gewesen, Ø −1.5% – Gehirn angepasst",
-   ""
-  ],
-  [
-   1795851018242,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795850977470,
-   "INFO",
-   "–",
-   "Social-Quellen: CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
-   ""
-  ],
-  [
-   1795850948353,
-   "INFO",
-   "–",
-   "Scan: 134 frische Coins · 1 mit Kaufsignal · aussortiert: 63× zu alt · 28× Liquidität zu dünn · 13× Pump.fun-Startphase · 10× zu wenig Liquidität · 6× zu wenig Volumen · 2× nicht jagen · 2× Daten widersprüchlich · 1× zu ",
-   ""
-  ],
-  [
-   1795850938855,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795850938080,
-   "INFO",
-   "–",
-   "Bot gestartet (Testmodus, v14)",
-   ""
-  ],
-  [
-   1795850933860,
-   "INFO",
-   "–",
-   "Bot gestoppt",
-   ""
-  ],
-  [
-   1795850905201,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795850645012,
-   "INFO",
-   "–",
-   "Scan: 139 frische Coins · 3 mit Kaufsignal · aussortiert: 70× zu alt · 29× Liquidität zu dünn · 14× Pump.fun-Startphase · 9× zu wenig Liquidität · 5× zu wenig Volumen · 2× nicht jagen · 1× zu jung · 1× Entwickler hat 169",
-   ""
-  ],
-  [
-   1795850415633,
    "INFO",
    "–",
    "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
