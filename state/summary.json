@@ -1,5 +1,5 @@
 {
- "updated": 1795872056030,
+ "updated": 1795873257126,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -45,10 +45,10 @@
   }
  ],
  "brain": {
-  "n": 1270,
+  "n": 1273,
   "acc": 70
  },
- "lage": "kalt",
+ "lage": "gefährlich",
  "tune": null,
  "minProb": 58,
  "rt": {
@@ -61,20 +61,20 @@
  "social": {
   "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
   "err": {
-   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T13:18:06.094Z\",\"path\":\"/coins/HAP9FcXu",
+   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T13:39:35.694Z\",\"path\":\"/coins/B9wbjDJ4",
    "public.api.bsky.app": "HTTP 403 <html><head><title>403 Forbidden</title><link href='//fonts.bunny.net/css?family"
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 5,
-   "api.bsky.app": 21,
-   "a.4cdn.org": 6
+   "api.coingecko.com": 7,
+   "api.bsky.app": 29,
+   "a.4cdn.org": 8
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 8,
+   "frontend-api-v3.pump.fun": 11,
    "public.api.bsky.app": 1
   },
-  "last": "Split: 50 Bluesky-Beiträge/Std. (42 Leute)"
+  "last": "Fireball: 3 Bluesky-Beiträge/Std. (2 Leute)"
  },
  "days": [
   [
@@ -94,9 +94,86 @@
    }
   ]
  ],
- "shadows": 5,
- "scanned": 1928173,
+ "shadows": 8,
+ "scanned": 1945122,
  "log": [
+  [
+   1795873255204,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
+   ""
+  ],
+  [
+   1795873245604,
+   "INFO",
+   "–",
+   "Scan: 142 frische Coins · 1 mit Kaufsignal · aussortiert: 70× zu alt · 27× Liquidität zu dünn · 18× zu wenig Liquidität · 10× Pump.fun-Startphase · 8× zu wenig Volumen · 2× zu jung · 2× keine Website/Socials · 1× Daten w",
+   ""
+  ],
+  [
+   1795873225212,
+   "INFO",
+   "Split",
+   "Schatten-Trade ausgewertet: wäre −7.3% gewesen (aussortiert wegen Insider-Netzwerk erkannt, Setup „buyers+pullback“, Gehirn schätzte 24%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795873205217,
+   "INFO",
+   "VINE",
+   "Schatten-Trade ausgewertet: wäre −4.2% gewesen (aussortiert wegen Insider-Netzwerk erkannt, Setup „buyers+spike“, Gehirn schätzte 13%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795872945255,
+   "INFO",
+   "–",
+   "Scan: 135 frische Coins · 3 mit Kaufsignal · aussortiert: 69× zu alt · 23× Liquidität zu dünn · 18× zu wenig Liquidität · 8× Pump.fun-Startphase · 8× zu wenig Volumen · 3× zu jung · 1× keine Website/Socials · 1× Entwickl",
+   ""
+  ],
+  [
+   1795872645196,
+   "INFO",
+   "–",
+   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 70× zu alt · 21× Liquidität zu dünn · 19× zu wenig Liquidität · 8× Pump.fun-Startphase · 6× zu wenig Volumen · 2× zu jung · 1× Fake-Handel · 1× Verkaufsdruck · 1×",
+   ""
+  ],
+  [
+   1795872625256,
+   "INFO",
+   "Vicewire",
+   "Schatten-Trade ausgewertet: wäre +3.9% gewesen (aussortiert wegen Insider-Netzwerk erkannt, Setup „buyers“, Gehirn schätzte 13%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795872455233,
+   "INFO",
+   "–",
+   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795872385186,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
+   ""
+  ],
+  [
+   1795872336241,
+   "FILTER",
+   "SPCX",
+   "Kaufdruck 60%, Trending bei Jupiter, 71 Netto-Käufer, Kaufvol. 1.5× Verkauf, echter Handel (Score 95, 21 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gef",
+   ""
+  ],
+  [
+   1795872335491,
+   "INFO",
+   "–",
+   "Scan: 145 frische Coins · 1 mit Kaufsignal · aussortiert: 77× zu alt · 27× Liquidität zu dünn · 19× zu wenig Liquidität · 8× Pump.fun-Startphase · 8× zu wenig Volumen · 2× zu jung · 1× Entwickler hat 16902 Coins erstellt",
+   ""
+  ],
   [
    1795872025228,
    "INFO",
@@ -193,83 +270,6 @@
    "INFO",
    "–",
    "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795870554308,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795870524201,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795870504173,
-   "INFO",
-   "–",
-   "Scan: 134 frische Coins · 0 mit Kaufsignal · aussortiert: 72× zu alt · 20× zu wenig Liquidität · 16× Liquidität zu dünn · 10× Pump.fun-Startphase · 8× zu wenig Volumen · 1× zu jung · 1× Entwickler hat 35 Coins erstellt (",
-   ""
-  ],
-  [
-   1795870424265,
-   "INFO",
-   "–",
-   "Marktlage wechselt: gefährlich → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795870414252,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
-   ""
-  ],
-  [
-   1795870194173,
-   "INFO",
-   "–",
-   "Scan: 142 frische Coins · 2 mit Kaufsignal · aussortiert: 75× zu alt · 21× zu wenig Liquidität · 20× Liquidität zu dünn · 11× Pump.fun-Startphase · 9× zu wenig Volumen · 1× zu wenig Netto-Käufer · 1× Entwickler hat 16902",
-   ""
-  ],
-  [
-   1795870174389,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795870114236,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795870094457,
-   "INFO",
-   "FlipFlop",
-   "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen zu wild: 18.4% Schwankung je Minute, Setup „buyers+momentum“, Gehirn schätzte 37%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795869955599,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 68%, Trending bei Jupiter – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control Enabled; Gefahr: Freez",
-   ""
-  ],
-  [
-   1795869884653,
-   "INFO",
-   "–",
-   "Scan: 139 frische Coins · 1 mit Kaufsignal · aussortiert: 70× zu alt · 20× Liquidität zu dünn · 19× zu wenig Liquidität · 12× zu wenig Volumen · 10× Pump.fun-Startphase · 1× nicht jagen · 1× zu jung · 1× Entwickler hat 1",
    ""
   ]
  ]
