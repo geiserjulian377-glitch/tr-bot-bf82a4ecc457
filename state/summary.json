@@ -1,5 +1,5 @@
 {
- "updated": 1795827515889,
+ "updated": 1795828716962,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -45,7 +45,7 @@
   }
  ],
  "brain": {
-  "n": 1049,
+  "n": 1051,
   "acc": 70
  },
  "lage": "normal",
@@ -61,20 +61,20 @@
  "social": {
   "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
   "err": {
-   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T00:51:14.027Z\",\"path\":\"/coins/B9wbjDJ4",
+   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T01:18:07.904Z\",\"path\":\"/coins/7dc3gFoy",
    "public.api.bsky.app": "HTTP 403 <html><head><title>403 Forbidden</title><link href='//fonts.bunny.net/css?family"
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 11,
-   "api.bsky.app": 39,
-   "a.4cdn.org": 12
+   "api.coingecko.com": 14,
+   "api.bsky.app": 55,
+   "a.4cdn.org": 15
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 17,
+   "frontend-api-v3.pump.fun": 23,
    "public.api.bsky.app": 1
   },
-  "last": "STEADY: 48 Bluesky-Beiträge/Std. (43 Leute)"
+  "last": "WINTER: 37 Bluesky-Beiträge/Std. (34 Leute)"
  },
  "days": [
   [
@@ -94,9 +94,121 @@
    }
   ]
  ],
- "shadows": 2,
- "scanned": 1325374,
+ "shadows": 4,
+ "scanned": 1341381,
  "log": [
+  [
+   1795828613848,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 73%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795828432932,
+   "INFO",
+   "–",
+   "Scan: 133 frische Coins · 1 mit Kaufsignal · aussortiert: 60× zu alt · 27× Liquidität zu dünn · 15× Pump.fun-Startphase · 13× zu wenig Liquidität · 5× zu wenig Volumen · 2× zu jung · 2× Verkaufsdruck · 1× nicht jagen · 1",
+   ""
+  ],
+  [
+   1795828293098,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795828282963,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795828182929,
+   "INFO",
+   "BIRB",
+   "Schatten-Trade ausgewertet: wäre −4.2% gewesen (aussortiert wegen hart: Top-10-Halter 88%, Setup „buyers“, Gehirn schätzte 0%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795828133262,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795828123368,
+   "INFO",
+   "–",
+   "Scan: 130 frische Coins · 0 mit Kaufsignal · aussortiert: 58× zu alt · 26× Liquidität zu dünn · 13× Pump.fun-Startphase · 13× zu wenig Liquidität · 5× zu wenig Volumen · 2× zu jung · 1× nicht jagen · 1× Daten widersprüch",
+   ""
+  ],
+  [
+   1795828103057,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795827983248,
+   "INFO",
+   "Fireball",
+   "Schatten-Trade ausgewertet: wäre +9.5% gewesen (aussortiert wegen Chart: unter der Trendlinie (EMA21), Setup „buyers“, Gehirn schätzte 21%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795827894091,
+   "FILTER",
+   "BIRB",
+   "Kaufdruck 63%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
+   ""
+  ],
+  [
+   1795827882934,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795827823046,
+   "INFO",
+   "–",
+   "Scan: 137 frische Coins · 0 mit Kaufsignal · aussortiert: 61× zu alt · 29× Liquidität zu dünn · 15× Pump.fun-Startphase · 12× zu wenig Liquidität · 5× zu wenig Volumen · 3× zu jung · 2× nicht jagen · 2× keine Website/Soc",
+   ""
+  ],
+  [
+   1795827762932,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795827613774,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795827592929,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795827522951,
+   "INFO",
+   "–",
+   "Scan: 136 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 27× Liquidität zu dünn · 15× Pump.fun-Startphase · 11× zu wenig Liquidität · 7× zu wenig Volumen · 3× nicht jagen · 3× zu jung · 2× Halter springen a",
+   ""
+  ],
   [
    1795827213475,
    "INFO",
@@ -158,118 +270,6 @@
    "INFO",
    "–",
    "Scan: 135 frische Coins · 0 mit Kaufsignal · aussortiert: 76× zu alt · 20× Liquidität zu dünn · 13× Pump.fun-Startphase · 9× zu wenig Liquidität · 5× zu wenig Volumen · 3× keine Website/Socials · 2× nicht jagen · 1× Fake",
-   ""
-  ],
-  [
-   1795825534114,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 65%, Trending bei Jupiter – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control Enabled; Gefahr: Freez",
-   ""
-  ],
-  [
-   1795825372973,
-   "INFO",
-   "–",
-   "Scan: 128 frische Coins · 1 mit Kaufsignal · aussortiert: 62× zu alt · 26× Liquidität zu dünn · 13× Pump.fun-Startphase · 9× zu wenig Liquidität · 6× zu wenig Volumen · 3× zu jung · 2× keine Website/Socials · 1× nicht ja",
-   ""
-  ],
-  [
-   1795825113964,
-   "FILTER",
-   "BIRB",
-   "Kaufdruck 64%, Trending bei Jupiter – aber (hart): Top-10-Halter 88%",
-   ""
-  ],
-  [
-   1795825072942,
-   "INFO",
-   "–",
-   "Scan: 124 frische Coins · 1 mit Kaufsignal · aussortiert: 62× zu alt · 25× Liquidität zu dünn · 12× Pump.fun-Startphase · 9× zu wenig Liquidität · 4× zu jung · 3× zu wenig Volumen · 1× Verkaufsdruck · 1× keine Website/So",
-   ""
-  ],
-  [
-   1795824763456,
-   "INFO",
-   "–",
-   "Scan: 125 frische Coins · 1 mit Kaufsignal · aussortiert: 58× zu alt · 29× Liquidität zu dünn · 12× Pump.fun-Startphase · 10× zu wenig Liquidität · 4× zu wenig Volumen · 3× zu jung · 1× Liquidität fällt · 1× Daten widers",
-   ""
-  ],
-  [
-   1795824483798,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 66%, 94 Netto-Käufer, Kaufvol. 1.2× Verkauf, echter Handel (Score 95, 15 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority st",
-   ""
-  ],
-  [
-   1795824462938,
-   "INFO",
-   "–",
-   "Scan: 129 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 26× Liquidität zu dünn · 12× Pump.fun-Startphase · 11× zu wenig Liquidität · 8× zu wenig Volumen · 2× Liquidität fällt · 2× zu jung · 1× Daten widers",
-   ""
-  ],
-  [
-   1795824162931,
-   "INFO",
-   "–",
-   "Scan: 124 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 25× Liquidität zu dünn · 11× Pump.fun-Startphase · 11× zu wenig Liquidität · 5× zu wenig Volumen · 2× zu jung · 2× Liquidität fällt · 1× Verkaufsdruc",
-   ""
-  ],
-  [
-   1795824082555,
-   "INFO",
-   "–",
-   "Vortraining fertig: 67 Lernbeispiele aus 10 Coins (letzte 5 Std., mit Phantom-Kosten 3.8% je Trade) · 24% wären Gewinner gewesen, Ø −5.4% – Gehirn angepasst",
-   ""
-  ],
-  [
-   1795823923355,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795823891571,
-   "INFO",
-   "–",
-   "Social-Quellen: CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
-   ""
-  ],
-  [
-   1795823854715,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 61%, echter Handel (Score 95, 23 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control E",
-   ""
-  ],
-  [
-   1795823854033,
-   "INFO",
-   "–",
-   "Scan: 127 frische Coins · 2 mit Kaufsignal · aussortiert: 59× zu alt · 26× Liquidität zu dünn · 14× Pump.fun-Startphase · 10× zu wenig Liquidität · 8× zu wenig Volumen · 3× zu jung · 1× Liquidität fällt · 1× keine Websit",
-   ""
-  ],
-  [
-   1795823852538,
-   "INFO",
-   "–",
-   "Bot gestartet (Testmodus, v14)",
-   ""
-  ],
-  [
-   1795823812092,
-   "INFO",
-   "–",
-   "Bot gestoppt",
-   ""
-  ],
-  [
-   1795823728193,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 60%, echter Handel (Score 95, 23 echte Käufer) – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control E",
    ""
   ]
  ]
