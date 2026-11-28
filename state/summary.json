@@ -1,5 +1,5 @@
 {
- "updated": 1795861816384,
+ "updated": 1795863017991,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -66,15 +66,15 @@
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 9,
-   "api.bsky.app": 25,
-   "a.4cdn.org": 9
+   "api.coingecko.com": 10,
+   "api.bsky.app": 27,
+   "a.4cdn.org": 10
   },
   "fail": {
    "frontend-api-v3.pump.fun": 6,
    "public.api.bsky.app": 1
   },
-  "last": "Fireball: kaum Erwähnungen"
+  "last": "Vicewire: kaum Erwähnungen"
  },
  "days": [
   [
@@ -95,8 +95,78 @@
   ]
  ],
  "shadows": 11,
- "scanned": 1787676,
+ "scanned": 1804278,
  "log": [
+  [
+   1795862871835,
+   "INFO",
+   "–",
+   "Scan: 140 frische Coins · 0 mit Kaufsignal · aussortiert: 64× zu alt · 29× Liquidität zu dünn · 14× zu wenig Liquidität · 13× Pump.fun-Startphase · 12× zu wenig Volumen · 1× nicht jagen · 1× Entwickler hat 16902 Coins er",
+   ""
+  ],
+  [
+   1795862751959,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795862711844,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795862581843,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795862562541,
+   "INFO",
+   "–",
+   "Scan: 132 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 24× Liquidität zu dünn · 17× zu wenig Liquidität · 13× Pump.fun-Startphase · 8× zu wenig Volumen · 2× Verkaufsdruck · 1× Entwickler hat 16902 Coins e",
+   ""
+  ],
+  [
+   1795862511850,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795862262046,
+   "INFO",
+   "–",
+   "Scan: 142 frische Coins · 1 mit Kaufsignal · aussortiert: 69× zu alt · 26× Liquidität zu dünn · 16× zu wenig Liquidität · 12× Pump.fun-Startphase · 11× zu wenig Volumen · 1× Entwickler hat 16902 Coins erstellt (Serien-La",
+   ""
+  ],
+  [
+   1795861961839,
+   "INFO",
+   "–",
+   "Scan: 137 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 31× Liquidität zu dünn · 17× zu wenig Liquidität · 12× Pump.fun-Startphase · 8× zu wenig Volumen · 1× Entwickler hat 16902 Coins erstellt (Serien-Lau",
+   ""
+  ],
+  [
+   1795861951854,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795861941927,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
   [
    1795861652658,
    "INFO",
@@ -200,76 +270,6 @@
    "INFO",
    "–",
    "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795860551842,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795860421974,
-   "INFO",
-   "–",
-   "Scan: 141 frische Coins · 0 mit Kaufsignal · aussortiert: 67× zu alt · 23× Liquidität zu dünn · 17× zu wenig Liquidität · 15× Pump.fun-Startphase · 11× zu wenig Volumen · 1× zu jung · 1× Liquidität fällt · 1× Entwickler ",
-   ""
-  ],
-  [
-   1795860401834,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795860312171,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795860112528,
-   "INFO",
-   "–",
-   "Scan: 139 frische Coins · 1 mit Kaufsignal · aussortiert: 65× zu alt · 27× Liquidität zu dünn · 14× Pump.fun-Startphase · 14× zu wenig Liquidität · 11× zu wenig Volumen · 1× zu jung · 1× Verkaufsdruck · 1× Entwickler hat",
-   ""
-  ],
-  [
-   1795859811970,
-   "INFO",
-   "–",
-   "Scan: 141 frische Coins · 0 mit Kaufsignal · aussortiert: 71× zu alt · 25× Liquidität zu dünn · 15× Pump.fun-Startphase · 13× zu wenig Liquidität · 10× zu wenig Volumen · 1× Liquidität fällt · 1× Entwickler hat 1299 Coin",
-   ""
-  ],
-  [
-   1795859511836,
-   "INFO",
-   "–",
-   "Scan: 140 frische Coins · 1 mit Kaufsignal · aussortiert: 68× zu alt · 25× Liquidität zu dünn · 16× zu wenig Liquidität · 14× Pump.fun-Startphase · 8× zu wenig Volumen · 2× Liquidität fällt · 1× zu jung · 1× Entwickler h",
-   ""
-  ],
-  [
-   1795859461958,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795859272888,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795859202622,
-   "INFO",
-   "–",
-   "Scan: 143 frische Coins · 1 mit Kaufsignal · aussortiert: 70× zu alt · 25× Liquidität zu dünn · 14× Pump.fun-Startphase · 14× zu wenig Liquidität · 11× zu wenig Volumen · 2× zu jung · 1× Liquidität fällt · 1× nicht jagen",
    ""
   ]
  ]
