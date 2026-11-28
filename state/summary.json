@@ -1,5 +1,5 @@
 {
- "updated": 1795863017991,
+ "updated": 1795863562511,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -48,7 +48,7 @@
   "n": 1186,
   "acc": 70
  },
- "lage": "normal",
+ "lage": "kalt",
  "tune": null,
  "minProb": 58,
  "rt": {
@@ -95,8 +95,43 @@
   ]
  ],
  "shadows": 11,
- "scanned": 1804278,
+ "scanned": 1811982,
  "log": [
+  [
+   1795863559486,
+   "INFO",
+   "–",
+   "Bot gestoppt",
+   ""
+  ],
+  [
+   1795863472454,
+   "INFO",
+   "–",
+   "Scan: 140 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 31× Liquidität zu dünn · 15× zu wenig Liquidität · 13× Pump.fun-Startphase · 12× zu wenig Volumen · 1× Entwickler hat 16902 Coins erstellt (Serien-La",
+   ""
+  ],
+  [
+   1795863171942,
+   "INFO",
+   "–",
+   "Scan: 145 frische Coins · 1 mit Kaufsignal · aussortiert: 68× zu alt · 28× Liquidität zu dünn · 16× zu wenig Volumen · 13× Pump.fun-Startphase · 13× zu wenig Liquidität · 1× Entwickler hat 16902 Coins erstellt (Serien-La",
+   ""
+  ],
+  [
+   1795863054035,
+   "FILTER",
+   "pippin",
+   "Kaufdruck 95%, Trending bei Jupiter – aber (hart): größter Halter besitzt 33%; Top-10-Halter 62%",
+   ""
+  ],
+  [
+   1795863031933,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
   [
    1795862871835,
    "INFO",
@@ -235,41 +270,6 @@
    "INFO",
    "–",
    "Scan: 130 frische Coins · 0 mit Kaufsignal · aussortiert: 58× zu alt · 28× Liquidität zu dünn · 14× zu wenig Liquidität · 13× Pump.fun-Startphase · 8× zu wenig Volumen · 2× zu jung · 1× Entwickler hat 16902 Coins erstell",
-   ""
-  ],
-  [
-   1795860911839,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795860841835,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795860731995,
-   "INFO",
-   "–",
-   "Scan: 139 frische Coins · 1 mit Kaufsignal · aussortiert: 69× zu alt · 23× Liquidität zu dünn · 14× zu wenig Liquidität · 13× Pump.fun-Startphase · 9× zu wenig Volumen · 3× zu jung · 1× Entwickler hat 16902 Coins erstell",
-   ""
-  ],
-  [
-   1795860712534,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795860611834,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
    ""
   ]
  ]
