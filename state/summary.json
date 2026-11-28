@@ -1,5 +1,5 @@
 {
- "updated": 1795843138896,
+ "updated": 1795843682992,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -45,10 +45,10 @@
   }
  ],
  "brain": {
-  "n": 1126,
+  "n": 1128,
   "acc": 70
  },
- "lage": "kalt",
+ "lage": "gefährlich",
  "tune": null,
  "minProb": 58,
  "rt": {
@@ -61,17 +61,17 @@
  "social": {
   "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
   "err": {
-   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T05:18:34.791Z\",\"path\":\"/coins/B9wbjDJ4",
+   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T05:23:35.712Z\",\"path\":\"/coins/B9wbjDJ4",
    "public.api.bsky.app": "HTTP 403 <html><head><title>403 Forbidden</title><link href='//fonts.bunny.net/css?family"
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 16,
-   "api.bsky.app": 55,
-   "a.4cdn.org": 17
+   "api.coingecko.com": 17,
+   "api.bsky.app": 61,
+   "a.4cdn.org": 18
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 25,
+   "frontend-api-v3.pump.fun": 28,
    "public.api.bsky.app": 1
   },
   "last": "Fireball: 2 Bluesky-Beiträge/Std. (2 Leute)"
@@ -94,9 +94,51 @@
    }
   ]
  ],
- "shadows": 3,
- "scanned": 1534186,
+ "shadows": 5,
+ "scanned": 1541911,
  "log": [
+  [
+   1795843679958,
+   "INFO",
+   "–",
+   "Bot gestoppt",
+   ""
+  ],
+  [
+   1795843634998,
+   "INFO",
+   "–",
+   "Scan: 145 frische Coins · 2 mit Kaufsignal · aussortiert: 73× zu alt · 25× Liquidität zu dünn · 15× zu wenig Liquidität · 12× Pump.fun-Startphase · 10× zu wenig Volumen · 2× zu jung · 1× Entwickler hat 1192 Coins erstell",
+   ""
+  ],
+  [
+   1795843554734,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → gefährlich (keine Käufe)",
+   ""
+  ],
+  [
+   1795843444725,
+   "INFO",
+   "SPCX",
+   "Schatten-Trade ausgewertet: wäre −3.8% gewesen (aussortiert wegen hart: Mint-Recht offen (neue Coins druckbar), Setup „buyers“, Gehirn schätzte 9%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795843334718,
+   "INFO",
+   "–",
+   "Scan: 142 frische Coins · 2 mit Kaufsignal · aussortiert: 70× zu alt · 26× Liquidität zu dünn · 16× zu wenig Liquidität · 12× Pump.fun-Startphase · 8× zu wenig Volumen · 2× zu jung · 2× nicht jagen · 2× keine Website/Soc",
+   ""
+  ],
+  [
+   1795843204758,
+   "INFO",
+   "WINTER",
+   "Schatten-Trade ausgewertet: wäre −4.0% gewesen (aussortiert wegen Insider-Netzwerk erkannt, Setup „buyers“, Gehirn schätzte 15%) – Gehirn lernt daraus",
+   ""
+  ],
   [
    1795843095022,
    "INFO",
@@ -228,48 +270,6 @@
    "INFO",
    "PRISMEICE",
    "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen zu wild: 26.9% Schwankung je Minute, Setup „pullback“, Gehirn schätzte 27%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795841215440,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795841204749,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795841194839,
-   "INFO",
-   "–",
-   "Scan: 141 frische Coins · 0 mit Kaufsignal · aussortiert: 75× zu alt · 20× Liquidität zu dünn · 12× Pump.fun-Startphase · 12× zu wenig Liquidität · 9× zu wenig Volumen · 4× zu jung · 2× nicht jagen · 2× keine Website/Soc",
-   ""
-  ],
-  [
-   1795841034790,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795840885703,
-   "INFO",
-   "–",
-   "Scan: 126 frische Coins · 2 mit Kaufsignal · aussortiert: 58× zu alt · 24× Liquidität zu dünn · 13× zu wenig Liquidität · 12× Pump.fun-Startphase · 6× zu wenig Volumen · 3× zu jung · 3× nicht jagen · 1× Entwickler hat 11",
-   ""
-  ],
-  [
-   1795840844738,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
    ""
   ]
  ]
