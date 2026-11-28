@@ -1,5 +1,5 @@
 {
- "updated": 1795858211707,
+ "updated": 1795859413253,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -45,7 +45,7 @@
   }
  ],
  "brain": {
-  "n": 1185,
+  "n": 1186,
   "acc": 70
  },
  "lage": "kalt",
@@ -66,15 +66,15 @@
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 1,
-   "api.bsky.app": 1,
-   "a.4cdn.org": 1
+   "api.coingecko.com": 3,
+   "api.bsky.app": 5,
+   "a.4cdn.org": 3
   },
   "fail": {
    "frontend-api-v3.pump.fun": 1,
    "public.api.bsky.app": 1
   },
-  "last": ""
+  "last": "Vicewire: kaum Erwähnungen"
  },
  "days": [
   [
@@ -94,9 +94,114 @@
    }
   ]
  ],
- "shadows": 10,
- "scanned": 1737853,
+ "shadows": 11,
+ "scanned": 1754579,
  "log": [
+  [
+   1795859272888,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795859202622,
+   "INFO",
+   "–",
+   "Scan: 143 frische Coins · 1 mit Kaufsignal · aussortiert: 70× zu alt · 25× Liquidität zu dünn · 14× Pump.fun-Startphase · 14× zu wenig Liquidität · 11× zu wenig Volumen · 2× zu jung · 1× Liquidität fällt · 1× nicht jagen",
+   ""
+  ],
+  [
+   1795859161835,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795859081891,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795858992743,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795858901936,
+   "INFO",
+   "–",
+   "Scan: 137 frische Coins · 0 mit Kaufsignal · aussortiert: 66× zu alt · 25× Liquidität zu dünn · 14× Pump.fun-Startphase · 14× zu wenig Liquidität · 9× zu wenig Volumen · 1× zu jung · 1× Fake-Handel · 1× Verkaufsdruck · 1",
+   ""
+  ],
+  [
+   1795858822274,
+   "INFO",
+   "Split",
+   "Schatten-Trade ausgewertet: wäre −15.7% gewesen (aussortiert wegen Insider-Netzwerk erkannt, Setup „buyers“, Gehirn schätzte 16%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795858721910,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795858612977,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795858601836,
+   "INFO",
+   "–",
+   "Scan: 139 frische Coins · 0 mit Kaufsignal · aussortiert: 68× zu alt · 24× Liquidität zu dünn · 15× Pump.fun-Startphase · 13× zu wenig Liquidität · 10× zu wenig Volumen · 2× Liquidität fällt · 1× zu jung · 1× nicht jagen",
+   ""
+  ],
+  [
+   1795858561835,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795858472344,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795858461921,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795858332239,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795858292691,
+   "INFO",
+   "–",
+   "Scan: 133 frische Coins · 0 mit Kaufsignal · aussortiert: 61× zu alt · 23× Liquidität zu dünn · 16× Pump.fun-Startphase · 13× zu wenig Liquidität · 10× zu wenig Volumen · 2× Liquidität fällt · 2× keine Website/Socials · ",
+   ""
+  ],
   [
    1795858191240,
    "INFO",
@@ -165,111 +270,6 @@
    "INFO",
    "–",
    "Scan: 132 frische Coins · 1 mit Kaufsignal · aussortiert: 59× zu alt · 23× Liquidität zu dünn · 15× Pump.fun-Startphase · 12× zu wenig Liquidität · 9× zu wenig Volumen · 2× zu jung · 2× nicht jagen · 2× keine Website/Soc",
-   ""
-  ],
-  [
-   1795857038249,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795856928834,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795856768257,
-   "INFO",
-   "–",
-   "Scan: 131 frische Coins · 2 mit Kaufsignal · aussortiert: 62× zu alt · 23× Liquidität zu dünn · 15× Pump.fun-Startphase · 11× zu wenig Liquidität · 7× zu wenig Volumen · 3× Liquidität fällt · 2× Verkaufsdruck · 1× nicht ",
-   ""
-  ],
-  [
-   1795856679224,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795856589280,
-   "FILTER",
-   "pippin",
-   "Kaufdruck 65%, Trending bei Jupiter – aber (hart): größter Halter besitzt 33%; Top-10-Halter 62%",
-   ""
-  ],
-  [
-   1795856579056,
-   "INFO",
-   "COMM",
-   "Schatten-Trade ausgewertet: wäre +33.2% gewesen (aussortiert wegen zu wild: 34.5% Schwankung je Minute, Setup „buyers+pullback“, Gehirn schätzte 30%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795856488251,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795856458371,
-   "INFO",
-   "–",
-   "Scan: 136 frische Coins · 1 mit Kaufsignal · aussortiert: 68× zu alt · 20× Liquidität zu dünn · 15× Pump.fun-Startphase · 10× zu wenig Liquidität · 10× zu wenig Volumen · 2× Liquidität fällt · 2× Verkaufsdruck · 2× keine",
-   ""
-  ],
-  [
-   1795856448244,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795856418256,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795856378298,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795856278293,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795856248370,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795856218243,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795856148357,
-   "INFO",
-   "–",
-   "Scan: 135 frische Coins · 1 mit Kaufsignal · aussortiert: 68× zu alt · 21× Liquidität zu dünn · 15× Pump.fun-Startphase · 11× zu wenig Volumen · 8× zu wenig Liquidität · 3× nicht jagen · 2× keine Website/Socials · 1× Fak",
    ""
   ]
  ]
