@@ -1,5 +1,5 @@
 {
- "updated": 1795868448380,
+ "updated": 1795869649546,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -45,7 +45,7 @@
   }
  ],
  "brain": {
-  "n": 1268,
+  "n": 1269,
   "acc": 70
  },
  "lage": "normal",
@@ -61,20 +61,20 @@
  "social": {
   "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
   "err": {
-   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T12:06:05.147Z\",\"path\":\"/coins/2YAfPhCr",
+   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T12:36:55.239Z\",\"path\":\"/coins/B9wbjDJ4",
    "public.api.bsky.app": "HTTP 403 <html><head><title>403 Forbidden</title><link href='//fonts.bunny.net/css?family"
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 9,
-   "api.bsky.app": 25,
-   "a.4cdn.org": 9
+   "api.coingecko.com": 10,
+   "api.bsky.app": 27,
+   "a.4cdn.org": 10
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 9,
+   "frontend-api-v3.pump.fun": 10,
    "public.api.bsky.app": 1
   },
-  "last": "Zhaki: kaum Erwähnungen"
+  "last": "Fireball: 2 Bluesky-Beiträge/Std. (2 Leute)"
  },
  "days": [
   [
@@ -94,9 +94,100 @@
    }
   ]
  ],
- "shadows": 3,
- "scanned": 1879032,
+ "shadows": 4,
+ "scanned": 1895289,
  "log": [
+  [
+   1795869584197,
+   "INFO",
+   "–",
+   "Scan: 134 frische Coins · 0 mit Kaufsignal · aussortiert: 63× zu alt · 24× Liquidität zu dünn · 20× zu wenig Liquidität · 10× Pump.fun-Startphase · 9× zu wenig Volumen · 2× nicht jagen · 2× zu jung · 1× Liquidität fällt ",
+   ""
+  ],
+  [
+   1795869464405,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795869414282,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795869284170,
+   "INFO",
+   "–",
+   "Scan: 127 frische Coins · 0 mit Kaufsignal · aussortiert: 57× zu alt · 24× Liquidität zu dünn · 19× zu wenig Liquidität · 10× Pump.fun-Startphase · 10× zu wenig Volumen · 2× zu jung · 1× keine Website/Socials · 1× nicht ",
+   ""
+  ],
+  [
+   1795869264203,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795869194251,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795869104270,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795869044558,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795869004192,
+   "INFO",
+   "TROLL",
+   "Schatten-Trade ausgewertet: wäre −2.8% gewesen (aussortiert wegen Insider-Netzwerk erkannt, Setup „buyers+spike“, Gehirn schätzte 18%) – Gehirn lernt daraus",
+   ""
+  ],
+  [
+   1795868974452,
+   "INFO",
+   "–",
+   "Scan: 145 frische Coins · 0 mit Kaufsignal · aussortiert: 68× zu alt · 26× Liquidität zu dünn · 19× zu wenig Liquidität · 13× Pump.fun-Startphase · 10× zu wenig Volumen · 3× zu jung · 1× Liquidität fällt · 1× Entwickler ",
+   ""
+  ],
+  [
+   1795868934157,
+   "INFO",
+   "–",
+   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
+   ""
+  ],
+  [
+   1795868864162,
+   "INFO",
+   "–",
+   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
+   ""
+  ],
+  [
+   1795868674183,
+   "INFO",
+   "–",
+   "Scan: 136 frische Coins · 1 mit Kaufsignal · aussortiert: 58× zu alt · 27× Liquidität zu dünn · 18× zu wenig Liquidität · 13× zu wenig Volumen · 12× Pump.fun-Startphase · 2× zu jung · 1× Entwickler hat 16902 Coins erstel",
+   ""
+  ],
   [
    1795868374155,
    "INFO",
@@ -179,97 +270,6 @@
    "INFO",
    "–",
    "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795866554198,
-   "INFO",
-   "–",
-   "Scan: 143 frische Coins · 0 mit Kaufsignal · aussortiert: 64× zu alt · 30× Liquidität zu dünn · 16× zu wenig Liquidität · 13× Pump.fun-Startphase · 10× zu wenig Volumen · 3× zu jung · 1× nicht jagen · 1× Entwickler hat 1",
-   ""
-  ],
-  [
-   1795866464240,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795866285377,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 60%, Trending bei Jupiter – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control Enabled; Gefahr: Freez",
-   ""
-  ],
-  [
-   1795866244747,
-   "INFO",
-   "–",
-   "Scan: 134 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 26× Liquidität zu dünn · 16× zu wenig Liquidität · 14× Pump.fun-Startphase · 8× zu wenig Volumen · 2× zu jung · 1× nicht jagen · 1× Entwickler hat 16",
-   ""
-  ],
-  [
-   1795866144199,
-   "INFO",
-   "–",
-   "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795866134173,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795865934279,
-   "INFO",
-   "–",
-   "Scan: 137 frische Coins · 0 mit Kaufsignal · aussortiert: 67× zu alt · 25× Liquidität zu dünn · 14× Pump.fun-Startphase · 14× zu wenig Liquidität · 9× zu wenig Volumen · 2× zu jung · 1× Verkaufsdruck · 1× keine Website/S",
-   ""
-  ],
-  [
-   1795865884238,
-   "INFO",
-   "Zhaki",
-   "Schatten-Trade ausgewertet: wäre −19.9% gewesen (aussortiert wegen Insider-Netzwerk erkannt, Setup „buyers“, Gehirn schätzte 14%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795865884237,
-   "INFO",
-   "SPCX",
-   "Schatten-Trade ausgewertet: wäre −3.9% gewesen (aussortiert wegen hart: Mint-Recht offen (neue Coins druckbar), Setup „buyers+spike“, Gehirn schätzte 20%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795865654343,
-   "INFO",
-   "Fireball",
-   "Schatten-Trade ausgewertet: wäre −22.2% gewesen (aussortiert wegen Chart: kein Aufwärtstrend (EMA9 < EMA21), Setup „buyers“, Gehirn schätzte 20%) – Gehirn lernt daraus",
-   ""
-  ],
-  [
-   1795865624238,
-   "INFO",
-   "–",
-   "Scan: 140 frische Coins · 0 mit Kaufsignal · aussortiert: 62× zu alt · 32× Liquidität zu dünn · 16× zu wenig Liquidität · 14× Pump.fun-Startphase · 9× zu wenig Volumen · 1× zu jung · 1× Entwickler hat 16902 Coins erstell",
-   ""
-  ],
-  [
-   1795865545146,
-   "FILTER",
-   "SPCX",
-   "Kaufdruck 80%, Trending bei Jupiter – aber (hart): Mint-Recht offen (neue Coins druckbar); Freeze-Recht offen (Guthaben einfrierbar); Gefahr: Mint Authority still enabled; Gefahr: Permanent Control Enabled; Gefahr: Freez",
-   ""
-  ],
-  [
-   1795865324161,
-   "INFO",
-   "–",
-   "Scan: 134 frische Coins · 1 mit Kaufsignal · aussortiert: 60× zu alt · 28× Liquidität zu dünn · 18× zu wenig Liquidität · 14× Pump.fun-Startphase · 7× zu wenig Volumen · 1× Entwickler hat 16902 Coins erstellt (Serien-Lau",
    ""
   ]
  ]
