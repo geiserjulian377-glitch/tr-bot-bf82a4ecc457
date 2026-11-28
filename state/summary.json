@@ -1,5 +1,5 @@
 {
- "updated": 1795863562511,
+ "updated": 1795863643930,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -45,8 +45,8 @@
   }
  ],
  "brain": {
-  "n": 1186,
-  "acc": 70
+  "n": 1217,
+  "acc": 69
  },
  "lage": "kalt",
  "tune": null,
@@ -61,20 +61,20 @@
  "social": {
   "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
   "err": {
-   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T10:21:12.969Z\",\"path\":\"/coins/B9wbjDJ4",
+   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T11:00:26.037Z\",\"path\":\"/coins/B9wbjDJ4",
    "public.api.bsky.app": "HTTP 403 <html><head><title>403 Forbidden</title><link href='//fonts.bunny.net/css?family"
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 10,
-   "api.bsky.app": 27,
-   "a.4cdn.org": 10
+   "api.coingecko.com": 2,
+   "api.bsky.app": 3,
+   "a.4cdn.org": 2
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 6,
+   "frontend-api-v3.pump.fun": 2,
    "public.api.bsky.app": 1
   },
-  "last": "Vicewire: kaum Erwähnungen"
+  "last": "Fireball: kaum Erwähnungen"
  },
  "days": [
   [
@@ -95,8 +95,22 @@
   ]
  ],
  "shadows": 11,
- "scanned": 1811982,
+ "scanned": 1812822,
  "log": [
+  [
+   1795863624024,
+   "INFO",
+   "–",
+   "Social-Quellen: CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
+   ""
+  ],
+  [
+   1795863583886,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v14)",
+   ""
+  ],
   [
    1795863559486,
    "INFO",
@@ -256,20 +270,6 @@
    "INFO",
    "–",
    "Marktlage wechselt: normal → kalt (halbe Größe, strengere Auswahl)",
-   ""
-  ],
-  [
-   1795861151949,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795861041838,
-   "INFO",
-   "–",
-   "Scan: 130 frische Coins · 0 mit Kaufsignal · aussortiert: 58× zu alt · 28× Liquidität zu dünn · 14× zu wenig Liquidität · 13× Pump.fun-Startphase · 8× zu wenig Volumen · 2× zu jung · 1× Entwickler hat 16902 Coins erstell",
    ""
   ]
  ]
