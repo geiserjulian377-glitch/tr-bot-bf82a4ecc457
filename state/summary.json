@@ -1,5 +1,5 @@
 {
- "updated": 1795843682992,
+ "updated": 1795843784578,
  "version": "v14 · test",
  "startBal": 20,
  "since": 1795719905877,
@@ -61,20 +61,20 @@
  "social": {
   "test": "CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
   "err": {
-   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T05:23:35.712Z\",\"path\":\"/coins/B9wbjDJ4",
+   "frontend-api-v3.pump.fun": "HTTP 404 {\"statusCode\":404,\"timestamp\":\"2026-11-28T05:29:22.168Z\",\"path\":\"/coins/ATbAsdCw",
    "public.api.bsky.app": "HTTP 403 <html><head><title>403 Forbidden</title><link href='//fonts.bunny.net/css?family"
   },
   "via": "function",
   "ok": {
-   "api.coingecko.com": 17,
-   "api.bsky.app": 61,
-   "a.4cdn.org": 18
+   "api.coingecko.com": 2,
+   "api.bsky.app": 5,
+   "a.4cdn.org": 2
   },
   "fail": {
-   "frontend-api-v3.pump.fun": 28,
+   "frontend-api-v3.pump.fun": 3,
    "public.api.bsky.app": 1
   },
-  "last": "Fireball: 2 Bluesky-Beiträge/Std. (2 Leute)"
+  "last": "WINTER: 50 Bluesky-Beiträge/Std. (40 Leute)"
  },
  "days": [
   [
@@ -95,8 +95,22 @@
   ]
  ],
  "shadows": 5,
- "scanned": 1541911,
+ "scanned": 1542757,
  "log": [
+  [
+   1795843762516,
+   "INFO",
+   "–",
+   "Social-Quellen: CoinGecko ✓ · pump.fun ✗ · Bluesky (2) ✓ · Bluesky ✗ · 4chan /biz/ ✓",
+   ""
+  ],
+  [
+   1795843724180,
+   "INFO",
+   "–",
+   "Bot gestartet (Testmodus, v14)",
+   ""
+  ],
   [
    1795843679958,
    "INFO",
@@ -256,20 +270,6 @@
    "INFO",
    "–",
    "Scan: 137 frische Coins · 2 mit Kaufsignal · aussortiert: 65× zu alt · 25× Liquidität zu dünn · 14× Pump.fun-Startphase · 13× zu wenig Liquidität · 8× zu wenig Volumen · 4× zu jung · 2× keine Website/Socials · 1× Entwick",
-   ""
-  ],
-  [
-   1795841474790,
-   "INFO",
-   "–",
-   "Marktlage wechselt: kalt → normal (normaler Betrieb)",
-   ""
-  ],
-  [
-   1795841234930,
-   "INFO",
-   "PRISMEICE",
-   "Schatten-Trade ausgewertet: wäre −22.8% gewesen (aussortiert wegen zu wild: 26.9% Schwankung je Minute, Setup „pullback“, Gehirn schätzte 27%) – Gehirn lernt daraus",
    ""
   ]
  ]
